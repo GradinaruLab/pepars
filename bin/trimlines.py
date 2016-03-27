@@ -13,7 +13,7 @@ for line in input_file:
 		fasta_file.write('>Sequence' + str(sequence_count) + '\n')
 		fasta_file.write(line)
 	elif line_counter % 4 == 3:
-		quality_file.write('>Sequence' + str(sequence_count_ + '\n'))
+		quality_file.write('>Sequence' + str(sequence_count) + '\n')
 		quality_file.write(line)
 	line_counter += 1
 
