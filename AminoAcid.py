@@ -17,8 +17,6 @@ class AminoAcid:
 			self.hydrogen_bond = 1.00
 
 
-
-
 		if amino_acid== 'N':
 			self.amino_acid_letter = 'N'
 			self.amino_acid_name = 'Asparagine'
@@ -86,7 +84,7 @@ class AminoAcid:
 			self.hydropathy = 'hydrophilic'
 			self.solubility = 36.2
 			self.phosphorylation = 1.00
-			self.average_flexibility_idx = 0.601
+			self.average_flexibility_idx = 0.510
 			self.hydrophobicity = 0.601
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 1.00
