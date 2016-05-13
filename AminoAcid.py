@@ -47,7 +47,7 @@ class AminoAcid:
 			self.charge = -1.00
 			self.hydropathy = 'hydrophilic'
 			self.solubility = 0.72
-			self.phosphorylation = 'none'
+			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.500
 			self.hydrophobicity = 0.458
 			self.ionic_bond = 1.00
@@ -59,7 +59,7 @@ class AminoAcid:
 			self.charge = 0.00
 			self.hydropathy = 'hydrophilic'
 			self.solubility = 2.6
-			self.phosphorylation = 'none'
+			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.490
 			self.hydrophobicity = 0.430
 			self.ionic_bond = 0.00
@@ -70,8 +70,8 @@ class AminoAcid:
 			self.amino_acid_name = 'Lysine'
 			self.charge = 1.00
 			self.hydropathy = 'hydrophilic'
-			self.solubility = ''
-			self.phosphorylation = 'none'
+			self.solubility = 0.0
+			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.470
 			self.hydrophobicity = 0.263
 			self.ionic_bond = 1.00
@@ -94,7 +94,7 @@ class AminoAcid:
 			self.amino_acid_name = 'Threonine'
 			self.charge = -1.00
 			self.hydropathy = 'hydrophilic'
-			self.solubility = 'free'
+			self.solubility = 0.0
 			self.phosphorylation = 1.00
 			self.average_flexibility_idx = 0.440
 			self.hydrophobicity = 0.634
@@ -106,8 +106,8 @@ class AminoAcid:
 			self.amino_acid_name = 'Cysteine'
 			self.charge = -1.00
 			self.hydropathy = 'moderate'
-			self.solubility = 'free'
-			self.phosphorylation = 'none'
+			self.solubility = 0.0
+			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.350
 			self.hydrophobicity = 0.721
 			self.ionic_bond = 0.00
@@ -119,7 +119,7 @@ class AminoAcid:
 			self.charge = 1.00
 			self.hydropathy = 'moderate'
 			self.solubility = 4.19
-			self.phosphorylation = 'none'
+			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.320
 			self.hydrophobicity = 0.548
 			self.ionic_bond = 1.00
@@ -131,7 +131,7 @@ class AminoAcid:
 			self.charge = 0.00
 			self.hydropathy = 'moderate'
 			self.solubility = 5.14
-			self.phosphorylation = 'none'
+			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.300
 			self.hydrophobicity = 0.811
 			self.ionic_bond = 0.00
@@ -144,7 +144,7 @@ class AminoAcid:
 			self.charge = -1.00
 			self.hydropathy = 'hydrophobic'
 			self.solubility = 15.8
-			self.phosphorylation = 'none'
+			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.360
 			self.hydrophobicity = 0.806
 			self.ionic_bond = 0.00
@@ -156,7 +156,7 @@ class AminoAcid:
 			self.charge = -1.00
 			self.hydropathy = 'hydrophobic'
 			self.solubility = 5.6
-			self.phosphorylation = 'none'
+			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.390
 			self.hydrophobicity = 0.923
 			self.ionic_bond = 0.00
@@ -168,7 +168,7 @@ class AminoAcid:
 			self.charge = -1.00
 			self.hydropathy = 'hydrophobic'
 			self.solubility = 22.5
-			self.phosphorylation = 'none'
+			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.540
 			self.hydrophobicity = 0.770
 			self.ionic_bond = 0.00
@@ -180,7 +180,7 @@ class AminoAcid:
 			self.charge = -1.00
 			self.hydropathy = 'hydrophobic'
 			self.solubility = 3.36
-			self.phosphorylation = 'none'
+			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.460
 			self.hydrophobicity = 1.00
 			self.ionic_bond = 0.00
@@ -192,7 +192,7 @@ class AminoAcid:
 			self.charge = -1.00
 			self.hydropathy = 'hydrophobic'
 			self.solubility = 2.37
-			self.phosphorylation = 'none'
+			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.370
 			self.hydrophobicity = 0.918
 			self.ionic_bond = 0.00
@@ -204,7 +204,7 @@ class AminoAcid:
 			self.charge = -1.00
 			self.hydropathy = 'hydrophobic'
 			self.solubility = 2.7
-			self.phosphorylation = 'none'
+			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.310
 			self.hydrophobicity = 0.951
 			self.ionic_bond = 0.00
@@ -216,7 +216,7 @@ class AminoAcid:
 			self.charge = -1.00
 			self.hydropathy = 'hydrophobic'
 			self.solubility = 1.54
-			self.phosphorylation = 'none'
+			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.510
 			self.hydrophobicity = 0.678
 			self.ionic_bond = 0.00
@@ -228,7 +228,7 @@ class AminoAcid:
 			self.charge = -1.00
 			self.hydropathy = 'hydrophobic'
 			self.solubility = 1.00
-			self.phosphorylation = 'none'
+			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.310
 			self.hydrophobicity = 0.854
 			self.ionic_bond = 0.00

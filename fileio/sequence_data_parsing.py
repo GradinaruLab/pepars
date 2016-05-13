@@ -39,6 +39,10 @@ def load_sequence_count_file(filename, minimum_num_sequence, group_by_amino_acid
 			if group_by_amino_acid:
 				sequence = DNA.translate_dna_single(sequence)
 
+				# If there are any invalid amino acids, skip them
+				if '#' in sequence:
+					continue
+
 			sequences.append(sequence)
 			initial_counts.append(int(next(column_iterator, None)))
 			extracted_counts.append(int(next(column_iterator, None)))
