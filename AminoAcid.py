@@ -3,6 +3,9 @@ class AminoAcid:
 
 	
 	def __init__(self,amino_acid):
+
+
+		self.is_valid = True
 		 
 		if amino_acid == 'R':
 			self.amino_acid_letter = 'R'
@@ -17,7 +20,7 @@ class AminoAcid:
 			self.hydrogen_bond = 1.00
 
 
-		if amino_acid== 'N':
+		elif amino_acid== 'N':
 			self.amino_acid_letter = 'N'
 			self.amino_acid_name = 'Asparagine'
 			self.charge = 0.00
@@ -29,7 +32,7 @@ class AminoAcid:
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 1.00
 
-		if amino_acid == 'D':
+		elif amino_acid == 'D':
 			self.amino_acid_letter = 'D'
 			self.amino_acid_name = 'Aspartate'
 			self.charge = -1.00
@@ -41,7 +44,7 @@ class AminoAcid:
 			self.ionic_bond = 1.00
 			self.hydrogen_bond = 1.00
 
-		if amino_acid == 'E':
+		elif amino_acid == 'E':
 			self.amino_acid_letter = 'E'
 			self.amino_acid_name = 'Glutamate'
 			self.charge = -1.00
@@ -53,7 +56,7 @@ class AminoAcid:
 			self.ionic_bond = 1.00
 			self.hydrogen_bond = 1.00
 
-		if amino_acid== 'Q':
+		elif amino_acid== 'Q':
 			self.amino_acid_letter = 'Q'
 			self.amino_acid_name = 'Glutamine'
 			self.charge = 0.00
@@ -65,7 +68,7 @@ class AminoAcid:
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 1.00
 
-		if amino_acid== 'K':
+		elif amino_acid== 'K':
 			self.amino_acid_letter = 'K'
 			self.amino_acid_name = 'Lysine'
 			self.charge = 1.00
@@ -77,7 +80,7 @@ class AminoAcid:
 			self.ionic_bond = 1.00
 			self.hydrogen_bond = 1.00
 
-		if amino_acid== 'S':
+		elif amino_acid== 'S':
 			self.amino_acid_letter = 'S'
 			self.amino_acid_name = 'Serine'
 			self.charge = -1.00
@@ -89,7 +92,7 @@ class AminoAcid:
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 1.00
 
-		if amino_acid== 'T':
+		elif amino_acid== 'T':
 			self.amino_acid_letter = 'T'
 			self.amino_acid_name = 'Threonine'
 			self.charge = -1.00
@@ -101,7 +104,7 @@ class AminoAcid:
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 1.00
 
-		if amino_acid== 'C':
+		elif amino_acid== 'C':
 			self.amino_acid_letter = 'C'
 			self.amino_acid_name = 'Cysteine'
 			self.charge = -1.00
@@ -113,7 +116,7 @@ class AminoAcid:
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 0.00
 
-		if amino_acid== 'H':
+		elif amino_acid== 'H':
 			self.amino_acid_letter = 'H'
 			self.amino_acid_name = 'Histidine'
 			self.charge = 1.00
@@ -125,7 +128,7 @@ class AminoAcid:
 			self.ionic_bond = 1.00
 			self.hydrogen_bond = 1.00
 
-		if amino_acid== 'M':
+		elif amino_acid== 'M':
 			self.amino_acid_letter = 'M'
 			self.amino_acid_name = 'Methionine'
 			self.charge = 0.00
@@ -138,7 +141,7 @@ class AminoAcid:
 			self.hydrogen_bond = 0.00
 
 
-		if amino_acid== 'A':
+		elif amino_acid== 'A':
 			self.amino_acid_letter = 'A'
 			self.amino_acid_name = 'Alanine'
 			self.charge = -1.00
@@ -150,7 +153,7 @@ class AminoAcid:
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 0.00
 
-		if amino_acid== 'V':
+		elif amino_acid== 'V':
 			self.amino_acid_letter = 'V'
 			self.amino_acid_name = 'Valine'
 			self.charge = -1.00
@@ -162,7 +165,7 @@ class AminoAcid:
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 0.00
 
-		if amino_acid== 'G':
+		elif amino_acid== 'G':
 			self.amino_acid_letter = 'G'
 			self.amino_acid_name = 'Glycine'
 			self.charge = -1.00
@@ -174,7 +177,7 @@ class AminoAcid:
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 0.00
 
-		if amino_acid== 'I':
+		elif amino_acid== 'I':
 			self.amino_acid_letter = 'I'
 			self.amino_acid_name = 'Isoleucine'
 			self.charge = -1.00
@@ -186,7 +189,7 @@ class AminoAcid:
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 0.00
 
-		if amino_acid== 'L':
+		elif amino_acid== 'L':
 			self.amino_acid_letter = 'L'
 			self.amino_acid_name = 'Leucine'
 			self.charge = -1.00
@@ -198,7 +201,7 @@ class AminoAcid:
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 0.00
 
-		if amino_acid== 'F':
+		elif amino_acid== 'F':
 			self.amino_acid_letter = 'F'
 			self.amino_acid_name = 'Phenylalanine'
 			self.charge = -1.00
@@ -210,7 +213,7 @@ class AminoAcid:
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 0.00
 
-		if amino_acid=='P':
+		elif amino_acid=='P':
 			self.amino_acid_letter = 'P'
 			self.amino_acid_name = 'Proline'
 			self.charge = -1.00
@@ -222,7 +225,7 @@ class AminoAcid:
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 0.00
 
-		if amino_acid== 'W':
+		elif amino_acid== 'W':
 			self.amino_acid_letter = 'W'
 			self.amino_acid_name = 'Tryptophan'
 			self.charge = -1.00
@@ -234,7 +237,7 @@ class AminoAcid:
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 1.00
 
-		if amino_acid== 'Y':
+		elif amino_acid== 'Y':
 			self.amino_acid_letter = 'Y'
 			self.amino_acid_name = 'Tyrosine'
 			self.charge = -1.00
@@ -245,6 +248,9 @@ class AminoAcid:
 			self.hydrophobicity = 0.714
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 1.00
+
+		else:
+			self.is_valid = False
 
 	
 
