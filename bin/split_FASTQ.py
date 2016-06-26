@@ -1,3 +1,7 @@
+# Reads in a FASTQ file and breaks it out into two corresponding files: one just
+# containing the sequence, the other just containing the quality score
+# Assigns a unique ID to each sequence
+
 import sys
 
 input_file = open(sys.argv[1], 'r')
