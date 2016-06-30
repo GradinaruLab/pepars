@@ -5,6 +5,7 @@ import os
 from utils.Analysis_Set import Analysis_Set
 import matplotlib
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 from utils.Sequence_Library import Sequence_Library
 from utils import utils
@@ -32,10 +33,14 @@ gencode = {
 		'TAC':'Y', 'TAT':'Y', 'TAA':'#', 'TAG':'#', 'TGC':'C', 'TGT':'C', 'TGA':'#', 'TGG':'W'}
 
 #Plots data according to 
-def plot_data(files, by_amino_acid = True, count_threshold = 10, filter_invalid = True):
+def normalized_heatmap(files, by_amino_acid = True, count_threshold = 10, filter_invalid = True):
 	if not type(files) == list:
 		files = [files]
 	dataset = []
+	x_axes = []
+	y_axes = []
+	titles = []
+	midpoints = []
 	for sequence_data in files:
 
 		slib = Sequence_Library(sequence_data);
@@ -65,6 +70,7 @@ def plot_data(files, by_amino_acid = True, count_threshold = 10, filter_invalid 
 			#aminos is a column and represents the amino acids in position 'position'
 			aminos = sequence_matrix[:,position]
 			row = [0 for acid in acid_labels]
+
 			#note that aminos and sequence_counts have the same indices
 			for sequence, amino in enumerate(aminos):
 				if amino in acid_labels:
@@ -74,7 +80,6 @@ def plot_data(files, by_amino_acid = True, count_threshold = 10, filter_invalid 
 
 		#Prepare the weight matrix
 		weights = np.eye(len(acid_labels))
-		
 		for acid, count in acid_counts.iteritems():
 			i = acid_labels[acid] #get position of current acid in our enumeration
 			weights[i, i] = 1/count
@@ -84,32 +89,103 @@ def plot_data(files, by_amino_acid = True, count_threshold = 10, filter_invalid 
 		for acid, index in acid_labels.iteritems():
 			fig_labels_acids[index]=acid
 
-		data = np.dot(biased_counts, weights)
-		dataset.append(data)
+		
+		normalized_data = np.dot(biased_counts, weights)
 
-		row_labels = fig_labels_acids
-		column_labels = range(1,1+positions)
+		x_axes.append(fig_labels_acids)
+		y_axes.append(range(1,1+positions))
+		titles.append(sequence_data)
+		#midpoints.append(np.sum(sequence_counts))
+		midpoint = 1.0*np.sum(sequence_counts)/(32.0*(np.amax(normalized_data)))
+		midpoints.append(midpoint)
+		dataset.append(normalized_data)
 
+	heatmap(dataset, x_axis = x_axes, y_axis= y_axes, title = titles, midpoints = midpoints)
+	return dataset
+
+#Pre:	dataset is an array of one or more 2D arrays containing plottable data
+#		x_axis is an array of one or more 1D arrays containing labels for the x-axis
+#		y_axis is an array of one or more 1D arrays containing labels for the y-axis
+#		titles is an array of one or more 1D arrays containing the name of each plot
+#		no_seq is an array of one or more 1D arrays containing the number of sequences of each dataset
+#		all parameters need to have the same length (i.e. number of heatmaps)
+
+#Post:	The function has produced a heatmap for each 2D array in dataset
+def heatmap(dataset, x_axis = None, y_axis = None, title = None, midpoints=None):
+	number_of_heatmaps = len(dataset)
+	if not x_axis:
+		x_axis = [[] in range(number_of_heatmaps)]
+	if not y_axis:
+		y_axis = [[] in range(number_of_heatmaps)]
+	if not title:
+		title = [[] in range(number_of_heatmaps)]
+	if not midpoints:
+		midpoints = [[] in range(number_of_heatmaps)]
+	for matrix, x, y, name, midpoint in zip(np.array(dataset), x_axis, y_axis, title, midpoints):
+		data = matrix
+		row_labels = x
+		column_labels = y
+		
+		# set appropriate font and dpi
 		fig, ax = plt.subplots()
-		fig.title='Hell nah'
-		heatmap = ax.pcolor(data)
+		sns.set(font_scale=1.2)
+		sns.set_style({"savefig.dpi": 100})
+		
+		ax = sns.heatmap(data, cmap=shiftedColorMap(plt.cm.coolwarm, midpoint = midpoint if 0.0<midpoint<1.0 else 0.5), linewidths=.1)
+		fig = ax.get_figure()
+
 
 		# put the major ticks at the middle of each cell
 		ax.set_xticks(np.arange(data.shape[1]) + 0.5, minor = False)
 		ax.set_yticks(np.arange(data.shape[0]) + 0.5, minor = False)
 
-		ax.set_xticklabels(row_labels, minor = False)
-		ax.set_yticklabels(column_labels, minor = False)
+		if(row_labels):
+			ax.set_xticklabels(row_labels, minor = False)
+		if(column_labels):
+			ax.set_yticklabels(column_labels, minor = False)
 
-		ax.set_title(sequence_data)
-		fig.canvas.set_window_title('Heatmap for ' + sequence_data) 
+		if(name):
+			ax.set_title(name)
+			fig.canvas.set_window_title('Heatmap for ' + name)
+		
 	plt.show()
-	return dataset
+	
 
+def shiftedColorMap(cmap, start=0, midpoint=0.5, stop=1.0, name='shiftedcmap'):
+	'''
+	returns a new colormap with its neutral value(center) at midpoint
+	start=0.0<midpoint<stop=1.0
+	the returned colormap is based on cmap
+	'''
+	colordict = {
+		'red': [],
+		'green': [],
+		'blue': [],
+		'alpha': []
+	}
 
-'''
-files = ['Data/21_perfect_match_sequence_counts.csv',
-		'Data/22_perfect_match_sequence_counts.csv',
-		'Data/23_perfect_match_sequence_counts.csv']
-dataset =  plot_data(files)
-'''
+	# regular index to compute the colors
+	reg_index = np.linspace(start, stop, 257)
+
+	# shifted index to match the data
+	shift_index = np.hstack([
+		np.linspace(0.0, midpoint, 128, endpoint=False), 
+		np.linspace(midpoint, 1.0, 129, endpoint=True)
+	])
+
+	for reg, shift in zip(reg_index, shift_index):
+		r, g, b, a = cmap(reg)
+
+		colordict['red'].append((shift, r, r))
+		colordict['green'].append((shift, g, g))
+		colordict['blue'].append((shift, b, b))
+		colordict['alpha'].append((shift, a, a))
+
+	newcmap = matplotlib.colors.LinearSegmentedColormap(name, colordict)
+	plt.register_cmap(cmap=newcmap)
+
+	return newcmap
+
+def compare_maps(data_a, data_b, x_axis=None, y_axis=None, title = None, midpoints=None):
+	data = np.array(data_a)-np.array(data_b)
+	heatmap([data], x_axis = x_axis, y_axis = y_axis, title = title, midpoints=midpoints)

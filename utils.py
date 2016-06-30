@@ -3,10 +3,11 @@
 def convert_string_to_char_array(string):
 	char_array = []
 
-	for char in string:
-		char_array.append(char);
-
-	return char_array
+	if type(string)!=str:
+		for char in string:
+			char_array.append(char);
+		return char_array
+	return list(string)
 
 def convert_sequence_label_dict_to_matrices(sequence_label_dict):
 
