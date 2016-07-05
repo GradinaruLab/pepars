@@ -1,6 +1,13 @@
 
-class AminoAcid:
+def compare_to(val1, val2):
+	
+	if val1<val2:
+		return -1
+	elif val1>val2:
+		return 1
+	return 0
 
+class AminoAcid:
 	
 	def __init__(self,amino_acid):
 
@@ -254,16 +261,49 @@ class AminoAcid:
 
 	
 
+	def compare_features(self, acid, feature):
+		if feature == 'charge':
+			return compare_to(self.charge, acid.charge)
+		if feature == 'hydropathy':
+			return compare_to(self.hydropathy, acid.hydropathy)
+		if feature == 'solubility':
+			return compare_to(self.solubility, acid.solubility)
+		if feature == 'phosphorylation':
+			return compare_to(self.phosphorylation, acid.phosphorylation)
+		if feature == 'average_flexibility_idx':
+			return compare_to(self.average_flexibility_idx, acid.average_flexibility_idx)
+		if feature == 'hydrophobicity':
+			return compare_to(self.hydrophobicity, acid.hydrophobicity)
+		if feature == 'ionic_bond':
+			return compare_to(self.ionic_bond, acid.ionic_bond)
+		if feature == 'hydrogen_bond':
+			return compare_to(self.hydrogen_bond, acid.hydrogen_bond)
+		raise Exception('Feature {} not defined'.format(feature))
 
 
-
-
-		
-
-
-
-
-
-
-
-
+def sort_by_features(acids, features, rules=1):
+	order=range(len(acids))
+	for acid in acids:
+		if not acid.is_valid:
+			del acid
+	if not type(rules).__name__=='list':
+		rules= [rules for i in range(len(features))]
+	for rule in rules:
+		assert(rule in [-1, 1])
+	assert(len(rules)==len(features))
+	n = len(acids)
+	for feature, rule in zip(features[::-1], rules[::-1]):
+		#insertion sort for each feature
+		for j in range(1, n):
+			i = j-1
+			key = acids[j]
+			key2 = order[j]
+			while i>=0 and rule*key.compare_features(acids[i],feature)>0:
+				#print key.hydrophobicity,'is bigger than',acids[i].hydrophobicity
+				acids[i+1] = acids[i]
+				order[i+1] = order[i]
+				#print 'Swapping',order[i],order[i+1]
+				i -= 1
+			acids[i+1] = key
+			order[i+1] = key2
+	return order
