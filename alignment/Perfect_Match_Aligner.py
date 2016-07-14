@@ -97,11 +97,13 @@ class Perfect_Match_Aligner(Aligner):
             # Case 3: the template is a K, so the variant should be a T or G
             elif self.template_sequence[template_idx] == 'K':
 
-                if quality_score[template_idx] < variant_sequence_quality_threshold:
+                if quality_score[template_idx] < self.variant_sequence_quality_threshold:
                     return False, False, 2
 
                 if fastq_line[template_idx] != 'G' and fastq_line[template_idx] != 'T':
                     return False, False, 3
+
+                extracted_sequence.append(fastq_line[template_idx])
 
             # Case 4: the template is an X, so we ignore this
             elif self.template_sequence[template_idx] == 'X':
