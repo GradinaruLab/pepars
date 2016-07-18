@@ -260,7 +260,6 @@ class AminoAcid:
 			self.is_valid = False
 
 	
-
 	def compare_features(self, acid, feature):
 		if feature == 'charge':
 			return compare_to(self.charge, acid.charge)
