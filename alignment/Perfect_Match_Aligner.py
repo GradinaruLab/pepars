@@ -1,5 +1,6 @@
 from Aligner import Aligner
 from sequencing import FASTQ
+from workspace import Workspace as ws
 
 class Perfect_Match_Aligner(Aligner):
 
@@ -7,26 +8,30 @@ class Perfect_Match_Aligner(Aligner):
         Aligner.__init__(self)
         self.method = 'Perfect_Match'
 
-    def align(self, library, template_sequence, variant_sequence_quality_threshold = 0, mismatch_quality_threshold = 0):
+    def align_library(self, library, template, \
+        variant_sequence_quality_threshold = 0, \
+        mismatch_quality_threshold = 0,
+        output_frequency = 1e5):
 
-        self.template_sequence = template_sequence
-        self.variant_sequence_quality_threshold = variant_sequence_quality_threshold
+        self.template_sequence = template.sequence
+        self.variant_sequence_quality_threshold = \
+            variant_sequence_quality_threshold
         self.mismatch_quality_threshold = mismatch_quality_threshold
         template_mismatches = 0
         variant_quality_mismatches = 0
         variant_nucleotide_mismatches = 0
         size_mismatches = 0
 
-        fastq_files = library.get_fastq_files()
-
-        template_length = len(template_sequence)
+        template_length = len(self.template_sequence)
 
         extracted_sequences = []
+        uuids = []
 
         num_sequences = 0
 
-        for fastq_file_name in fastq_files:
+        for fastq_file_name in library.fastq_files:
 
+            fastq_file_name = ws.get_raw_data_path(fastq_file_name)
             fastq_file = open(fastq_file_name, 'r').read().splitlines()
 
             line_count = 0
@@ -34,6 +39,9 @@ class Perfect_Match_Aligner(Aligner):
             for line in fastq_file:
 
                 if line_count % 4 == 1:
+                    if (line_count / 4) % output_frequency == 0:
+                        print("Aligned " + str(line_count / 4) + \
+                            " sequence(s)")
                     sequence = line
 
                 elif line_count % 4 == 3:
@@ -42,10 +50,12 @@ class Perfect_Match_Aligner(Aligner):
                     
                     if (len(sequence)) == template_length:
 
-                        extracted_sequence, uuid, error_type = self.extract_sequence(sequence, quality_string)
+                        extracted_sequence, uuid, error_type = \
+                            self.extract_sequence(sequence, quality_string)
                         
                         if error_type == 0:
-                            extracted_sequences.append((extracted_sequence, uuid))
+                            extracted_sequences.append(extracted_sequence)
+                            uuids.append(uuid)
                         elif error_type == 1:
                             template_mismatches += 1
                         elif error_type == 2:
@@ -60,15 +70,17 @@ class Perfect_Match_Aligner(Aligner):
                 line_count += 1
 
         mismatched_sequences = template_mismatches + variant_quality_mismatches + variant_nucleotide_mismatches + size_mismatches
-            
-        print 'Total number of sequences is ' + str(num_sequences)
-        print 'Percentage of sequences which failed perfect match: '+str(100.0*float(mismatched_sequences)/float(num_sequences))
-        print 'Percentage of sequences which failed due to template mismatch: '+str(100.0*float(template_mismatches)/float(num_sequences))
-        print 'Percentage of sequences which failed due to variant quality score: '+str(100.0*float(variant_quality_mismatches)/float(num_sequences))
-        print 'Percentage of sequences which failed due to variant nucleotide mismatch: '+str(100.0*float(variant_nucleotide_mismatches)/float(num_sequences))
-        print 'Percentage of sequences which failed due to size: '+str(100.0*float(size_mismatches)/float(num_sequences))
+        
+        statistics = {}
+        
+        statistics["Number of Sequences"] = num_sequences
+        statistics["Perfect Match Failure Rate"] = float(mismatched_sequences)/float(num_sequences)
+        statistics["Template Mismatch Failure Rate"] = float(template_mismatches)/float(num_sequences)
+        statistics["Variant Quality Failure Rate"] = float(variant_quality_mismatches)/float(num_sequences)
+        statistics["Variant Nucleotide Mismatch Rate"] = float(variant_nucleotide_mismatches)/float(num_sequences)
+        statistics["Template Size Mismatch Rate"] = float(size_mismatches)/float(num_sequences)
 
-        return extracted_sequences
+        return extracted_sequences, uuids, statistics
 
     def extract_sequence(self, fastq_line, quality_string):
 
