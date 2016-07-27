@@ -69,12 +69,13 @@ class Perfect_Match_Aligner(Aligner):
 
                 line_count += 1
 
-        mismatched_sequences = template_mismatches + variant_quality_mismatches + variant_nucleotide_mismatches + size_mismatches
+        mismatched_sequences = template_mismatches + variant_quality_mismatches\
+            + variant_nucleotide_mismatches + size_mismatches
         
         statistics = {}
         
         statistics["Number of Sequences"] = num_sequences
-        statistics["Perfect Match Failure Rate"] = float(mismatched_sequences)/float(num_sequences)
+        statistics["Perfect Match Ailgnment Rate"] = float(1.0-float(mismatched_sequences)/float(num_sequences))
         statistics["Template Mismatch Failure Rate"] = float(template_mismatches)/float(num_sequences)
         statistics["Variant Quality Failure Rate"] = float(variant_quality_mismatches)/float(num_sequences)
         statistics["Variant Nucleotide Mismatch Rate"] = float(variant_nucleotide_mismatches)/float(num_sequences)
