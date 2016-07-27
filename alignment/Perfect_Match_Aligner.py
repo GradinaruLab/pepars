@@ -38,6 +38,9 @@ class Perfect_Match_Aligner(Aligner):
 
             for line in fastq_file:
 
+                if line_count > 10000:
+                    break
+
                 if line_count % 4 == 1:
                     if (line_count / 4) % output_frequency == 0:
                         print("Aligned " + str(line_count / 4) + \
