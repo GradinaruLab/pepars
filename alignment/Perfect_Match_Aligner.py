@@ -38,9 +38,6 @@ class Perfect_Match_Aligner(Aligner):
 
             for line in fastq_file:
 
-                if line_count > 10000:
-                    break
-
                 if line_count % 4 == 1:
                     if (line_count / 4) % output_frequency == 0:
                         print("Aligned " + str(line_count / 4) + \
@@ -78,7 +75,7 @@ class Perfect_Match_Aligner(Aligner):
         statistics = {}
         
         statistics["Number of Sequences"] = num_sequences
-        statistics["Perfect Match Ailgnment Rate"] = float(1.0-float(mismatched_sequences)/float(num_sequences))
+        statistics["Perfect Match Alignment Rate"] = float(1.0-float(mismatched_sequences)/float(num_sequences))
         statistics["Template Mismatch Failure Rate"] = float(template_mismatches)/float(num_sequences)
         statistics["Variant Quality Failure Rate"] = float(variant_quality_mismatches)/float(num_sequences)
         statistics["Variant Nucleotide Mismatch Rate"] = float(variant_nucleotide_mismatches)/float(num_sequences)
