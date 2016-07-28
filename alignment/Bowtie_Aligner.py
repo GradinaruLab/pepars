@@ -2,7 +2,10 @@ from Aligner import Aligner
 from sequencing import FASTQ
 from workspace import Workspace as ws
 import subprocess
+import re
 import os
+
+import sys
 
 class Bowtie_Aligner(Aligner):
 
@@ -13,29 +16,45 @@ class Bowtie_Aligner(Aligner):
         self.sequences = []
 
     def align_library(self, library, template, 
-        num_sequences = 0.0,
-        allowed = ['G', 'T'], variants = [3,3,3,3], sam_end = '_alignment.sam',
+        allowed = ['G', 'T'],
+        variants = [3,3,3,3], 
+        sam_end = '_alignment.sam',
         cigar_end = '_bowtie_alignment_CIGAR_sequences.txt',
-        reference_file = 'reference.fa', reference_name = 'YichengReference'):
+        reference_file = 'reference.fa', 
+        reference_name = 'YichengReference'):
+        """
+        Aligns given library with the given template using Shashank's bottom-up
+        method with Bowtie2
+        """
 
-        subprocess.call(['bowtie2-build', ws.get_raw_data_path(reference_file), reference_name])
+        num_sequences = 0.0
 
-        reference = ws.get_raw_data_path(reference_file) # put reference.fa file in raw_data
-        for file_name in library.fastq_files:
-            file_id = file_name.split('_')[0]
-            file_name = ws.get_raw_data_path(file_name)
-            sam_path = ws.get_raw_data_path(file_id + sam_end) # put .sam file in raw_data
+        # Create references for bowtie to work with
+        reference_name = ws.get_raw_data_path(reference_name)
+        stringer = 'bowtie2-build ' + ws.get_raw_data_path(reference_file) + \
+            ' '+ reference_name
+        subprocess.call([stringer], shell = True, executable = '/bin/bash')
+
+        reference = ws.get_raw_data_path(reference_file)
+
+        for fastq_file_name in library.fastq_files:
+            file_id = fastq_file_name.split('_')[0]
+            fastq_file_name = ws.get_raw_data_path(fastq_file_name)
+            sam_path = ws.get_raw_data_path(file_id + sam_end)
 
             # Create .sam file if not exists
             if not os.path.exists(sam_path):
                 print sam_path
-                # subprocess.call(['bowtie2 --local -x', reference_name,
-                #  '-U', file_name, '-S', file_id + sam_end])
+                cmd = ' '.join(['bowtie2 --local -x', reference_name,
+                 '-U', fastq_file_name, '-S', ws.get_raw_data_path(file_id + sam_end)])
+                subprocess.call([cmd], shell = True, executable = '/bin/bash')
             
             # From .sam file, create .txt file
-            subprocess.call(['cut -f1,6,10 ', sam_path,
-                '> ' + file_id + cigar_end])
+            cmd = ' '.join(['cut -f1,6,10 ', sam_path,
+                '> ' + ws.get_raw_data_path(file_id + cigar_end)])
+            subprocess.call([cmd], shell=True, executable='/bin/bash')
             file = ws.get_raw_data_path(file_id+cigar_end)
+
             # Process the .txt file
             file = open(file, 'r').readlines()[3:]
             for line in file:
@@ -43,7 +62,7 @@ class Bowtie_Aligner(Aligner):
                 id = line[0]
                 cigar = line[1]
                 sequence = line[2]
-                self.parse(id, cigar, sequence)
+                self.parse(id, cigar, sequence, allowed, variants)
 
             num_sequences += len(file)
         
@@ -54,11 +73,12 @@ class Bowtie_Aligner(Aligner):
 
         return self.sequences, self.ids, statistics
 
-    def parse(id, cigar, seq):
+    def parse(self, id, cigar, seq, allowed, variants):
+        num_insertions = len(variants)
         index = 0
         chars = re.findall('[^\d]+', cigar)
         nums = re.findall('\d+', cigar)
-        if nums.count('3') < number_of_i or chars.count('I') != number_of_i or \
+        if nums.count('3') < num_insertions or chars.count('I') != num_insertions or \
             len(chars) != len(nums):
             return
 
@@ -72,8 +92,8 @@ class Bowtie_Aligner(Aligner):
                 row.append(codon)
             index += num
 
-        if len(row) != number_of_i:
+        if len(row) != num_insertions:
             return
-        variants.append(row)
+        # variants.append(row)
         self.sequences.append(seq)
         self.ids.append(id)
