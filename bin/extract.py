@@ -4,16 +4,15 @@ import time
 from os import listdir
 from os.path import isfile, join
 codons = [3, 3, 3, 3]
-number_of_i = len(codons)
-allowed = ['G', 'T', 'A', 'C']
-# allowed = ['G', 'T']
-
+num_insertions = len(codons)
+# allowed = ['G', 'T', 'A', 'C']
+allowed = ['G', 'T', 'A']
+allowed.append('N')
 '''
  1456  bowtie2-build reference.fa YichengReference
- 1459  bowtie2 --local -x YichengReference -U 17115_ATCACG_L001_R1_001.fastq 
- -S 17115_alignment.sam
- 1462  cut -f1,6,10 17115_alignment.sam > 
- 17115_bowtie_alignment_CIGAR_sequences.txt
+
+ 1459  bowtie2 --local -x YichengReference -U 17115_ATCACG_L001_R1_001.fastq -S 17115_alignment.sam
+ 1462  cut -f1,6,10 17115_alignment.sam > 17115_bowtie_alignment_CIGAR_sequences.txt
 '''
 end = '_bowtie_alignment_CIGAR_sequences.txt'
 my_path = '../Data/TestData/'
@@ -22,21 +21,21 @@ def parse(id, cigar, seq):
     index = 0
     chars = re.findall('[^\d]+',cigar)
     nums = re.findall('\d+',cigar)
-    if nums.count('3') < number_of_i or chars.count('I') != number_of_i or \
-        len(chars) != len(nums):
-        return
 
     row = []
-    for char, num in zip(chars, nums):
+    for i, (char, num) in enumerate(zip(chars, nums)):
         num = int(num)
+        if len(row) >= len(codons):
+            break
         if char=='I' and num == 3:
             codon = seq[index:index+num]
             if codon[-1] not in allowed:
-                return
+                continue
             row.append(codon)
-        index += num
+        if char != 'D':
+            index += num
 
-    if len(row) != number_of_i:
+    if len(row) != num_insertions:
         return
     variants.append(row)
     seqs.append(seq)

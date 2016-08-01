@@ -33,6 +33,7 @@ class Bowtie_Aligner(Aligner):
         reference_name = ws.get_raw_data_path(reference_name)
         stringer = 'bowtie2-build ' + ws.get_raw_data_path(reference_file) + \
             ' '+ reference_name
+
         subprocess.call([stringer], shell = True, executable = '/bin/bash')
 
         reference = ws.get_raw_data_path(reference_file)
@@ -45,8 +46,10 @@ class Bowtie_Aligner(Aligner):
             # Create .sam file if not exists
             if not os.path.exists(sam_path):
                 print sam_path
+                
                 cmd = ' '.join(['bowtie2 --local -x', reference_name,
                  '-U', fastq_file_name, '-S', ws.get_raw_data_path(file_id + sam_end)])
+
                 subprocess.call([cmd], shell = True, executable = '/bin/bash')
             
             # From .sam file, create .txt file
@@ -78,22 +81,25 @@ class Bowtie_Aligner(Aligner):
         index = 0
         chars = re.findall('[^\d]+', cigar)
         nums = re.findall('\d+', cigar)
-        if nums.count('3') < num_insertions or chars.count('I') != num_insertions or \
+        
+        if chars.count('I') != num_insertions or \
             len(chars) != len(nums):
             return
 
         row = []
-        for char, num in zip(chars, nums):
+        for i, (char, num) in enumerate(zip(chars, nums)):
             num = int(num)
-            if char=='I' and num == 3:
+            if char=='I' and num == variants[len(row)]:
                 codon = seq[index : index + num]
                 if codon[-1] not in allowed:
-                    return
+                    continue
                 row.append(codon)
             index += num
 
         if len(row) != num_insertions:
             return
         # variants.append(row)
+
+        
         self.sequences.append(seq)
         self.ids.append(id)
