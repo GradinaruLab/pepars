@@ -6,7 +6,7 @@ class Perfect_Match_Aligner(Aligner):
 
     def __init__(self):
         Aligner.__init__(self)
-        self.method = 'Perfect_Match'
+        self.method = self.__class__.__name__
 
     def align_library(self, library, template, \
         variant_sequence_quality_threshold = 0, \
