@@ -1,5 +1,6 @@
 from workspace import Workspace as ws
 from workspace import Database as db
+import numpy as np
 
 class Aligner(object):
 
@@ -15,6 +16,9 @@ class Aligner(object):
             library = db.get_library_by_id(library_id)
             template = db.get_template_by_id(template_id)
 
+            if ws.alignment_exists(library, template):
+                continue
+
             sequences, uuids, statistics = self.align_library(library, \
                 template, **alignment.parameters)
 
@@ -24,18 +28,41 @@ class Aligner(object):
 
             sequence_index = 0
 
-            sequence_uuids = [[0, 0]] * len(sequences)
+            sequence_uuid_counts = {}
 
             if len(uuids) > 0:
                 for sequence_index in range(0, len(sequences)):
-                    sequence_uuids[sequence_index] = \
-                        [sequences[sequence_index], uuids[sequence_index]]
+                    if (sequences[sequence_index], uuids[sequence_index]) not \
+                        in sequence_uuid_counts:
+
+                        sequence_uuid_counts[(sequences[sequence_index], \
+                            uuids[sequence_index])] = 0
+
+                    sequence_uuid_counts[(sequences[sequence_index], \
+                            uuids[sequence_index])] += 1                    
             else:
                 for sequence_index in range(0, len(sequences)):
-                    sequence_uuids[sequence_index] = \
-                        [sequences[sequence_index], []]
 
-            ws.write_sequence_file(library, alignment, sequence_uuids)
+                    if (sequences[sequence_index], '') not in \
+                        sequence_uuid_counts:
+
+                        sequence_uuid_counts[(sequences[sequence_index], '')] \
+                            = 0
+
+                    sequence_uuid_counts[(sequences[sequence_index], '')] += 1
+
+            sequence_uuid_counts_array = [[]] * len(sequence_uuid_counts)
+
+            sequence_index = 0
+
+            for sequence_uuids, counts in sequence_uuid_counts.items():
+
+                sequence_uuid_counts_array[sequence_index] = [sequence_uuids[0], sequence_uuids[1], counts]
+
+                sequence_index += 1
+
+            ws.write_sequence_file(library, alignment, \
+                sequence_uuid_counts_array)
 
             alignment.add_statistics(library, statistics)
 
