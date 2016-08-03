@@ -44,9 +44,7 @@ class Bowtie_Aligner(Aligner):
             sam_path = ws.get_raw_data_path(file_id + sam_end)
 
             # Create .sam file if not exists
-            if not os.path.exists(sam_path):
-                print sam_path
-                
+            if not os.path.exists(sam_path):                
                 cmd = ' '.join(['bowtie2 --local -x', reference_name,
                  '-U', fastq_file_name, '-S', ws.get_raw_data_path(file_id + sam_end)])
 
