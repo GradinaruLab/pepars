@@ -22,6 +22,8 @@ class Perfect_Match_Aligner(Aligner):
         variant_nucleotide_mismatches = 0
         size_mismatches = 0
 
+        print('Aligning library \'' + library.name + '\'')
+
         template_length = len(self.template_sequence)
 
         extracted_sequences = []
