@@ -7,7 +7,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-from utils.Sequence_Library import Sequence_Library
+from analysis.Sequence_Library import Sequence_Library
 from utils import utils
 from utils import DNA as DNA
 from analysis import ML_analysis
@@ -46,6 +46,7 @@ class heatmap:
 	#Plots data according to 
 	def normalized_sequence_counts(self, file, by_amino_acid = True, count_threshold = 10, filter_invalid = True):
 
+		# TODO: Update to use new Sequence Library format (accepts library instead of file)
 #		get sequencedata
 		slib = Sequence_Library(file);
 		slib_count = slib.get_sequence_counts(by_amino_acid=by_amino_acid, count_threshold=count_threshold, filter_invalid=filter_invalid)
