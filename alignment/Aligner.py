@@ -11,12 +11,15 @@ class Aligner(object):
 
         Aligner.validate_alignment(alignment)
 
+        print('Aligning libraries using ' + alignment.method)
+
         for library_id, template_id in alignment.library_templates.items():
 
             library = db.get_library_by_id(library_id)
             template = db.get_template_by_id(template_id)
 
-            if ws.alignment_exists(library, template):
+            if ws.alignment_exists(library, alignment):
+                print('Alignment already exists!')
                 continue
 
             sequences, uuids, statistics = self.align_library(library, \
