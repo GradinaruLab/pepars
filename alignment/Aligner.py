@@ -7,67 +7,60 @@ class Aligner(object):
     def __init__(self):
         pass
 
-    def align(self, alignment):
+    def align(self, alignment, library, progress_callback):
 
-        Aligner.validate_alignment(alignment)
+        template_id = alignment.library_templates[library.id]
+        template = db.get_template_by_id(template_id)
 
-        print('Aligning libraries using ' + alignment.method)
+        if ws.alignment_exists(library, alignment):
+            return
 
-        for library_id, template_id in alignment.library_templates.items():
+        sequences, uuids, statistics = self.align_library(library, \
+            template, **alignment.parameters)
 
-            library = db.get_library_by_id(library_id)
-            template = db.get_template_by_id(template_id)
+        if len(sequences) != len(uuids) and len(uuids) != 0:
+            raise Exception('Number of sequences must match number of \
+                UUIDs!')
 
-            if ws.alignment_exists(library, alignment):
-                print('Alignment already exists!')
-                continue
+        sequence_index = 0
 
-            sequences, uuids, statistics = self.align_library(library, \
-                template, **alignment.parameters)
+        sequence_uuid_counts = {}
 
-            if len(sequences) != len(uuids) and len(uuids) != 0:
-                raise Exception('Number of sequences must match number of \
-                    UUIDs!')
-
-            sequence_index = 0
-
-            sequence_uuid_counts = {}
-
-            if len(uuids) > 0:
-                for sequence_index in range(0, len(sequences)):
-                    if (sequences[sequence_index], uuids[sequence_index]) not \
-                        in sequence_uuid_counts:
-
-                        sequence_uuid_counts[(sequences[sequence_index], \
-                            uuids[sequence_index])] = 0
+        if len(uuids) > 0:
+            for sequence_index in range(0, len(sequences)):
+                if (sequences[sequence_index], uuids[sequence_index]) not \
+                    in sequence_uuid_counts:
 
                     sequence_uuid_counts[(sequences[sequence_index], \
-                            uuids[sequence_index])] += 1                    
-            else:
-                for sequence_index in range(0, len(sequences)):
+                        uuids[sequence_index])] = 0
 
-                    if (sequences[sequence_index], '') not in \
-                        sequence_uuid_counts:
+                sequence_uuid_counts[(sequences[sequence_index], \
+                        uuids[sequence_index])] += 1                    
+        else:
+            for sequence_index in range(0, len(sequences)):
 
-                        sequence_uuid_counts[(sequences[sequence_index], '')] \
-                            = 0
+                if (sequences[sequence_index], '') not in \
+                    sequence_uuid_counts:
 
-                    sequence_uuid_counts[(sequences[sequence_index], '')] += 1
+                    sequence_uuid_counts[(sequences[sequence_index], '')] \
+                        = 0
 
-            sequence_uuid_counts_array = [[]] * len(sequence_uuid_counts)
+                sequence_uuid_counts[(sequences[sequence_index], '')] += 1
 
-            sequence_index = 0
+        sequence_uuid_counts_array = [[]] * len(sequence_uuid_counts)
 
-            for sequence_uuids, counts in sequence_uuid_counts.items():
+        sequence_index = 0
 
-                sequence_uuid_counts_array[sequence_index] = [sequence_uuids[0], sequence_uuids[1], counts]
+        for sequence_uuids, counts in sequence_uuid_counts.items():
 
-                sequence_index += 1
+            sequence_uuid_counts_array[sequence_index] = [sequence_uuids[0], sequence_uuids[1], counts]
 
-            ws.write_sequence_file(library, alignment, \
-                sequence_uuid_counts_array)
+            sequence_index += 1
 
-            alignment.add_statistics(library, statistics)
+        ws.write_sequence_file(library, alignment, \
+            sequence_uuid_counts_array)
+
+        alignment.add_statistics(library, statistics)
 
     @staticmethod
     def validate_alignment(alignment):
