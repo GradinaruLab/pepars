@@ -15,6 +15,7 @@ class AminoAcid:
 		self.is_valid = True
 		 
 		if amino_acid == 'R':
+			self.is_valid = True
 			self.amino_acid_letter = 'R'
 			self.amino_acid_name = 'Arginine'
 			self.charge = 1.00
@@ -22,12 +23,13 @@ class AminoAcid:
 			self.solubility = 71.8
 			self.phosphorylation = 0.00
 			self.average_flexibility_idx = 0.530
-			self.hydrophobicity = 0.00
+			self.hydrophobicity = -14.00
 			self.ionic_bond = 1.00
 			self.hydrogen_bond = 1.00
 
 
 		elif amino_acid== 'N':
+			self.is_valid = True
 			self.amino_acid_letter = 'N'
 			self.amino_acid_name = 'Asparagine'
 			self.charge = 0.00
@@ -35,11 +37,12 @@ class AminoAcid:
 			self.solubility = 2.4
 			self.phosphorylation = 0.00
 			self.average_flexibility_idx = 0.46
-			self.hydrophobicity = 0.448
+			self.hydrophobicity = -28.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 1.00
 
 		elif amino_acid == 'D':
+			self.is_valid = True
 			self.amino_acid_letter = 'D'
 			self.amino_acid_name = 'Aspartate'
 			self.charge = -1.00
@@ -47,11 +50,12 @@ class AminoAcid:
 			self.solubility = 0.42
 			self.phosphorylation = 0.00
 			self.average_flexibility_idx = 0.510
-			self.hydrophobicity = 0.417
+			self.hydrophobicity = -55.00
 			self.ionic_bond = 1.00
 			self.hydrogen_bond = 1.00
 
 		elif amino_acid == 'E':
+			self.is_valid = True
 			self.amino_acid_letter = 'E'
 			self.amino_acid_name = 'Glutamate'
 			self.charge = -1.00
@@ -59,11 +63,12 @@ class AminoAcid:
 			self.solubility = 0.72
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.500
-			self.hydrophobicity = 0.458
+			self.hydrophobicity = -31.00
 			self.ionic_bond = 1.00
 			self.hydrogen_bond = 1.00
 
 		elif amino_acid== 'Q':
+			self.is_valid = True
 			self.amino_acid_letter = 'Q'
 			self.amino_acid_name = 'Glutamine'
 			self.charge = 0.00
@@ -71,11 +76,12 @@ class AminoAcid:
 			self.solubility = 2.6
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.490
-			self.hydrophobicity = 0.430
+			self.hydrophobicity = -10.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 1.00
 
 		elif amino_acid== 'K':
+			self.is_valid = True
 			self.amino_acid_letter = 'K'
 			self.amino_acid_name = 'Lysine'
 			self.charge = 1.00
@@ -83,11 +89,12 @@ class AminoAcid:
 			self.solubility = 0.0
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.470
-			self.hydrophobicity = 0.263
+			self.hydrophobicity = -23.00
 			self.ionic_bond = 1.00
 			self.hydrogen_bond = 1.00
 
 		elif amino_acid== 'S':
+			self.is_valid = True
 			self.amino_acid_letter = 'S'
 			self.amino_acid_name = 'Serine'
 			self.charge = -1.00
@@ -95,11 +102,12 @@ class AminoAcid:
 			self.solubility = 36.2
 			self.phosphorylation = 1.00
 			self.average_flexibility_idx = 0.510
-			self.hydrophobicity = 0.601
+			self.hydrophobicity = -5.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 1.00
 
 		elif amino_acid== 'T':
+			self.is_valid = True
 			self.amino_acid_letter = 'T'
 			self.amino_acid_name = 'Threonine'
 			self.charge = -1.00
@@ -107,11 +115,12 @@ class AminoAcid:
 			self.solubility = 0.0
 			self.phosphorylation = 1.00
 			self.average_flexibility_idx = 0.440
-			self.hydrophobicity = 0.634
+			self.hydrophobicity = 13.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 1.00
 
 		elif amino_acid== 'C':
+			self.is_valid = True
 			self.amino_acid_letter = 'C'
 			self.amino_acid_name = 'Cysteine'
 			self.charge = -1.00
@@ -119,11 +128,12 @@ class AminoAcid:
 			self.solubility = 0.0
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.350
-			self.hydrophobicity = 0.721
+			self.hydrophobicity = 49.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 0.00
 
 		elif amino_acid== 'H':
+			self.is_valid = True
 			self.amino_acid_letter = 'H'
 			self.amino_acid_name = 'Histidine'
 			self.charge = 1.00
@@ -131,11 +141,12 @@ class AminoAcid:
 			self.solubility = 4.19
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.320
-			self.hydrophobicity = 0.548
+			self.hydrophobicity = 8.00
 			self.ionic_bond = 1.00
 			self.hydrogen_bond = 1.00
 
 		elif amino_acid== 'M':
+			self.is_valid = True
 			self.amino_acid_letter = 'M'
 			self.amino_acid_name = 'Methionine'
 			self.charge = 0.00
@@ -143,12 +154,13 @@ class AminoAcid:
 			self.solubility = 5.14
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.300
-			self.hydrophobicity = 0.811
+			self.hydrophobicity = 74.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 0.00
 
 
 		elif amino_acid== 'A':
+			self.is_valid = True
 			self.amino_acid_letter = 'A'
 			self.amino_acid_name = 'Alanine'
 			self.charge = -1.00
@@ -156,11 +168,12 @@ class AminoAcid:
 			self.solubility = 15.8
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.360
-			self.hydrophobicity = 0.806
+			self.hydrophobicity = 41.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 0.00
 
 		elif amino_acid== 'V':
+			self.is_valid = True
 			self.amino_acid_letter = 'V'
 			self.amino_acid_name = 'Valine'
 			self.charge = -1.00
@@ -168,11 +181,12 @@ class AminoAcid:
 			self.solubility = 5.6
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.390
-			self.hydrophobicity = 0.923
+			self.hydrophobicity = 76.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 0.00
 
 		elif amino_acid== 'G':
+			self.is_valid = True
 			self.amino_acid_letter = 'G'
 			self.amino_acid_name = 'Glycine'
 			self.charge = -1.00
@@ -180,11 +194,12 @@ class AminoAcid:
 			self.solubility = 22.5
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.540
-			self.hydrophobicity = 0.770
+			self.hydrophobicity = 0.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 0.00
 
 		elif amino_acid== 'I':
+			self.is_valid = True
 			self.amino_acid_letter = 'I'
 			self.amino_acid_name = 'Isoleucine'
 			self.charge = -1.00
@@ -192,11 +207,12 @@ class AminoAcid:
 			self.solubility = 3.36
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.460
-			self.hydrophobicity = 1.00
+			self.hydrophobicity = 99.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 0.00
 
 		elif amino_acid== 'L':
+			self.is_valid = True
 			self.amino_acid_letter = 'L'
 			self.amino_acid_name = 'Leucine'
 			self.charge = -1.00
@@ -204,11 +220,12 @@ class AminoAcid:
 			self.solubility = 2.37
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.370
-			self.hydrophobicity = 0.918
+			self.hydrophobicity = 97.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 0.00
 
 		elif amino_acid== 'F':
+			self.is_valid = True
 			self.amino_acid_letter = 'F'
 			self.amino_acid_name = 'Phenylalanine'
 			self.charge = -1.00
@@ -216,11 +233,12 @@ class AminoAcid:
 			self.solubility = 2.7
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.310
-			self.hydrophobicity = 0.951
+			self.hydrophobicity = 100.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 0.00
 
 		elif amino_acid=='P':
+			self.is_valid = True
 			self.amino_acid_letter = 'P'
 			self.amino_acid_name = 'Proline'
 			self.charge = -1.00
@@ -228,11 +246,12 @@ class AminoAcid:
 			self.solubility = 1.54
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.510
-			self.hydrophobicity = 0.678
+			self.hydrophobicity = -46.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 0.00
 
 		elif amino_acid== 'W':
+			self.is_valid = True
 			self.amino_acid_letter = 'W'
 			self.amino_acid_name = 'Tryptophan'
 			self.charge = -1.00
@@ -240,11 +259,12 @@ class AminoAcid:
 			self.solubility = 1.00
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.310
-			self.hydrophobicity = 0.854
+			self.hydrophobicity = 97.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 1.00
 
 		elif amino_acid== 'Y':
+			self.is_valid = True
 			self.amino_acid_letter = 'Y'
 			self.amino_acid_name = 'Tyrosine'
 			self.charge = -1.00
@@ -252,14 +272,16 @@ class AminoAcid:
 			self.solubility = 0.038
 			self.phosphorylation = 1.00
 			self.average_flexibility_idx = 0.420
-			self.hydrophobicity = 0.714
+			self.hydrophobicity = 63.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 1.00
 
 		else:
 			self.is_valid = False
+			print "Invalid Amino Acid "+amino_acid
 
 	
+
 	def compare_features(self, acid, feature):
 		if feature == 'charge':
 			return compare_to(self.charge, acid.charge)
