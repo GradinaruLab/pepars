@@ -9,11 +9,26 @@ class Aligner(object):
 
     def align(self, alignment, library, progress_callback):
 
+        self._progress_callback = progress_callback
+
         template_id = alignment.library_templates[library.id]
         template = db.get_template_by_id(template_id)
 
         if ws.alignment_exists(library, alignment):
             return
+
+        line_count = 0
+
+        for fastq_file_name in library.fastq_files:
+            fastq_file_name = ws.get_raw_data_path(fastq_file_name)
+            fastq_file = open(fastq_file_name, 'r')
+
+            for line in fastq_file:
+                line_count += 1
+
+            fastq_file.close()
+
+        self._num_sequences = line_count / 4
 
         sequences, uuids, statistics = self.align_library(library, \
             template, **alignment.parameters)
@@ -61,6 +76,15 @@ class Aligner(object):
             sequence_uuid_counts_array)
 
         alignment.add_statistics(library, statistics)
+
+    def update_num_sequences_aligned(self, num_sequences):
+
+        percent = num_sequences * 100.0 / self._num_sequences
+
+        progress_string = '{0:.2f}'.format(percent) + '% (' + \
+            str(num_sequences) + '/' + str(self._num_sequences) + ')'
+
+        self._progress_callback(progress_string)
 
     @staticmethod
     def validate_alignment(alignment):
