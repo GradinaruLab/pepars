@@ -21,7 +21,8 @@ class Bowtie_Aligner(Aligner):
         sam_end = '_alignment.sam',
         cigar_end = '_bowtie_alignment_CIGAR_sequences.txt',
         reference_file = 'reference.fa', 
-        reference_name = 'YichengReference'):
+        reference_name = 'YichengReference',
+        output_frequency = 1e5):
         """
         Aligns given library with the given template using Shashank's bottom-up
         method with Bowtie2
@@ -39,6 +40,9 @@ class Bowtie_Aligner(Aligner):
         reference = ws.get_raw_data_path(reference_file)
 
         for fastq_file_name in library.fastq_files:
+
+            if (line_count / 4) % output_frequency == 0:
+                self.update_num_sequences_aligned(num_sequences)
             file_id = fastq_file_name.split('_')[0]
             fastq_file_name = ws.get_raw_data_path(fastq_file_name)
             sam_path = ws.get_raw_data_path(file_id + sam_end)

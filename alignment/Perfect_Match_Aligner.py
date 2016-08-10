@@ -15,8 +15,8 @@ class Perfect_Match_Aligner(Aligner):
 
         self.template_sequence = template.sequence
         self.variant_sequence_quality_threshold = \
-            variant_sequence_quality_threshold
-        self.mismatch_quality_threshold = mismatch_quality_threshold
+            int(variant_sequence_quality_threshold)
+        self.mismatch_quality_threshold = int(mismatch_quality_threshold)
         template_mismatches = 0
         variant_quality_mismatches = 0
         variant_nucleotide_mismatches = 0
@@ -42,8 +42,7 @@ class Perfect_Match_Aligner(Aligner):
 
                 if line_count % 4 == 1:
                     if (line_count / 4) % output_frequency == 0:
-                        print("Aligned " + str(line_count / 4) + \
-                            " sequence(s)")
+                        self.update_num_sequences_aligned(num_sequences)
                     sequence = line
 
                 elif line_count % 4 == 3:
@@ -77,7 +76,7 @@ class Perfect_Match_Aligner(Aligner):
         statistics = {}
         
         statistics["Number of Sequences"] = num_sequences
-        statistics["Perfect Match Alignment Rate"] = float(1.0-float(mismatched_sequences)/float(num_sequences))
+        statistics["Alignment rate"] = float(1.0-float(mismatched_sequences)/float(num_sequences))
         statistics["Template Mismatch Failure Rate"] = float(template_mismatches)/float(num_sequences)
         statistics["Variant Quality Failure Rate"] = float(variant_quality_mismatches)/float(num_sequences)
         statistics["Variant Nucleotide Mismatch Rate"] = float(variant_nucleotide_mismatches)/float(num_sequences)
@@ -104,7 +103,7 @@ class Perfect_Match_Aligner(Aligner):
             # Case 2: the template is an N, so this is part of our variant sequence
             elif self.template_sequence[template_idx] == 'N':
 
-                if quality_score[template_idx] < self.variant_sequence_quality_threshold:
+                if quality_score[template_idx] < int(self.variant_sequence_quality_threshold):
                     return False, False, 2
 
                 extracted_sequence.append(fastq_line[template_idx])
