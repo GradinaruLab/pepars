@@ -10,11 +10,9 @@ class Aligner(object):
     def align(self, alignment):
 
         Aligner.validate_alignment(alignment)
-
         print('Aligning libraries using ' + alignment.method)
 
         for library_id, template_id in alignment.library_templates.items():
-
             library = db.get_library_by_id(library_id)
             template = db.get_template_by_id(template_id)
 
@@ -32,7 +30,6 @@ class Aligner(object):
             sequence_index = 0
 
             sequence_uuid_counts = {}
-
             if len(uuids) > 0:
                 for sequence_index in range(0, len(sequences)):
                     if (sequences[sequence_index], uuids[sequence_index]) not \
