@@ -44,12 +44,14 @@ class heatmap:
  		self.stop = None
 
 	#Plots data according to 
-	def normalized_sequence_counts(self, file, by_amino_acid = True, count_threshold = 10, filter_invalid = True):
+	def normalized_sequence_counts(self, library, by_amino_acid = True,
+		count_threshold = 10, filter_invalid = True):
 
 		# TODO: Update to use new Sequence Library format (accepts library instead of file)
 #		get sequencedata
-		slib = Sequence_Library(file);
-		slib_count = slib.get_sequence_counts(by_amino_acid=by_amino_acid, count_threshold=count_threshold, filter_invalid=filter_invalid)
+		slib = Sequence_Library(library);
+		slib_count = slib.get_sequence_counts(by_amino_acid=by_amino_acid,
+			count_threshold=count_threshold, filter_invalid=filter_invalid)
 
 		sequence_matrix = []
 		sequence_counts = []
@@ -59,8 +61,8 @@ class heatmap:
 		
 		sequence_matrix = np.array(sequence_matrix)
 
-#		hash different values of amino acids
-#		SORT!
+		# hash different values of amino acids
+		# SORT!
 		acid_labels = {}
 		acid_counts = {}
 		for i, acid in enumerate(sorted(set(gencode.values()))):
@@ -69,25 +71,25 @@ class heatmap:
 
 		acids, positions = sequence_matrix.shape
 
-#		biased_counts holds the counts for each amino acid for each position before normalization
+		# biased_counts holds the counts for each amino acid for each position before normalization
 		biased_counts = []
 
 		for position in range(positions):
-#			aminos is a column and represents the amino acids in position 'position'
+			# aminos is a column and represents the amino acids in position 'position'
 			aminos = sequence_matrix[:,position] #column-wise
 			row = [0 for acid in acid_labels]
 
-#			note that aminos and sequence_counts have the same indices
+			# note that aminos and sequence_counts have the same indices
 			for sequence, amino in enumerate(aminos):
 				if amino in acid_labels:
 					row[acid_labels[amino]] += sequence_counts[sequence]
-#					else: print 'acid: '+'\''+amino+'\''
+					# else: print 'acid: '+'\''+amino+'\''
 			biased_counts.append(row)
 
-#		Prepare the weight matrix
+		# Prepare the weight matrix
 		weights = np.eye(len(acid_labels))
 		for acid, count in acid_counts.iteritems():
-#			get position of current acid in our enumeration			
+			# get position of current acid in our enumeration			
 			i = acid_labels[acid]
 			weights[i, i] = 1.0/count
 		
@@ -114,14 +116,14 @@ class heatmap:
 		'''
 		self.midpoint = 1.0*np.sum(sequence_counts)/(32.0*(np.amax(normalized_data)))
 		'''
-		#heatmap(dataset, x_axis = x_axes, y_axis= y_axes, title = titles, midpoints = midpoints)
-		#return dataset
+	# 	heatmap(dataset, x_axis = x_axes, y_axis= y_axes, title = titles, midpoints = midpoints)
+	# 	return dataset
 
-	#Pre:	heatmap_objects is a heatmap object or a list of such objects
-	#		Show is either Boolean or None.
+	# Pre:	heatmap_objects is a heatmap object or a list of such objects
+	# 		Show is either Boolean or None.
 
-	#Post:	The function has produced a heatmap for each 2D heatmap.
-	#		If show is True, a heatmap has been drawn for each heatmap object, otherwise not
+	# Post:	The function has produced a heatmap for each 2D heatmap.
+	# 		If show is True, a heatmap has been drawn for each heatmap object, otherwise not
 
 	@staticmethod
 	def draw(heatmap_objects, show=True):
