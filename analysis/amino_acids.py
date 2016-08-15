@@ -61,7 +61,6 @@ def plot_amino_acid_property_distribution_from_matrix(matrix_of_interest,propert
     plt.subplots_adjust(hspace=0.5)
     plt.xlabel(property_name_string)
     plt.title(plot_title)
-    plt.show(block=False)
 
 def plot_amino_acid_property_distribution_from_array(array_of_interest_high,array_of_interest_low,property_name_string,plot_title_high,plot_title_low):
     # Determine minimum and maximum for the axis 
