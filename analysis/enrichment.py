@@ -1,7 +1,10 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
+from utils.AminoAcid import AminoAcid
 
 def split_by_enrichment(sequence_enrichments, enrichment_threshold):
+
+    num_positions = len(sequence_enrichments.keys()[0])
 
     above_enrichment_sequences = []
     below_enrichment_sequences = []
