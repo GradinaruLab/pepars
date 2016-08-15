@@ -1,4 +1,3 @@
-
 def compare_to(val1, val2):
 	
 	if val1<val2:
