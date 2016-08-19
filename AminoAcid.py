@@ -1,4 +1,7 @@
 
+from Bio.SeqUtils.ProtParam import ProteinAnalysis
+from analysis.Sequence_Library import Sequence_Library
+
 def compare_to(val1, val2):
 	
 	if val1<val2:
@@ -13,7 +16,9 @@ class AminoAcid:
 
 
 		self.is_valid = True
-		 
+		self.molecular_weight = ProteinAnalysis(amino_acid).molecular_weight()
+		self.hydrophobicity = ProteinAnalysis(amino_acid).gravy()
+
 		if amino_acid == 'R':
 			self.is_valid = True
 			self.amino_acid_letter = 'R'
@@ -23,7 +28,6 @@ class AminoAcid:
 			self.solubility = 71.8
 			self.phosphorylation = 0.00
 			self.average_flexibility_idx = 0.530
-			self.hydrophobicity = -14.00
 			self.ionic_bond = 1.00
 			self.hydrogen_bond = 1.00
 
@@ -37,7 +41,6 @@ class AminoAcid:
 			self.solubility = 2.4
 			self.phosphorylation = 0.00
 			self.average_flexibility_idx = 0.46
-			self.hydrophobicity = -28.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 1.00
 
@@ -50,7 +53,6 @@ class AminoAcid:
 			self.solubility = 0.42
 			self.phosphorylation = 0.00
 			self.average_flexibility_idx = 0.510
-			self.hydrophobicity = -55.00
 			self.ionic_bond = 1.00
 			self.hydrogen_bond = 1.00
 
@@ -63,7 +65,6 @@ class AminoAcid:
 			self.solubility = 0.72
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.500
-			self.hydrophobicity = -31.00
 			self.ionic_bond = 1.00
 			self.hydrogen_bond = 1.00
 
@@ -76,7 +77,6 @@ class AminoAcid:
 			self.solubility = 2.6
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.490
-			self.hydrophobicity = -10.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 1.00
 
@@ -89,7 +89,6 @@ class AminoAcid:
 			self.solubility = 0.0
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.470
-			self.hydrophobicity = -23.00
 			self.ionic_bond = 1.00
 			self.hydrogen_bond = 1.00
 
@@ -102,7 +101,6 @@ class AminoAcid:
 			self.solubility = 36.2
 			self.phosphorylation = 1.00
 			self.average_flexibility_idx = 0.510
-			self.hydrophobicity = -5.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 1.00
 
@@ -115,7 +113,6 @@ class AminoAcid:
 			self.solubility = 0.0
 			self.phosphorylation = 1.00
 			self.average_flexibility_idx = 0.440
-			self.hydrophobicity = 13.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 1.00
 
@@ -128,7 +125,6 @@ class AminoAcid:
 			self.solubility = 0.0
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.350
-			self.hydrophobicity = 49.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 0.00
 
@@ -141,7 +137,6 @@ class AminoAcid:
 			self.solubility = 4.19
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.320
-			self.hydrophobicity = 8.00
 			self.ionic_bond = 1.00
 			self.hydrogen_bond = 1.00
 
@@ -154,7 +149,6 @@ class AminoAcid:
 			self.solubility = 5.14
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.300
-			self.hydrophobicity = 74.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 0.00
 
@@ -168,7 +162,6 @@ class AminoAcid:
 			self.solubility = 15.8
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.360
-			self.hydrophobicity = 41.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 0.00
 
@@ -181,7 +174,6 @@ class AminoAcid:
 			self.solubility = 5.6
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.390
-			self.hydrophobicity = 76.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 0.00
 
@@ -194,7 +186,6 @@ class AminoAcid:
 			self.solubility = 22.5
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.540
-			self.hydrophobicity = 0.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 0.00
 
@@ -207,7 +198,6 @@ class AminoAcid:
 			self.solubility = 3.36
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.460
-			self.hydrophobicity = 99.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 0.00
 
@@ -220,7 +210,6 @@ class AminoAcid:
 			self.solubility = 2.37
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.370
-			self.hydrophobicity = 97.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 0.00
 
@@ -233,7 +222,6 @@ class AminoAcid:
 			self.solubility = 2.7
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.310
-			self.hydrophobicity = 100.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 0.00
 
@@ -246,7 +234,6 @@ class AminoAcid:
 			self.solubility = 1.54
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.510
-			self.hydrophobicity = -46.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 0.00
 
@@ -259,7 +246,6 @@ class AminoAcid:
 			self.solubility = 1.00
 			self.phosphorylation = 0.0
 			self.average_flexibility_idx = 0.310
-			self.hydrophobicity = 97.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 1.00
 
@@ -272,7 +258,6 @@ class AminoAcid:
 			self.solubility = 0.038
 			self.phosphorylation = 1.00
 			self.average_flexibility_idx = 0.420
-			self.hydrophobicity = 63.00
 			self.ionic_bond = 0.00
 			self.hydrogen_bond = 1.00
 
