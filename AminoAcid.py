@@ -1,6 +1,6 @@
-
 from Bio.SeqUtils.ProtParam import ProteinAnalysis
 from analysis.Sequence_Library import Sequence_Library
+
 
 def compare_to(val1, val2):
 	

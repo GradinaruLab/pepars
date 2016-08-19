@@ -19,7 +19,7 @@ import csv
 def get_amino_factor(acid, gencode):
 	count=0
 	for key, value in gencode.iteritems():
-		if(value.lower()==acid.lower() and (key[2].lower()=='t' or key[2].lower()=='g')):
+		if(value.lower()==acid.lower() and key[2].lower() in ['t', 'g']):
 			count+=1
 	return count
 
@@ -34,7 +34,8 @@ gencode = {
 		'TAC':'Y', 'TAT':'Y', 'TAA':'#', 'TAG':'#', 'TGC':'C', 'TGT':'C', 'TGA':'#', 'TGG':'W'}
 
 class heatmap:
-	def __init__(self, data = None, x_labels = None, y_labels = None, title = None):
+	def __init__(self, data = None, x_labels = None, y_labels = None,
+		title = None, constant_scale = False):
 		self.data = np.array(data)
 		self.x_labels = x_labels
 		self.y_labels = y_labels
@@ -42,14 +43,17 @@ class heatmap:
 		self.start = None
  		self.midpoint = None
  		self.stop = None
+ 		self.constant_scale = constant_scale
 
 	#Plots data according to 
-	def normalized_sequence_counts(self, file, by_amino_acid = True, count_threshold = 10, filter_invalid = True):
+	def normalized_sequence_counts(self, library, by_amino_acid = True,
+		count_threshold = 10, filter_invalid = True, constant_scale = False):
 
 		# TODO: Update to use new Sequence Library format (accepts library instead of file)
 #		get sequencedata
-		slib = Sequence_Library(file);
-		slib_count = slib.get_sequence_counts(by_amino_acid=by_amino_acid, count_threshold=count_threshold, filter_invalid=filter_invalid)
+		slib = Sequence_Library(library);
+		slib_count = slib.get_sequence_counts(by_amino_acid=by_amino_acid,
+			count_threshold=count_threshold, filter_invalid=filter_invalid)
 
 		sequence_matrix = []
 		sequence_counts = []
@@ -59,8 +63,8 @@ class heatmap:
 		
 		sequence_matrix = np.array(sequence_matrix)
 
-#		hash different values of amino acids
-#		SORT!
+		# hash different values of amino acids
+		# SORT!
 		acid_labels = {}
 		acid_counts = {}
 		for i, acid in enumerate(sorted(set(gencode.values()))):
@@ -69,62 +73,66 @@ class heatmap:
 
 		acids, positions = sequence_matrix.shape
 
-#		biased_counts holds the counts for each amino acid for each position before normalization
+		# biased_counts holds the counts for each amino acid for each position before normalization
 		biased_counts = []
 
 		for position in range(positions):
-#			aminos is a column and represents the amino acids in position 'position'
+			# aminos is a column and represents the amino acids in position 'position'
 			aminos = sequence_matrix[:,position] #column-wise
 			row = [0 for acid in acid_labels]
 
-#			note that aminos and sequence_counts have the same indices
+			# note that aminos and sequence_counts have the same indices
 			for sequence, amino in enumerate(aminos):
 				if amino in acid_labels:
 					row[acid_labels[amino]] += sequence_counts[sequence]
-#					else: print 'acid: '+'\''+amino+'\''
+					# else: print 'acid: '+'\''+amino+'\''
 			biased_counts.append(row)
 
-#		Prepare the weight matrix
+		# Prepare the weight matrix
 		weights = np.eye(len(acid_labels))
 		for acid, count in acid_counts.iteritems():
-#			get position of current acid in our enumeration			
+			# get position of current acid in our enumeration			
 			i = acid_labels[acid]
 			weights[i, i] = 1.0/count
-		
-		'''print acid_labels
-		print acid_counts
-		for w in weights:
-			print w
-		'''
+
 		self.x_labels = ['' for i in acid_labels]
 		for acid, index in acid_labels.iteritems():
 			self.x_labels[index]=acid
 
-		self.y_labels = range(1,1+positions)
+		self.y_labels = range(1,1+positions)[::-1]
 		self.data = np.dot(biased_counts, weights)/sum(sequence_counts)
-		self.midpoint = 1.0/(32.0*np.amax(self.data)) if np.amax(self.data)>1.0/32.0 else 1.0
-		self.start=np.amin(self.data)
-		self.stop=1.0
-		max=np.amax(self.data)
-		if max<1.0/32.0:
-			self.midpoint = 1.0
-			self.stop=max*32.0
+		if constant_scale:
+			self.start = 0.0
+			self.midpoint = 1.0/32.0
 
+		else:
+			self.midpoint = 1.0/(32.0*np.amax(self.data)) if np.amax(self.data)>1.0/32.0 else 1.0
+			self.start = np.amin(self.data)
+		self.constant_scale = constant_scale
+		self.stop = 1.0
+		max = np.amax(self.data)
+		if max < 1.0 / 32.0:
+			self.midpoint = 1.0
+			self.stop = max * 32.0
+
+		for row in self.data:
+			print row
+		print self.start, self.midpoint, self.stop
 		return self
 		'''
 		self.midpoint = 1.0*np.sum(sequence_counts)/(32.0*(np.amax(normalized_data)))
 		'''
-		#heatmap(dataset, x_axis = x_axes, y_axis= y_axes, title = titles, midpoints = midpoints)
-		#return dataset
+	# 	heatmap(dataset, x_axis = x_axes, y_axis= y_axes, title = titles, midpoints = midpoints)
+	# 	return dataset
 
-	#Pre:	heatmap_objects is a heatmap object or a list of such objects
-	#		Show is either Boolean or None.
+	# Pre:	heatmap_objects is a heatmap object or a list of such objects
+	# 		Show is either Boolean or None.
 
-	#Post:	The function has produced a heatmap for each 2D heatmap.
-	#		If show is True, a heatmap has been drawn for each heatmap object, otherwise not
+	# Post:	The function has produced a heatmap for each 2D heatmap.
+	# 		If show is True, a heatmap has been drawn for each heatmap object, otherwise not
 
 	@staticmethod
-	def draw(heatmap_objects, show=True):
+	def draw(heatmap_objects, show=True, annot=False):
 		if not type(heatmap_objects).__name__=='list':
 			heatmap_objects=[heatmap_objects]
 		for heatmap_object in heatmap_objects:
@@ -140,16 +148,22 @@ class heatmap:
 			sns.set(font_scale=1.2)
 			sns.set_style({"savefig.dpi": 100})
 
-			
 			start = heatmap_object.start if 0.0<=heatmap_object.start<=1.0 else 0.0
 			stop =  heatmap_object.stop if 0.0<=heatmap_object.stop<=1.0 else 1.0
 
-			ax = sns.heatmap(data,
-				cmap=heatmap.shiftedColorMap(plt.cm.coolwarm,
+			heatmap_kwargs = {
+				'cmap':heatmap.shiftedColorMap(plt.cm.coolwarm,
 					start=start,
 					midpoint = midpoint,
 					stop = stop),
-				linewidths=.1)
+				'linewidths':.1,
+				'annot':annot
+			}
+
+			if heatmap_object.constant_scale:
+				heatmap_kwargs['vmin'] = 0.0
+				heatmap_kwargs['vmax'] = 1.0
+			ax = sns.heatmap(data,**heatmap_kwargs)
 			fig = ax.get_figure()
 
 
@@ -158,7 +172,7 @@ class heatmap:
 			ax.set_yticks(np.arange(data.shape[0]) + 0.5, minor = False)
 
 			if(row_labels):
-				ax.set_yticklabels(row_labels, minor = False,rotation=0)
+				ax.set_yticklabels(row_labels, minor = False, rotation=0)
 			if(column_labels):
 				ax.set_xticklabels(column_labels, minor = False)
 
@@ -170,7 +184,7 @@ class heatmap:
 			plt.show()
 		
 	@staticmethod
-	def shiftedColorMap(cmap, start=0, midpoint=0.5, stop=1.0, name='shiftedcmap'):
+	def shiftedColorMap(cmap, start=0.0, midpoint=0.5, stop=1.0, name='shiftedcmap'):
 		'''
 		returns a new colormap with its neutral value(center) at midpoint
 		0.0<=start<midpoint<stop<=1.0
@@ -195,6 +209,7 @@ class heatmap:
 		elif midpoint >= stop:
 			shift_index = np.linspace(0.0, 1.0, 128, endpoint=True)
 		for reg, shift in zip(reg_index, shift_index):
+
 			r, g, b, a = cmap(reg)
 
 			colordict['red'].append((shift, r, r))
