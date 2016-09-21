@@ -12,6 +12,24 @@ gencode = {
 	'GAC':'D', 'GAT':'D', 'GAA':'E', 'GAG':'E', 'GGA':'G', 'GGC':'G', 'GGG':'G', 'GGT':'G',
 	'TCA':'S', 'TCC':'S', 'TCG':'S', 'TCT':'S', 'TTC':'F', 'TTT':'F', 'TTA':'L', 'TTG':'L',
 	'TAC':'Y', 'TAT':'Y', 'TAA':'#', 'TAG':'#', 'TGC':'C', 'TGT':'C', 'TGA':'#', 'TGG':'W'}
+
+IUPAC = {
+	'A':'A',
+	'C':'C',
+	'G':'G',
+	'T':'T',
+	'M':'AC',
+	'R':'AG',
+	'W':'AT',
+	'S':'CG',
+	'Y':'CT',
+	'K':'GT',
+	'V':'ACG',
+	'H':'ACT',
+	'D':'AGT',
+	'B':'CGT',
+	'N':'ACGT'
+}
  
 # a function to translate a single codon
 def translate_codon(codon):
