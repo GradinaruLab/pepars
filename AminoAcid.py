@@ -11,9 +11,14 @@ def compare_to(val1, val2):
 	return 0
 
 class AminoAcid:
+
+	properties = ['charge','hydropathy','solubility','phosphorylation','average_flexibility_idx','ionic_bond','molecular_weight','hydrophobicity',]
+
 	
 	def __init__(self,amino_acid):
 
+
+	self.properties = {}
 
 		self.is_valid = True
 
@@ -23,255 +28,255 @@ class AminoAcid:
 			self.is_valid = True
 			self.amino_acid_letter = 'R'
 			self.amino_acid_name = 'Arginine'
-			self.charge = 1.00
-			self.hydropathy = 'hydrophilic'
-			self.solubility = 71.8
-			self.phosphorylation = 0.00
-			self.average_flexibility_idx = 0.530
-			self.ionic_bond = 1.00
-			self.hydrogen_bond = 1.00
+			self.properties['charge'] = 1.00
+			self.properties['hydropathy'] = 1
+			self.properties['solubility'] = 71.8
+			self.properties['phosphorylation'] = 0.00
+			self.properties['average_flexibility_idx'] = 0.530
+			self.properties['ionic_bond'] = 1.00
+			self.properties['hydrogen_bond'] = 1.00
 
 
 		elif amino_acid== 'N':
 			self.is_valid = True
 			self.amino_acid_letter = 'N'
 			self.amino_acid_name = 'Asparagine'
-			self.charge = 0.00
-			self.hydropathy = 'hydrophilic'
-			self.solubility = 2.4
-			self.phosphorylation = 0.00
-			self.average_flexibility_idx = 0.46
-			self.ionic_bond = 0.00
-			self.hydrogen_bond = 1.00
+			self.properties['charge'] = 0.00
+			self.properties['hydropathy'] = 1
+			self.properties['solubility'] = 2.4
+			self.properties['phosphorylation'] = 0.00
+			self.properties['average_flexibility_idx'] = 0.46
+			self.properties['ionic_bond'] = 0.00
+			self.properties['hydrogen_bond'] = 1.00
 
 		elif amino_acid == 'D':
 			self.is_valid = True
 			self.amino_acid_letter = 'D'
 			self.amino_acid_name = 'Aspartate'
-			self.charge = -1.00
-			self.hydropathy = 'hydrophilic'
-			self.solubility = 0.42
-			self.phosphorylation = 0.00
-			self.average_flexibility_idx = 0.510
-			self.ionic_bond = 1.00
-			self.hydrogen_bond = 1.00
+			self.properties['charge'] = -1.00
+			self.properties['hydropathy'] = 1
+			self.properties['solubility'] = 0.42
+			self.properties['phosphorylation'] = 0.00
+			self.properties['average_flexibility_idx'] = 0.510
+			self.properties['ionic_bond'] = 1.00
+			self.properties['hydrogen_bond'] = 1.00
 
 		elif amino_acid == 'E':
 			self.is_valid = True
 			self.amino_acid_letter = 'E'
 			self.amino_acid_name = 'Glutamate'
-			self.charge = -1.00
-			self.hydropathy = 'hydrophilic'
-			self.solubility = 0.72
-			self.phosphorylation = 0.0
-			self.average_flexibility_idx = 0.500
-			self.ionic_bond = 1.00
-			self.hydrogen_bond = 1.00
+			self.properties['charge'] = -1.00
+			self.properties['hydropathy'] = 1
+			self.properties['solubility'] = 0.72
+			self.properties['phosphorylation'] = 0.0
+			self.properties['average_flexibility_idx'] = 0.500
+			self.properties['ionic_bond'] = 1.00
+			self.properties['hydrogen_bond'] = 1.00
 
 		elif amino_acid== 'Q':
 			self.is_valid = True
 			self.amino_acid_letter = 'Q'
 			self.amino_acid_name = 'Glutamine'
-			self.charge = 0.00
-			self.hydropathy = 'hydrophilic'
-			self.solubility = 2.6
-			self.phosphorylation = 0.0
-			self.average_flexibility_idx = 0.490
-			self.ionic_bond = 0.00
-			self.hydrogen_bond = 1.00
+			self.properties['charge'] = 0.00
+			self.properties['hydropathy'] = 1
+			self.properties['solubility'] = 2.6
+			self.properties['phosphorylation'] = 0.0
+			self.properties['average_flexibility_idx'] = 0.490
+			self.properties['ionic_bond'] = 0.00
+			self.properties['hydrogen_bond'] = 1.00
 
 		elif amino_acid== 'K':
 			self.is_valid = True
 			self.amino_acid_letter = 'K'
 			self.amino_acid_name = 'Lysine'
-			self.charge = 1.00
-			self.hydropathy = 'hydrophilic'
-			self.solubility = 0.0
-			self.phosphorylation = 0.0
-			self.average_flexibility_idx = 0.470
-			self.ionic_bond = 1.00
-			self.hydrogen_bond = 1.00
+			self.properties['charge'] = 1.00
+			self.properties['hydropathy'] = 1
+			self.properties['solubility'] = 0.0
+			self.properties['phosphorylation'] = 0.0
+			self.properties['average_flexibility_idx'] = 0.470
+			self.properties['ionic_bond'] = 1.00
+			self.properties['hydrogen_bond'] = 1.00
 
 		elif amino_acid== 'S':
 			self.is_valid = True
 			self.amino_acid_letter = 'S'
 			self.amino_acid_name = 'Serine'
-			self.charge = -1.00
-			self.hydropathy = 'hydrophilic'
-			self.solubility = 36.2
-			self.phosphorylation = 1.00
-			self.average_flexibility_idx = 0.510
-			self.ionic_bond = 0.00
-			self.hydrogen_bond = 1.00
+			self.properties['charge'] = -1.00
+			self.properties['hydropathy'] = 1
+			self.properties['solubility'] = 36.2
+			self.properties['phosphorylation'] = 1.00
+			self.properties['average_flexibility_idx'] = 0.510
+			self.properties['ionic_bond'] = 0.00
+			self.properties['hydrogen_bond'] = 1.00
 
 		elif amino_acid== 'T':
 			self.is_valid = True
 			self.amino_acid_letter = 'T'
 			self.amino_acid_name = 'Threonine'
-			self.charge = -1.00
-			self.hydropathy = 'hydrophilic'
-			self.solubility = 0.0
-			self.phosphorylation = 1.00
-			self.average_flexibility_idx = 0.440
-			self.ionic_bond = 0.00
-			self.hydrogen_bond = 1.00
+			self.properties['charge'] = -1.00
+			self.properties['hydropathy'] = 1
+			self.properties['solubility'] = 0.0
+			self.properties['phosphorylation'] = 1.00
+			self.properties['average_flexibility_idx'] = 0.440
+			self.properties['ionic_bond'] = 0.00
+			self.properties['hydrogen_bond'] = 1.00
 
 		elif amino_acid== 'C':
 			self.is_valid = True
 			self.amino_acid_letter = 'C'
 			self.amino_acid_name = 'Cysteine'
-			self.charge = -1.00
-			self.hydropathy = 'moderate'
-			self.solubility = 0.0
-			self.phosphorylation = 0.0
-			self.average_flexibility_idx = 0.350
-			self.ionic_bond = 0.00
-			self.hydrogen_bond = 0.00
+			self.properties['charge'] = -1.00
+			self.properties['hydropathy'] = 0
+			self.properties['solubility'] = 0.0
+			self.properties['phosphorylation'] = 0.0
+			self.properties['average_flexibility_idx'] = 0.350
+			self.properties['ionic_bond'] = 0.00
+			self.properties['hydrogen_bond'] = 0.00
 
 		elif amino_acid== 'H':
 			self.is_valid = True
 			self.amino_acid_letter = 'H'
 			self.amino_acid_name = 'Histidine'
-			self.charge = 1.00
-			self.hydropathy = 'moderate'
-			self.solubility = 4.19
-			self.phosphorylation = 0.0
-			self.average_flexibility_idx = 0.320
-			self.ionic_bond = 1.00
-			self.hydrogen_bond = 1.00
+			self.properties['charge'] = 1.00
+			self.properties['hydropathy'] = 0
+			self.properties['solubility'] = 4.19
+			self.properties['phosphorylation'] = 0.0
+			self.properties['average_flexibility_idx'] = 0.320
+			self.properties['ionic_bond'] = 1.00
+			self.properties['hydrogen_bond'] = 1.00
 
 		elif amino_acid== 'M':
 			self.is_valid = True
 			self.amino_acid_letter = 'M'
 			self.amino_acid_name = 'Methionine'
-			self.charge = 0.00
-			self.hydropathy = 'moderate'
-			self.solubility = 5.14
-			self.phosphorylation = 0.0
-			self.average_flexibility_idx = 0.300
-			self.ionic_bond = 0.00
-			self.hydrogen_bond = 0.00
+			self.properties['charge'] = 0.00
+			self.properties['hydropathy'] = 0
+			self.properties['solubility'] = 5.14
+			self.properties['phosphorylation'] = 0.0
+			self.properties['average_flexibility_idx'] = 0.300
+			self.properties['ionic_bond'] = 0.00
+			self.properties['hydrogen_bond'] = 0.00
 
 
 		elif amino_acid== 'A':
 			self.is_valid = True
 			self.amino_acid_letter = 'A'
 			self.amino_acid_name = 'Alanine'
-			self.charge = -1.00
-			self.hydropathy = 'hydrophobic'
-			self.solubility = 15.8
-			self.phosphorylation = 0.0
-			self.average_flexibility_idx = 0.360
-			self.ionic_bond = 0.00
-			self.hydrogen_bond = 0.00
+			self.properties['charge'] = -1.00
+			self.properties['hydropathy'] = -1
+			self.properties['solubility'] = 15.8
+			self.properties['phosphorylation'] = 0.0
+			self.properties['average_flexibility_idx'] = 0.360
+			self.properties['ionic_bond'] = 0.00
+			self.properties['hydrogen_bond'] = 0.00
 
 		elif amino_acid== 'V':
 			self.is_valid = True
 			self.amino_acid_letter = 'V'
 			self.amino_acid_name = 'Valine'
-			self.charge = -1.00
-			self.hydropathy = 'hydrophobic'
-			self.solubility = 5.6
-			self.phosphorylation = 0.0
-			self.average_flexibility_idx = 0.390
-			self.ionic_bond = 0.00
-			self.hydrogen_bond = 0.00
+			self.properties['charge'] = -1.00
+			self.properties['hydropathy'] = -1
+			self.properties['solubility'] = 5.6
+			self.properties['phosphorylation'] = 0.0
+			self.properties['average_flexibility_idx'] = 0.390
+			self.properties['ionic_bond'] = 0.00
+			self.properties['hydrogen_bond'] = 0.00
 
 		elif amino_acid== 'G':
 			self.is_valid = True
 			self.amino_acid_letter = 'G'
 			self.amino_acid_name = 'Glycine'
-			self.charge = -1.00
-			self.hydropathy = 'hydrophobic'
-			self.solubility = 22.5
-			self.phosphorylation = 0.0
-			self.average_flexibility_idx = 0.540
-			self.ionic_bond = 0.00
-			self.hydrogen_bond = 0.00
+			self.properties['charge'] = -1.00
+			self.properties['hydropathy'] = -1
+			self.properties['solubility'] = 22.5
+			self.properties['phosphorylation'] = 0.0
+			self.properties['average_flexibility_idx'] = 0.540
+			self.properties['ionic_bond'] = 0.00
+			self.properties['hydrogen_bond'] = 0.00
 
 		elif amino_acid== 'I':
 			self.is_valid = True
 			self.amino_acid_letter = 'I'
 			self.amino_acid_name = 'Isoleucine'
-			self.charge = -1.00
-			self.hydropathy = 'hydrophobic'
-			self.solubility = 3.36
-			self.phosphorylation = 0.0
-			self.average_flexibility_idx = 0.460
-			self.ionic_bond = 0.00
-			self.hydrogen_bond = 0.00
+			self.properties['charge'] = -1.00
+			self.properties['hydropathy'] = -1
+			self.properties['solubility'] = 3.36
+			self.properties['phosphorylation'] = 0.0
+			self.properties['average_flexibility_idx'] = 0.460
+			self.properties['ionic_bond'] = 0.00
+			self.properties['hydrogen_bond'] = 0.00
 
 		elif amino_acid== 'L':
 			self.is_valid = True
 			self.amino_acid_letter = 'L'
 			self.amino_acid_name = 'Leucine'
-			self.charge = -1.00
-			self.hydropathy = 'hydrophobic'
-			self.solubility = 2.37
-			self.phosphorylation = 0.0
-			self.average_flexibility_idx = 0.370
-			self.ionic_bond = 0.00
-			self.hydrogen_bond = 0.00
+			self.properties['charge'] = -1.00
+			self.properties['hydropathy'] = -1
+			self.properties['solubility'] = 2.37
+			self.properties['phosphorylation'] = 0.0
+			self.properties['average_flexibility_idx'] = 0.370
+			self.properties['ionic_bond'] = 0.00
+			self.properties['hydrogen_bond'] = 0.00
 
 		elif amino_acid== 'F':
 			self.is_valid = True
 			self.amino_acid_letter = 'F'
 			self.amino_acid_name = 'Phenylalanine'
-			self.charge = -1.00
-			self.hydropathy = 'hydrophobic'
-			self.solubility = 2.7
-			self.phosphorylation = 0.0
-			self.average_flexibility_idx = 0.310
-			self.ionic_bond = 0.00
-			self.hydrogen_bond = 0.00
+			self.properties['charge'] = -1.00
+			self.properties['hydropathy'] = -1
+			self.properties['solubility'] = 2.7
+			self.properties['phosphorylation'] = 0.0
+			self.properties['average_flexibility_idx'] = 0.310
+			self.properties['ionic_bond'] = 0.00
+			self.properties['hydrogen_bond'] = 0.00
 
 		elif amino_acid=='P':
 			self.is_valid = True
 			self.amino_acid_letter = 'P'
 			self.amino_acid_name = 'Proline'
-			self.charge = -1.00
-			self.hydropathy = 'hydrophobic'
-			self.solubility = 1.54
-			self.phosphorylation = 0.0
-			self.average_flexibility_idx = 0.510
-			self.ionic_bond = 0.00
-			self.hydrogen_bond = 0.00
+			self.properties['charge'] = -1.00
+			self.properties['hydropathy'] = -1
+			self.properties['solubility'] = 1.54
+			self.properties['phosphorylation'] = 0.0
+			self.properties['average_flexibility_idx'] = 0.510
+			self.properties['ionic_bond'] = 0.00
+			self.properties['hydrogen_bond'] = 0.00
 
 		elif amino_acid== 'W':
 			self.is_valid = True
 			self.amino_acid_letter = 'W'
 			self.amino_acid_name = 'Tryptophan'
-			self.charge = -1.00
-			self.hydropathy = 'hydrophobic'
-			self.solubility = 1.00
-			self.phosphorylation = 0.0
-			self.average_flexibility_idx = 0.310
-			self.ionic_bond = 0.00
-			self.hydrogen_bond = 1.00
+			self.properties['charge'] = -1.00
+			self.properties['hydropathy'] = -1
+			self.properties['solubility'] = 1.00
+			self.properties['phosphorylation'] = 0.0
+			self.properties['average_flexibility_idx'] = 0.310
+			self.properties['ionic_bond'] = 0.00
+			self.properties['hydrogen_bond'] = 1.00
 
 		elif amino_acid== 'Y':
 			self.is_valid = True
 			self.amino_acid_letter = 'Y'
 			self.amino_acid_name = 'Tyrosine'
-			self.charge = -1.00
-			self.hydropathy = 'hydrophobic'
-			self.solubility = 0.038
-			self.phosphorylation = 1.00
-			self.average_flexibility_idx = 0.420
-			self.ionic_bond = 0.00
-			self.hydrogen_bond = 1.00
+			self.properties['charge'] = -1.00
+			self.properties['hydropathy'] = -1
+			self.properties['solubility'] = 0.038
+			self.properties['phosphorylation'] = 1.00
+			self.properties['average_flexibility_idx'] = 0.420
+			self.properties['ionic_bond'] = 0.00
+			self.properties['hydrogen_bond'] = 1.00
 
 		else:
 			self.is_valid = False
 			print "Invalid Amino Acid "+amino_acid
 
 		if (self.is_valid):
-			self.molecular_weight = ProteinAnalysis(str(amino_acid)).molecular_weight()
-			self.hydrophobicity = ProteinAnalysis(str(amino_acid)).gravy()
+			self.properties['molecular_weight'] = ProteinAnalysis(str(amino_acid)).molecular_weight()
+			self.properties['hydrophobicity'] = ProteinAnalysis(str(amino_acid)).gravy()
 			secondary_struct = ProteinAnalysis(str(amino_acid)).secondary_structure_fraction()
-			self.typically_helix = secondary_struct[0]
-			self.typically_turn = secondary_struct[1]
-			self.typically_sheet = secondary_struct[2]
+			self.properties['typically_helix'] = secondary_struct[0]
+			self.properties['typically_turn'] = secondary_struct[1]
+			self.properties['typically_sheet'] = secondary_struct[2]
 
 
 	
