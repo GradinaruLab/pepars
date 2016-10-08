@@ -10,7 +10,6 @@ import seaborn as sns
 from analysis.Sequence_Library import Sequence_Library
 from utils import utils
 from utils import DNA as DNA
-from analysis import ML_analysis
 from fileio import sequence_data_parsing
 import csv
 
