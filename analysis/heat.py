@@ -2,7 +2,7 @@ import glob
 import sys
 import numpy as np
 import os
-from utils.Analysis_Set import Analysis_Set
+from analysis.Analysis_Set import Analysis_Set
 import matplotlib
 import matplotlib.pyplot as plt
 import seaborn as sns

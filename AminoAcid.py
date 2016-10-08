@@ -18,7 +18,7 @@ class AminoAcid:
 	def __init__(self,amino_acid):
 
 
-	self.properties = {}
+	 	self.properties = {}
 
 		self.is_valid = True
 
