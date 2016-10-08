@@ -16,8 +16,8 @@ class AminoAcid:
 
 
 		self.is_valid = True
-		self.molecular_weight = ProteinAnalysis(amino_acid).molecular_weight()
-		self.hydrophobicity = ProteinAnalysis(amino_acid).gravy()
+
+
 
 		if amino_acid == 'R':
 			self.is_valid = True
@@ -264,6 +264,15 @@ class AminoAcid:
 		else:
 			self.is_valid = False
 			print "Invalid Amino Acid "+amino_acid
+
+		if (self.is_valid):
+			self.molecular_weight = ProteinAnalysis(str(amino_acid)).molecular_weight()
+			self.hydrophobicity = ProteinAnalysis(str(amino_acid)).gravy()
+			secondary_struct = ProteinAnalysis(str(amino_acid)).secondary_structure_fraction()
+			self.typically_helix = secondary_struct[0]
+			self.typically_turn = secondary_struct[1]
+			self.typically_sheet = secondary_struct[2]
+
 
 	
 

@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
+import numpy as np
 from utils.AminoAcid import AminoAcid
 
 def split_by_enrichment(sequence_enrichments, enrichment_threshold):
@@ -26,11 +27,22 @@ def split_by_enrichment(sequence_enrichments, enrichment_threshold):
 
     return above_enrichment_sequences, below_enrichment_sequences
 
-def plot_distribution(enrichment_values):
+
+# note: std_dev_above_factor can be negative if the user wants to find a threshold below the mean
+def get_threshold(vector_of_interest,std_dev_above_factor=1):
+    #Calculate the mean and stdev of the enrichment values
+    vector_mean = np.mean(vector_of_interest)
+    standard_dev = np.std(vector_of_interest)
+    threshold = vector_mean + std_dev_above_factor*standard_dev
+    return threshold
+
+
+def plot_distribution(enrichment_values,threshold):
 
     sns.distplot(enrichment_values,bins=100,kde=False,rug=False)
     plt.xlabel('log10(enrichment)')
     plt.ylabel('sequence counts')
+    plt.axvline(threshold)
     plt.show()
 
 sns.set(color_codes=True)

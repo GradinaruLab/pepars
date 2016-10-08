@@ -19,9 +19,9 @@ def generate_matrix_of_interest(enrichment_sequences_array,matrix_property):
             current_amino_acid = AminoAcid(current_sequence[aa_idx])
             if (current_amino_acid.is_valid):
                 if (str(matrix_property) == 'molecular weight'):
-                    matrix_of_interest[idx][aa_idx]=ProteinAnalysis(str(current_amino_acid.amino_acid_letter)).molecular_weight()
+                    matrix_of_interest[idx][aa_idx]=current_amino_acid.molecular_weight
                 elif (str(matrix_property) == 'gravy'):
-                    matrix_of_interest[idx][aa_idx]=ProteinAnalysis(str(current_amino_acid.amino_acid_letter)).gravy()
+                    matrix_of_interest[idx][aa_idx]=current_amino_acid.hydrophobicity
             else:
                 print current_sequence
     return matrix_of_interest
