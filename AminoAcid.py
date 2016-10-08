@@ -20,8 +20,6 @@ class AminoAcid:
 
 		self.is_valid = True
 
-
-
 		if amino_acid == 'R':
 			self.is_valid = True
 			self.amino_acid_letter = 'R'
