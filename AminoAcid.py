@@ -12,7 +12,7 @@ def compare_to(val1, val2):
 
 class AminoAcid:
 
-	properties = ['charge','hydropathy','solubility','phosphorylation','average_flexibility_idx','ionic_bond','molecular_weight','hydrophobicity',]
+	properties = ['charge','hydropathy','solubility','phosphorylation','average_flexibility_idx','ionic_bond','molecular_weight','hydrophobicity','typically_helix','typically_turn','typically_sheet']
 
 	
 	def __init__(self,amino_acid):
