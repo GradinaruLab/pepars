@@ -48,8 +48,9 @@ def parse(id, cigar, seq):
 
 
     row = []
-    for i, (char, num) in enumerate(zip(chars, nums)):
-        num = int(num)
+    for i in range(len(chars)):
+        num = int(nums[i])
+        char = chars[i]
         if len(row) >= len(codons):
             break
         if char=='I' and num == 3:
@@ -111,7 +112,8 @@ for file in files:
     print 'File had', len(variants), '/', len(file)-count,'matches'
     acc = (0.0+len(variants))/(0.0+len(file)-count)
     print 'Accuracy:', acc,'\n'
-    print 'Number of seqs deleted due to low quality:',count,'out of' ,limit, '. That is',str(float(count)/float(limit))+'%'
+    print 'Number of seqs deleted due to low quality:',count,'out of' ,limit,
+    '. That is',str(float(count)/float(limit))+'%'
     names[name]={'Total':len(file), 'Matched':len(ids), 'Accuracy':acc}
 
 for name in sorted(names):

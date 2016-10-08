@@ -14,6 +14,8 @@ from analysis import ML_analysis
 from fileio import sequence_data_parsing
 import csv
 
+from multiprocessing import Process
+
 
 #Returns the number of combinations of 'acid' that endt with 'g' or 't'
 def get_amino_factor(acid, gencode):
@@ -40,14 +42,16 @@ class heatmap:
 		self.x_labels = x_labels
 		self.y_labels = y_labels
 		self.title = title
+
 		self.start = None
+
  		self.midpoint = None
  		self.stop = None
  		self.constant_scale = constant_scale
 
 	#Plots data according to 
 	def normalized_sequence_counts(self, library, by_amino_acid = True,
-		count_threshold = 10, filter_invalid = True, constant_scale = False):
+		count_threshold = 10, filter_invalid = True, constant_scale = True):
 
 		# TODO: Update to use new Sequence Library format (accepts library instead of file)
 #		get sequencedata
@@ -115,9 +119,8 @@ class heatmap:
 			self.midpoint = 1.0
 			self.stop = max * 32.0
 
-		for row in self.data:
-			print row
-		print self.start, self.midpoint, self.stop
+
+		# print self.start, self.midpoint, self.stop
 		return self
 		'''
 		self.midpoint = 1.0*np.sum(sequence_counts)/(32.0*(np.amax(normalized_data)))
@@ -133,6 +136,14 @@ class heatmap:
 
 	@staticmethod
 	def draw(heatmap_objects, show=True, annot=False):
+		"""
+		Displays a heatmap for every heatmap objecty in the heatmap_objects.
+
+		heatmap_objects:	A heatmap object or a list of heatmap objects
+		show:				Boolean. Does not draw a heatmap if False.
+		annot:				Boolean. Displays values off each cell on the 
+							heatmap.
+		"""
 		if not type(heatmap_objects).__name__=='list':
 			heatmap_objects=[heatmap_objects]
 		for heatmap_object in heatmap_objects:
@@ -166,7 +177,6 @@ class heatmap:
 			ax = sns.heatmap(data,**heatmap_kwargs)
 			fig = ax.get_figure()
 
-
 			# put the major ticks at the middle of each cell
 			ax.set_xticks(np.arange(data.shape[1]) + 0.5, minor = False)
 			ax.set_yticks(np.arange(data.shape[0]) + 0.5, minor = False)
@@ -181,12 +191,13 @@ class heatmap:
 				fig.canvas.set_window_title('Heatmap for ' + title)
 
 		if show:
-			plt.show()
+			plt.show(block=False)
 		
 	@staticmethod
-	def shiftedColorMap(cmap, start=0.0, midpoint=0.5, stop=1.0, name='shiftedcmap'):
+	def shiftedColorMap(cmap, start=0.0, midpoint=0.5, stop=1.0,
+		name='shiftedcmap'):
 		'''
-		returns a new colormap with its neutral value(center) at midpoint
+		Returns a new colormap with its neutral value(center) at midpoint
 		0.0<=start<midpoint<stop<=1.0
 		the returned colormap is based on cmap
 		'''
@@ -221,14 +232,25 @@ class heatmap:
 		plt.register_cmap(cmap=newcmap)
 
 		return newcmap
+
 	@staticmethod
 	def compare_maps(map_a, map_b, title=None, x_labels=None, y_labels=None):
+		"""
+		Compares two heatmaps by direct subtraction and returns a new 
+		heatmap object
+
+		map_a:		heatmap object
+		map_b:		heatmap object
+		title:		The title of the new heatmap
+		x_labels:	x labels for the new heatmap
+		y_labels:	y labels for the new heatmap
+		"""
 		assert(map_a.__class__.__name__=='heatmap')
 		assert(map_b.__class__.__name__=='heatmap')
 		assert(map_a.data.shape==map_b.data.shape)
 
 		if not title:
-			title = map_a.title + ' vs '+ map_b.title
+			title = map_a.title + ' and '+ map_b.title
 		if not x_labels:
 			x = map_a.x_labels
 		if not y_labels:
