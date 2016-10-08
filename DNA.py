@@ -30,7 +30,13 @@ IUPAC = {
 	'B':'CGT',
 	'N':'ACGT'
 }
- 
+
+def get_nucleotides():
+	return list({'A','C','G','T'})
+
+def get_amino_acids():
+	return list({'A','C','D','E','F','G','H','I','K','L','M','N','P','Q','R','S','T','V','W','Y'})
+
 # a function to translate a single codon
 def translate_codon(codon):
 	return gencode.get(codon.upper(), 'x')
