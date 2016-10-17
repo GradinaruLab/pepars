@@ -1,9 +1,9 @@
 from utils import DNA
 import itertools
 
-def get_coverage(analysis_set, by_amino_acid = True, use_multiple_templates = False):
+def get_possible_sequences(analysis_set, by_amino_acid = True, use_multiple_templates = False):
 
-    sequence_length = analysis_set.get_sequence_length(by_amino_acid)
+   sequence_length = analysis_set.get_sequence_length(by_amino_acid)
 
     # Hardcoded for now
     if use_multiple_templates == True:
@@ -22,8 +22,7 @@ def get_coverage(analysis_set, by_amino_acid = True, use_multiple_templates = Fa
 
     sequence_libraries = analysis_set.get_libraries()
 
-    included_sequences = set()
-    excluded_sequences = set()
+    sequences = set()
 
     sequence_library_counts = []
 
@@ -32,8 +31,6 @@ def get_coverage(analysis_set, by_amino_acid = True, use_multiple_templates = Fa
             by_amino_acid = by_amino_acid, count_threshold = 0))
 
     template_index = 0
-
-    iterator = 0
 
     num_templates = 1
 
@@ -61,43 +58,52 @@ def get_coverage(analysis_set, by_amino_acid = True, use_multiple_templates = Fa
             if use_multiple_templates:
                 if template_index == 0:
                     if by_amino_acid:
-                        sequence_to_search_for = possible_sequence + DNA.translate_dna_single('TTGGCGGTGCCTTTTAAGGCACAG')
+                        sequence = possible_sequence + DNA.translate_dna_single('TTGGCGGTGCCTTTTAAGGCACAG')
                     else:
-                        sequence_to_search_for = possible_sequence + 'TTGGCGGTGCCTTTTAAGGCACAG'
+                        sequence = possible_sequence + 'TTGGCGGTGCCTTTTAAGGCACAG'
                 elif template_index == 1:
                     if by_amino_acid:
-                        sequence_to_search_for = DNA.translate_dna_single('GCCCAA') + possible_sequence + DNA.translate_dna_single('GTGCCTTTTAAGGCACAG')
+                        sequence = DNA.translate_dna_single('GCCCAA') + possible_sequence + DNA.translate_dna_single('GTGCCTTTTAAGGCACAG')
                     else:
-                        sequence_to_search_for = 'GCCCAA' + possible_sequence + 'GTGCCTTTTAAGGCACAG'
+                        sequence = 'GCCCAA' + possible_sequence + 'GTGCCTTTTAAGGCACAG'
                 elif template_index == 2:
                     if by_amino_acid:
-                        sequence_to_search_for = DNA.translate_dna_single('GCCCAAACTTTG') + possible_sequence + DNA.translate_dna_single('TTTAAGGCACAG')
+                        sequence = DNA.translate_dna_single('GCCCAAACTTTG') + possible_sequence + DNA.translate_dna_single('TTTAAGGCACAG')
                     else:
-                        sequence_to_search_for = 'GCCCAAACTTTG' + possible_sequence + 'TTTAAGGCACAG'
+                        sequence = 'GCCCAAACTTTG' + possible_sequence + 'TTTAAGGCACAG'
                 elif template_index == 3:
                     if by_amino_acid:
-                        sequence_to_search_for = DNA.translate_dna_single('GCCCAAACTTTGGCGGTG') + possible_sequence + DNA.translate_dna_single('GCACAG')
+                        sequence = DNA.translate_dna_single('GCCCAAACTTTGGCGGTG') + possible_sequence + DNA.translate_dna_single('GCACAG')
                     else:
-                        sequence_to_search_for = 'GCCCAAACTTTGGCGGTG' + possible_sequence + 'GCACAG'
+                        sequence = 'GCCCAAACTTTGGCGGTG' + possible_sequence + 'GCACAG'
                 else:
                     if by_amino_acid:
-                        sequence_to_search_for = DNA.translate_dna_single('GCCCAAACTTTGGCGGTGCCTTTT') + possible_sequence
+                        sequence = DNA.translate_dna_single('GCCCAAACTTTGGCGGTGCCTTTT') + possible_sequence
                     else:
-                        sequence_to_search_for = 'GCCCAAACTTTGGCGGTGCCTTTT' + possible_sequence
+                        sequence = 'GCCCAAACTTTGGCGGTGCCTTTT' + possible_sequence
 
             else:
-                sequence_to_search_for = possible_sequence
+                sequence = possible_sequence
 
-            sequence_included = False
-            for sequence_library_count in sequence_library_counts:
-                if sequence_to_search_for in sequence_library_count:
-                    included_sequences.add(sequence_to_search_for)
-                    sequence_included = True
-                    break
+            sequences.add(sequence)
 
-            if not sequence_included:
-                excluded_sequences.add(sequence_to_search_for)
+def get_coverage(analysis_set, by_amino_acid = True, use_multiple_templates = False):
 
-            iterator += 1
+    possible_sequences = get_possible_sequences(analysis_set, by_amino_acid, use_multiple_templates)
+
+    included_sequences = set()
+    excluded_sequences = set()
+
+    for possible_sequence in possible_sequences:
+
+        sequence_included = False
+        for sequence_library_count in sequence_library_counts:
+            if possible_sequence in sequence_library_count:
+                included_sequences.add(possible_sequence)
+                sequence_included = True
+                break
+
+        if not sequence_included:
+            excluded_sequences.add(possible_sequence)
 
     return included_sequences, excluded_sequences
