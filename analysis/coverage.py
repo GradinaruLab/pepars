@@ -3,7 +3,7 @@ import itertools
 
 def get_possible_sequences(analysis_set, by_amino_acid = True, use_multiple_templates = False):
 
-   sequence_length = analysis_set.get_sequence_length(by_amino_acid)
+    sequence_length = analysis_set.get_sequence_length(by_amino_acid)
 
     # Hardcoded for now
     if use_multiple_templates == True:
@@ -20,15 +20,10 @@ def get_possible_sequences(analysis_set, by_amino_acid = True, use_multiple_temp
     else:
         possible_sequence_elements = DNA.get_nucleotides()
 
-    sequence_libraries = analysis_set.get_libraries()
 
     sequences = set()
 
-    sequence_library_counts = []
 
-    for sequence_library_name, sequence_library in sequence_libraries.items():
-        sequence_library_counts.append(sequence_library.get_sequence_counts(\
-            by_amino_acid = by_amino_acid, count_threshold = 0))
 
     template_index = 0
 
@@ -86,6 +81,7 @@ def get_possible_sequences(analysis_set, by_amino_acid = True, use_multiple_temp
                 sequence = possible_sequence
 
             sequences.add(sequence)
+    return sequences
 
 def get_coverage(analysis_set, by_amino_acid = True, use_multiple_templates = False):
 
@@ -93,7 +89,13 @@ def get_coverage(analysis_set, by_amino_acid = True, use_multiple_templates = Fa
 
     included_sequences = set()
     excluded_sequences = set()
+    sequence_libraries = analysis_set.get_libraries()
 
+    sequence_library_counts = []
+
+    for sequence_library_name, sequence_library in sequence_libraries.items():
+        sequence_library_counts.append(sequence_library.get_sequence_counts(\
+            by_amino_acid = by_amino_acid, count_threshold = 0))
     for possible_sequence in possible_sequences:
 
         sequence_included = False
