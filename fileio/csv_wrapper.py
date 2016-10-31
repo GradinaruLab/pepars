@@ -21,6 +21,8 @@ def read_csv_file(file_name, skip_header_row = True):
     if skip_header_row:
         next(reader, None)
 
+    count = 0
+
     for row in reader:
         column_iterator = iter(row)
 
@@ -29,5 +31,9 @@ def read_csv_file(file_name, skip_header_row = True):
             data_row.append(column)
 
         data.append(data_row)
+
+        count += 1
+        print(str(count))
+
 
     return data

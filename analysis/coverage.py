@@ -1,6 +1,30 @@
 from utils import DNA
 import itertools
 
+def get_possible_sequences_by_template(template, by_amino_acid = True):
+
+    if by_amino_acid and len(template) % 3 != 0:
+        raise Exception('If using amino acids, \
+            template must be a multiple of 3')
+
+    possible_sequence_elements = []
+    possible_sequences = set()
+
+    for template_element in template:
+        possible_sequence_elements.append(list(DNA.IUPAC[template_element]))
+
+    for possible_sequence in itertools.product(*possible_sequence_elements):
+        possible_sequence = ''.join(possible_sequence)
+
+        if by_amino_acid:
+            possible_sequence = DNA.translate_dna_single(possible_sequence)
+
+        possible_sequences.add(possible_sequence)
+
+        print possible_sequence
+
+    return possible_sequences
+
 def get_possible_sequences(analysis_set, by_amino_acid = True, use_multiple_templates = False):
 
     sequence_length = analysis_set.get_sequence_length(by_amino_acid)
