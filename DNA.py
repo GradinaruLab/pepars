@@ -32,27 +32,16 @@ IUPAC = {
 }
 
 def get_nucleotides():
-	return list({'A','C','G','T'})
+	return ['A','C','G','T']
 
 def get_amino_acids():
-	return list({'A','C','D','E','F','G','H','I','K','L','M','N','P','Q','R','S','T','V','W','Y'})
-
-# a function to translate a single codon
-def translate_codon(codon):
-	return gencode.get(codon.upper(), 'x')
- 
-# a function to split a sequence into codons
-def split_into_codons(dna, frame):
-	codons = []
-	for i in range(frame - 1, len(dna)-2, 3):
-		codon = dna[i:i+3]
-		codons.append(codon)
-	return codons
+	return ['A','C','D','E','F','G','H','I','K','L','M','N','P','Q','R','S','T','V','W','Y']
  
 # a function to translate a dna sequence in a single frame
-def translate_dna_single(dna, frame=1):
-	codons = split_into_codons(dna, frame)
+def translate_dna_single(dna):
+
 	amino_acids = ''
-	for codon in codons:
-		amino_acids = amino_acids + translate_codon(codon)
+	for start_index in range(0, len(dna) - 2, 3):
+		amino_acids += gencode[dna[start_index:start_index+3]]
+
 	return amino_acids
