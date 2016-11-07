@@ -108,7 +108,7 @@ class heatmap:
 		if constant_scale:
 			self.start = 0.0
 			self.midpoint = 1.0/32.0
-
+			self.data = np.dot(biased_counts, weights)/sum(sequence_counts)/self.midpoint
 		else:
 			self.midpoint = 1.0/(32.0*np.amax(self.data)) if np.amax(self.data)>1.0/32.0 else 1.0
 			self.start = np.amin(self.data)
@@ -173,7 +173,7 @@ class heatmap:
 
 			if heatmap_object.constant_scale:
 				heatmap_kwargs['vmin'] = 0.0
-				heatmap_kwargs['vmax'] = 1.0
+				heatmap_kwargs['vmax'] = 0.3 / midpoint
 			ax = sns.heatmap(data,**heatmap_kwargs)
 			fig = ax.get_figure()
 
