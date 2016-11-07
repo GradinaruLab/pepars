@@ -24,7 +24,7 @@ class AminoAcid:
 			self.amino_acid_letter = 'R'
 			self.amino_acid_name = 'Arginine'
 			self.properties['charge'] = 1.00
-			self.properties['hydropathy'] = 1
+			self.properties['hydropathy'] = -4.5
 			self.properties['solubility'] = -14.0
 			self.properties['phosphorylation'] = 0.00
 			self.properties['average_flexibility_idx'] = 0.530
@@ -37,7 +37,7 @@ class AminoAcid:
 			self.amino_acid_letter = 'N'
 			self.amino_acid_name = 'Asparagine'
 			self.properties['charge'] = 0.00
-			self.properties['hydropathy'] = 1
+			self.properties['hydropathy'] = -3.5
 			self.properties['solubility'] = -28
 			self.properties['phosphorylation'] = 0.00
 			self.properties['average_flexibility_idx'] = 0.46
@@ -49,7 +49,7 @@ class AminoAcid:
 			self.amino_acid_letter = 'D'
 			self.amino_acid_name = 'Aspartate'
 			self.properties['charge'] = -1.00
-			self.properties['hydropathy'] = 1
+			self.properties['hydropathy'] = -3.5
 			self.properties['solubility'] = -55
 			self.properties['phosphorylation'] = 0.00
 			self.properties['average_flexibility_idx'] = 0.510
@@ -61,7 +61,7 @@ class AminoAcid:
 			self.amino_acid_letter = 'E'
 			self.amino_acid_name = 'Glutamate'
 			self.properties['charge'] = -1.00
-			self.properties['hydropathy'] = 1
+			self.properties['hydropathy'] = -3.5
 			self.properties['solubility'] = -31
 			self.properties['phosphorylation'] = 0.0
 			self.properties['average_flexibility_idx'] = 0.500
@@ -73,7 +73,7 @@ class AminoAcid:
 			self.amino_acid_letter = 'Q'
 			self.amino_acid_name = 'Glutamine'
 			self.properties['charge'] = 0.00
-			self.properties['hydropathy'] = 1
+			self.properties['hydropathy'] = -3.5
 			self.properties['solubility'] = -10
 			self.properties['phosphorylation'] = 0.0
 			self.properties['average_flexibility_idx'] = 0.490
@@ -85,7 +85,7 @@ class AminoAcid:
 			self.amino_acid_letter = 'K'
 			self.amino_acid_name = 'Lysine'
 			self.properties['charge'] = 1.00
-			self.properties['hydropathy'] = 1
+			self.properties['hydropathy'] = -3.9
 			self.properties['solubility'] = -23
 			self.properties['phosphorylation'] = 0.0
 			self.properties['average_flexibility_idx'] = 0.470
@@ -97,7 +97,7 @@ class AminoAcid:
 			self.amino_acid_letter = 'S'
 			self.amino_acid_name = 'Serine'
 			self.properties['charge'] = 0.00
-			self.properties['hydropathy'] = 1
+			self.properties['hydropathy'] = -0.8
 			self.properties['solubility'] = -5
 			self.properties['phosphorylation'] = 1.00
 			self.properties['average_flexibility_idx'] = 0.510
@@ -109,7 +109,7 @@ class AminoAcid:
 			self.amino_acid_letter = 'T'
 			self.amino_acid_name = 'Threonine'
 			self.properties['charge'] = 0.00
-			self.properties['hydropathy'] = 1
+			self.properties['hydropathy'] = -0.7
 			self.properties['solubility'] = 13
 			self.properties['phosphorylation'] = 1.00
 			self.properties['average_flexibility_idx'] = 0.440
@@ -121,7 +121,7 @@ class AminoAcid:
 			self.amino_acid_letter = 'C'
 			self.amino_acid_name = 'Cysteine'
 			self.properties['charge'] = 0
-			self.properties['hydropathy'] = 0
+			self.properties['hydropathy'] = 2.5
 			self.properties['solubility'] = 49
 			self.properties['phosphorylation'] = 0.0
 			self.properties['average_flexibility_idx'] = 0.350
@@ -133,7 +133,7 @@ class AminoAcid:
 			self.amino_acid_letter = 'H'
 			self.amino_acid_name = 'Histidine'
 			self.properties['charge'] = 1.00
-			self.properties['hydropathy'] = 0
+			self.properties['hydropathy'] = -3.2
 			self.properties['solubility'] = 8
 			self.properties['phosphorylation'] = 0.0
 			self.properties['average_flexibility_idx'] = 0.320
@@ -145,7 +145,7 @@ class AminoAcid:
 			self.amino_acid_letter = 'M'
 			self.amino_acid_name = 'Methionine'
 			self.properties['charge'] = 0.00
-			self.properties['hydropathy'] = 0
+			self.properties['hydropathy'] = 1.9
 			self.properties['solubility'] = 74
 			self.properties['phosphorylation'] = 0.0
 			self.properties['average_flexibility_idx'] = 0.300
@@ -158,7 +158,7 @@ class AminoAcid:
 			self.amino_acid_letter = 'A'
 			self.amino_acid_name = 'Alanine'
 			self.properties['charge'] = 0
-			self.properties['hydropathy'] = -1
+			self.properties['hydropathy'] = 1.8
 			self.properties['solubility'] = 41
 			self.properties['phosphorylation'] = 0.0
 			self.properties['average_flexibility_idx'] = 0.360
@@ -170,7 +170,7 @@ class AminoAcid:
 			self.amino_acid_letter = 'V'
 			self.amino_acid_name = 'Valine'
 			self.properties['charge'] = 0
-			self.properties['hydropathy'] = -1
+			self.properties['hydropathy'] = 4.2
 			self.properties['solubility'] = 76
 			self.properties['phosphorylation'] = 0.0
 			self.properties['average_flexibility_idx'] = 0.390
@@ -182,7 +182,7 @@ class AminoAcid:
 			self.amino_acid_letter = 'G'
 			self.amino_acid_name = 'Glycine'
 			self.properties['charge'] = 0
-			self.properties['hydropathy'] = -1
+			self.properties['hydropathy'] = -0.4
 			self.properties['solubility'] = 0
 			self.properties['phosphorylation'] = 0.0
 			self.properties['average_flexibility_idx'] = 0.540
@@ -194,7 +194,7 @@ class AminoAcid:
 			self.amino_acid_letter = 'I'
 			self.amino_acid_name = 'Isoleucine'
 			self.properties['charge'] = 0
-			self.properties['hydropathy'] = -1
+			self.properties['hydropathy'] = 4.5
 			self.properties['solubility'] = 99
 			self.properties['phosphorylation'] = 0.0
 			self.properties['average_flexibility_idx'] = 0.460
@@ -206,7 +206,7 @@ class AminoAcid:
 			self.amino_acid_letter = 'L'
 			self.amino_acid_name = 'Leucine'
 			self.properties['charge'] = 0
-			self.properties['hydropathy'] = -1
+			self.properties['hydropathy'] = 3.8
 			self.properties['solubility'] = 97
 			self.properties['phosphorylation'] = 0.0
 			self.properties['average_flexibility_idx'] = 0.370
@@ -217,8 +217,8 @@ class AminoAcid:
 			self.is_valid = True
 			self.amino_acid_letter = 'F'
 			self.amino_acid_name = 'Phenylalanine'
-			self.properties['charge'] = -1.00
-			self.properties['hydropathy'] = -1
+			self.properties['charge'] = 0.0
+			self.properties['hydropathy'] = 2.8
 			self.properties['solubility'] = 100
 			self.properties['phosphorylation'] = 0
 			self.properties['average_flexibility_idx'] = 0.310
@@ -230,7 +230,7 @@ class AminoAcid:
 			self.amino_acid_letter = 'P'
 			self.amino_acid_name = 'Proline'
 			self.properties['charge'] = 0
-			self.properties['hydropathy'] = -1
+			self.properties['hydropathy'] = -1.6
 			self.properties['solubility'] = -46
 			self.properties['phosphorylation'] = 0.0
 			self.properties['average_flexibility_idx'] = 0.510
@@ -242,7 +242,7 @@ class AminoAcid:
 			self.amino_acid_letter = 'W'
 			self.amino_acid_name = 'Tryptophan'
 			self.properties['charge'] = 0
-			self.properties['hydropathy'] = -1
+			self.properties['hydropathy'] = -0.9
 			self.properties['solubility'] = 97
 			self.properties['phosphorylation'] = 0.0
 			self.properties['average_flexibility_idx'] = 0.310
@@ -254,7 +254,7 @@ class AminoAcid:
 			self.amino_acid_letter = 'Y'
 			self.amino_acid_name = 'Tyrosine'
 			self.properties['charge'] = 0
-			self.properties['hydropathy'] = -1
+			self.properties['hydropathy'] = -1.3
 			self.properties['solubility'] = 63
 			self.properties['phosphorylation'] = 1.00
 			self.properties['average_flexibility_idx'] = 0.420
