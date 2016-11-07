@@ -49,6 +49,7 @@ class heatmap:
  		self.constant_scale = constant_scale
 
 	#Plots data according to 
+
 	def normalized_sequence_counts(self, library, by_amino_acid = True,
 		count_threshold = 10, filter_invalid = True, constant_scale = True):
 
@@ -249,7 +250,7 @@ class heatmap:
 		assert(map_a.data.shape==map_b.data.shape)
 
 		if not title:
-			title = map_a.title + ' and '+ map_b.title
+			title = map_a.title + ' vs. '+ map_b.title
 		if not x_labels:
 			x = map_a.x_labels
 		if not y_labels:
