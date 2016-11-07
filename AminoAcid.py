@@ -205,7 +205,7 @@ class AminoAcid:
 			self.is_valid = True
 			self.amino_acid_letter = 'L'
 			self.amino_acid_name = 'Leucine'
-			self.properties['charge'] = -0
+			self.properties['charge'] = 0
 			self.properties['hydropathy'] = -1
 			self.properties['solubility'] = 97
 			self.properties['phosphorylation'] = 0.0
@@ -219,8 +219,8 @@ class AminoAcid:
 			self.amino_acid_name = 'Phenylalanine'
 			self.properties['charge'] = -1.00
 			self.properties['hydropathy'] = -1
-			self.properties['solubility'] = 2.7
-			self.properties['phosphorylation'] = 100
+			self.properties['solubility'] = 100
+			self.properties['phosphorylation'] = 0
 			self.properties['average_flexibility_idx'] = 0.310
 			self.properties['ionic_bond'] = 0.00
 			self.properties['hydrogen_bond'] = 0.00
