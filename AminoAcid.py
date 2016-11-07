@@ -96,7 +96,7 @@ class AminoAcid:
 			self.is_valid = True
 			self.amino_acid_letter = 'S'
 			self.amino_acid_name = 'Serine'
-			self.properties['charge'] = -1.00
+			self.properties['charge'] = 0.00
 			self.properties['hydropathy'] = 1
 			self.properties['solubility'] = -5
 			self.properties['phosphorylation'] = 1.00
@@ -108,7 +108,7 @@ class AminoAcid:
 			self.is_valid = True
 			self.amino_acid_letter = 'T'
 			self.amino_acid_name = 'Threonine'
-			self.properties['charge'] = -1.00
+			self.properties['charge'] = 0.00
 			self.properties['hydropathy'] = 1
 			self.properties['solubility'] = 13
 			self.properties['phosphorylation'] = 1.00
@@ -120,7 +120,7 @@ class AminoAcid:
 			self.is_valid = True
 			self.amino_acid_letter = 'C'
 			self.amino_acid_name = 'Cysteine'
-			self.properties['charge'] = -1.00
+			self.properties['charge'] = 0
 			self.properties['hydropathy'] = 0
 			self.properties['solubility'] = 49
 			self.properties['phosphorylation'] = 0.0
@@ -157,7 +157,7 @@ class AminoAcid:
 			self.is_valid = True
 			self.amino_acid_letter = 'A'
 			self.amino_acid_name = 'Alanine'
-			self.properties['charge'] = -1.00
+			self.properties['charge'] = 0
 			self.properties['hydropathy'] = -1
 			self.properties['solubility'] = 41
 			self.properties['phosphorylation'] = 0.0
@@ -169,7 +169,7 @@ class AminoAcid:
 			self.is_valid = True
 			self.amino_acid_letter = 'V'
 			self.amino_acid_name = 'Valine'
-			self.properties['charge'] = -1.00
+			self.properties['charge'] = 0
 			self.properties['hydropathy'] = -1
 			self.properties['solubility'] = 76
 			self.properties['phosphorylation'] = 0.0
@@ -181,7 +181,7 @@ class AminoAcid:
 			self.is_valid = True
 			self.amino_acid_letter = 'G'
 			self.amino_acid_name = 'Glycine'
-			self.properties['charge'] = -1.00
+			self.properties['charge'] = 0
 			self.properties['hydropathy'] = -1
 			self.properties['solubility'] = 0
 			self.properties['phosphorylation'] = 0.0
@@ -193,7 +193,7 @@ class AminoAcid:
 			self.is_valid = True
 			self.amino_acid_letter = 'I'
 			self.amino_acid_name = 'Isoleucine'
-			self.properties['charge'] = -1.00
+			self.properties['charge'] = 0
 			self.properties['hydropathy'] = -1
 			self.properties['solubility'] = 99
 			self.properties['phosphorylation'] = 0.0
@@ -205,7 +205,7 @@ class AminoAcid:
 			self.is_valid = True
 			self.amino_acid_letter = 'L'
 			self.amino_acid_name = 'Leucine'
-			self.properties['charge'] = -1.00
+			self.properties['charge'] = -0
 			self.properties['hydropathy'] = -1
 			self.properties['solubility'] = 97
 			self.properties['phosphorylation'] = 0.0
@@ -229,7 +229,7 @@ class AminoAcid:
 			self.is_valid = True
 			self.amino_acid_letter = 'P'
 			self.amino_acid_name = 'Proline'
-			self.properties['charge'] = -1.00
+			self.properties['charge'] = 0
 			self.properties['hydropathy'] = -1
 			self.properties['solubility'] = -46
 			self.properties['phosphorylation'] = 0.0
@@ -241,7 +241,7 @@ class AminoAcid:
 			self.is_valid = True
 			self.amino_acid_letter = 'W'
 			self.amino_acid_name = 'Tryptophan'
-			self.properties['charge'] = -1.00
+			self.properties['charge'] = 0
 			self.properties['hydropathy'] = -1
 			self.properties['solubility'] = 97
 			self.properties['phosphorylation'] = 0.0
@@ -253,7 +253,7 @@ class AminoAcid:
 			self.is_valid = True
 			self.amino_acid_letter = 'Y'
 			self.amino_acid_name = 'Tyrosine'
-			self.properties['charge'] = -1.00
+			self.properties['charge'] = 0
 			self.properties['hydropathy'] = -1
 			self.properties['solubility'] = 63
 			self.properties['phosphorylation'] = 1.00
