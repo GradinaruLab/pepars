@@ -1,7 +1,7 @@
 from Bio.SeqUtils.ProtParam import ProteinAnalysis
 
 def compare_to(val1, val2):
-	
+
 	if val1<val2:
 		return -1
 	elif val1>val2:
@@ -9,13 +9,13 @@ def compare_to(val1, val2):
 	return 0
 
 class AminoAcid:
-	
+
 	properties = ['charge','phosphorylation','average_flexibility_idx','ionic_bond','molecular_weight','hydrophobicity','typically_helix','typically_turn','typically_sheet']
 
-	
+
 	def __init__(self,amino_acid):
 
-	 	self.properties = {}
+		self.properties = {}
 
 		self.is_valid = True
 
@@ -263,7 +263,7 @@ class AminoAcid:
 
 		else:
 			self.is_valid = False
-			print "Invalid Amino Acid "+amino_acid
+			print("Invalid Amino Acid "+amino_acid)
 
 		if (self.is_valid):
 			self.properties['molecular_weight'] = ProteinAnalysis(str(amino_acid)).molecular_weight()
@@ -274,7 +274,7 @@ class AminoAcid:
 			self.properties['typically_sheet'] = secondary_struct[2]
 
 
-	
+
 
 	def compare_features(self, acid, feature):
 		if feature == 'charge':

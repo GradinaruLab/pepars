@@ -12,7 +12,7 @@ def convert_string_to_char_array(string):
 def convert_sequence_label_dict_to_matrices(sequence_label_dict):
 
 	num_sequences = len(sequence_label_dict)
-	num_sequence_elements = len(sequence_label_dict.items()[0][0])
+	num_sequence_elements = len(list(sequence_label_dict.items())[0][0])
 
 	sequence_matrix = numpy.empty([num_sequences, num_sequence_elements], dtype=numpy.str)
 	label_matrix = numpy.zeros([num_sequences, 1], dtype=numpy.float32)

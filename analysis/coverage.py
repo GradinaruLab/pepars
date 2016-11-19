@@ -23,7 +23,7 @@ def get_possible_sequences_by_template(template, by_amino_acid = True):
 
         possible_sequences.add(possible_sequence)
 
-        print possible_sequence
+        print(possible_sequence)
 
     return possible_sequences
 
@@ -59,7 +59,7 @@ def get_possible_sequences(analysis_set, by_amino_acid = True, use_multiple_temp
     if use_multiple_templates:
         num_templates = 5
 
-    for template_index in range(0, num_templates):    
+    for template_index in range(0, num_templates):
 
         for possible_sequence in itertools.imap(''.join, itertools.product(\
             possible_sequence_elements,repeat=sequence_length)):

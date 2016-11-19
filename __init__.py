@@ -1,2 +1,1 @@
-from AminoAcid import AminoAcid
-
+# from AminoAcid import AminoAcid
