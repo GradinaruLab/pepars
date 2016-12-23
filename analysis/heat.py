@@ -4,7 +4,8 @@ import numpy as np
 import os
 from analysis.Analysis_Set import Analysis_Set
 import matplotlib
-import matplotlib.pyplot as plt
+matplotlib.use("TkAgg")
+from matplotlib import pyplot as plt
 import seaborn as sns
 
 from analysis.Sequence_Library import Sequence_Library
@@ -19,7 +20,7 @@ from multiprocessing import Process
 #Returns the number of combinations of 'acid' that endt with 'g' or 't'
 def get_amino_factor(acid, gencode):
 	count=0
-	for key, value in gencode.iteritems():
+	for key, value in gencode.items():
 		if(value.lower()==acid.lower() and key[2].lower() in ['t', 'g']):
 			count+=1
 	return count
@@ -44,9 +45,9 @@ class heatmap:
 
 		self.start = None
 
- 		self.midpoint = None
- 		self.stop = None
- 		self.constant_scale = constant_scale
+		self.midpoint = None
+		self.stop = None
+		self.constant_scale = constant_scale
 
 	#Plots data according to 
 
@@ -61,7 +62,7 @@ class heatmap:
 
 		sequence_matrix = []
 		sequence_counts = []
-		for sequence, count in slib_count.iteritems():
+		for sequence, count in slib_count.items():
 			sequence_matrix.append(list(sequence))
 			sequence_counts.append(count)
 		
@@ -94,13 +95,13 @@ class heatmap:
 
 		# Prepare the weight matrix
 		weights = np.eye(len(acid_labels))
-		for acid, count in acid_counts.iteritems():
+		for acid, count in acid_counts.items():
 			# get position of current acid in our enumeration			
 			i = acid_labels[acid]
 			weights[i, i] = 1.0/count
 
 		self.x_labels = ['' for i in acid_labels]
-		for acid, index in acid_labels.iteritems():
+		for acid, index in acid_labels.items():
 			self.x_labels[index]=acid
 
 		self.y_labels = range(1,1+positions)[::-1]

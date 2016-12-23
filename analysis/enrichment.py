@@ -1,4 +1,6 @@
-import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use("TkAgg")
+from matplotlib import pyplot as plt
 import seaborn as sns
 import numpy as np
 from utils.AminoAcid import AminoAcid

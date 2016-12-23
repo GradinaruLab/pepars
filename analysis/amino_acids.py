@@ -1,8 +1,9 @@
 from utils.AminoAcid import AminoAcid
 import numpy as np
 from Bio.SeqUtils.ProtParam import ProteinAnalysis
-import matplotlib.pyplot as plt
-from matplotlib.pyplot import *
+import matplotlib
+matplotlib.use("TkAgg")
+from matplotlib import pyplot as plt
 import seaborn as sns
 
 # Usage
@@ -23,7 +24,7 @@ def generate_matrix_of_interest(enrichment_sequences_array,matrix_property):
                 elif (str(matrix_property) == 'gravy'):
                     matrix_of_interest[idx][aa_idx]=current_amino_acid.hydrophobicity
             else:
-                print current_sequence
+                print(current_sequence)
     return matrix_of_interest
 
 

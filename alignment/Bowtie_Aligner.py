@@ -1,4 +1,4 @@
-from Aligner import Aligner
+from .Aligner import Aligner
 from sequencing import FASTQ
 from workspace import Workspace as ws
 import subprocess
