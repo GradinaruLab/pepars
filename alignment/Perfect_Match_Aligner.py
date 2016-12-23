@@ -43,7 +43,7 @@ class Perfect_Match_Aligner(Aligner):
             for line in fastq_file:
 
                 if line_count % 4 == 1:
-                    if (line_count / 4) % output_frequency == 0:
+                    if int(line_count / 4) % output_frequency == 0:
                         self.update_num_sequences_aligned(num_sequences)
                     sequence = line
 
