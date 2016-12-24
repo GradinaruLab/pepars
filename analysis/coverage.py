@@ -61,7 +61,7 @@ def get_possible_sequences(analysis_set, by_amino_acid = True, use_multiple_temp
 
     for template_index in range(0, num_templates):
 
-        for possible_sequence in itertools.imap(''.join, itertools.product(\
+        for possible_sequence in map(''.join, itertools.product(\
             possible_sequence_elements,repeat=sequence_length)):
 
             if not by_amino_acid:
