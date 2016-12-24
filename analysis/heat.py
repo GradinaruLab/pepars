@@ -57,9 +57,10 @@ class heatmap:
 		# TODO: Update to use new Sequence Library format (accepts library instead of file)
 #		get sequencedata
 		slib = Sequence_Library(library);
+		print('About to get sequence counts')
 		slib_count = slib.get_sequence_counts(by_amino_acid=by_amino_acid,
 			count_threshold=count_threshold, filter_invalid=filter_invalid)
-
+		print('Got sequence counts.')
 		sequence_matrix = []
 		sequence_counts = []
 		for sequence, count in slib_count.items():
@@ -160,8 +161,8 @@ class heatmap:
 			sns.set(font_scale=1.2)
 			sns.set_style({"savefig.dpi": 100})
 
-			start = heatmap_object.start if 0.0<=heatmap_object.start<=1.0 else 0.0
-			stop =  heatmap_object.stop if 0.0<=heatmap_object.stop<=1.0 else 1.0
+			start = heatmap_object.start if heatmap_object.start != None and 0.0<=heatmap_object.start<=1.0 else 0.0
+			stop =  heatmap_object.stop if heatmap_object.stop != None and 0.0<=heatmap_object.stop<=1.0 else 1.0
 
 			heatmap_kwargs = {
 				'cmap':heatmap.shiftedColorMap(plt.cm.coolwarm,
