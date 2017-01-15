@@ -159,7 +159,7 @@ def get_coverage(analysis_set, by_amino_acid = True):
     if by_amino_acid:
         if len(variant_template) % 3 != 0:
             raise Exception('Can\'t analyze by amino acid when variant sequence isn\'t groups of 3!')
-        variant_length = len(variant_template) / 3
+        variant_length = int(len(variant_template) / 3)
 
         # For now, assume all amino acids are possible. Should do something with IUPAC later
         for variant_index in range(0, variant_length):
