@@ -3,7 +3,7 @@ import numpy as np
 from Bio.SeqUtils.ProtParam import ProteinAnalysis
 import matplotlib
 matplotlib.use("TkAgg")
-from matplotlib import pyplot as plt
+import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Usage
@@ -19,10 +19,7 @@ def generate_matrix_of_interest(enrichment_sequences_array,matrix_property):
         for aa_idx in range(0,len(current_sequence)):
             current_amino_acid = AminoAcid(current_sequence[aa_idx])
             if (current_amino_acid.is_valid):
-                if (str(matrix_property) == 'molecular weight'):
-                    matrix_of_interest[idx][aa_idx]=current_amino_acid.molecular_weight
-                elif (str(matrix_property) == 'gravy'):
-                    matrix_of_interest[idx][aa_idx]=current_amino_acid.hydrophobicity
+                    matrix_of_interest[idx][aa_idx]=current_amino_acid.properties[matrix_property]
             else:
                 print(current_sequence)
     return matrix_of_interest
@@ -54,9 +51,9 @@ def plot_amino_acid_property_distribution_from_matrix(matrix_of_interest,propert
     max_of_matrix = matrix_of_interest.max()
     min_of_matrix = matrix_of_interest.min()
     plt.title(plot_title)
-    for i,v in enumerate(xrange(sequence_length)):
+    for i,v in enumerate(range(sequence_length)):
         v = v + 1
-        ax1 = subplot(sequence_length,1,v)
+        ax1 = plt.subplot(sequence_length,1,v)
         ax1.set_xlim(min_of_matrix,max_of_matrix)
         sns.distplot(matrix_of_interest[:,i],bins=100,kde=False,rug=False,ax = ax1)
     plt.subplots_adjust(hspace=0.5)

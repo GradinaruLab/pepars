@@ -190,7 +190,7 @@ class heatmap:
 
 			if(title):
 				ax.set_title(title)
-				fig.canvas.set_window_title('Heatmap for ' + title)
+				fig.canvas.set_window_title(title)
 
 		if show:
 			plt.show(block=False)

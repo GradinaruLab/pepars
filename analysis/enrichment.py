@@ -7,11 +7,12 @@ from utils.AminoAcid import AminoAcid
 
 def split_by_enrichment(sequence_enrichments, enrichment_threshold):
 
-    num_positions = len(sequence_enrichments.keys()[0])
+    for sequence in sequence_enrichments:
+        num_positions = len(sequence)
+        break
 
     above_enrichment_sequences = []
     below_enrichment_sequences = []
-    enrichment_values=[]
     invalid_amino_acid = False;
     for sequence, enrichment in sequence_enrichments.items():
         for seq_idx in range(0,num_positions):
@@ -21,7 +22,6 @@ def split_by_enrichment(sequence_enrichments, enrichment_threshold):
                 invalid_amino_acid = True
                 break
         if (invalid_amino_acid==False):
-            enrichment_values.append(enrichment)
             if (enrichment > enrichment_threshold):
                 above_enrichment_sequences.append(sequence)
             elif(enrichment < enrichment_threshold):
