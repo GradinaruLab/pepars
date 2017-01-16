@@ -57,10 +57,8 @@ class heatmap:
 		# TODO: Update to use new Sequence Library format (accepts library instead of file)
 #		get sequencedata
 		slib = Sequence_Library(library);
-		print('About to get sequence counts')
 		slib_count = slib.get_sequence_counts(by_amino_acid=by_amino_acid,
 			count_threshold=count_threshold, filter_invalid=filter_invalid)
-		print('Got sequence counts.')
 		sequence_matrix = []
 		sequence_counts = []
 		for sequence, count in slib_count.items():
