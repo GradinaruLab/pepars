@@ -2,6 +2,27 @@ from utils import DNA
 import itertools
 from workspace import Workspace as ws
 from workspace import Database as db
+import random
+
+def generate_excluded_sequences(template, included_sequences, num_sequences):
+
+    excluded_sequences = set()
+
+    template_length = len(template)
+
+    while len(excluded_sequences) < num_sequences:
+
+        sequence = [''] * template_length
+
+        for element_index in range(template_length):
+            sequence[element_index] = random.choice(list(DNA.IUPAC[template[element_index]]))
+
+        sequence = DNA.translate_dna_single(sequence)
+        
+        if sequence not in included_sequences:
+            excluded_sequences.add(sequence)
+
+    return excluded_sequences
 
 def get_possible_sequences_by_template(template, by_amino_acid = True):
 
@@ -109,7 +130,7 @@ def get_possible_sequences(analysis_set, by_amino_acid = True, use_multiple_temp
             sequences.add(sequence)
     return sequences
 
-def get_coverage_sequences(analysis_set, by_amino_acid = True, use_multiple_templates = False):
+def get_coverage_sequences(analysis_set, by_amino_acid = True, use_multiple_templates = False, max_num_sequences = None):
 
     possible_sequences = get_possible_sequences(analysis_set, by_amino_acid, use_multiple_templates)
 
