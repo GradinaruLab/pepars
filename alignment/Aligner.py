@@ -20,14 +20,12 @@ class Aligner(object):
         line_count = 0
 
         for fastq_file_name in library.fastq_files:
-            fastq_file_name = ws.get_raw_data_path(fastq_file_name)
-            fastq_file = open(fastq_file_name, 'r')
-
+            fastq_file = ws.get_fastq_file(fastq_file_name)
 
             for line in fastq_file:
                 line_count += 1
 
-            fastq_file.close()
+            ws.close_fastq_file(fastq_file_name)
 
         self._num_sequences = line_count / 4
 

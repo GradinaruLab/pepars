@@ -35,8 +35,7 @@ class Perfect_Match_Aligner(Aligner):
 
         for fastq_file_name in library.fastq_files:
 
-            fastq_file_name = ws.get_raw_data_path(fastq_file_name)
-            fastq_file = open(fastq_file_name, 'r').read().splitlines()
+            fastq_file = ws.get_fastq_file(fastq_file_name).read().splitlines()
 
             line_count = 0
 
@@ -73,6 +72,8 @@ class Perfect_Match_Aligner(Aligner):
                     num_sequences += 1
 
                 line_count += 1
+
+            ws.close_fastq_file(fastq_file_name)
 
         mismatched_sequences = template_mismatches + variant_quality_mismatches\
             + variant_nucleotide_mismatches + size_mismatches

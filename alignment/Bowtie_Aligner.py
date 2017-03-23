@@ -79,18 +79,19 @@ class Bowtie_Aligner(Aligner):
             
             # file_id = fastq_file_name.split('_')[0]
             
-            fastq_file_name = ws.get_raw_data_path(fastq_file_name)
+            fastq_file = ws.get_fastq_file(fastq_file_name)
+            fastq_file_path = ws.get_raw_data_path(fastq_file_name)
             sam_path = ws.get_raw_data_path(other_name + '.sam')
 
             # Create .sam file if not exists
             if not os.path.exists(sam_path):
                 if not is_local:
                     cmd = ' '.join(['bowtie2 -x', reference_name,
-                        '-U', fastq_file_name, '-S',
+                        '-U', fastq_file_path, '-S',
                         sam_path])
                 else:
                     cmd = ' '.join(['bowtie2 --local -x', reference_name,
-                        '-U', fastq_file_name, '-S',
+                        '-U', fastq_file_path, '-S',
                         sam_path])
 
                 subprocess.call([cmd], shell = True, executable = '/bin/bash')
@@ -112,6 +113,8 @@ class Bowtie_Aligner(Aligner):
                 parse_function(id, cigar, sequence, variants)
 
             num_sequences += len(file)
+
+            ws.close_fastq_file(fastq_file_name)
         
         statistics = {}
 
