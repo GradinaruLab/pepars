@@ -1,4 +1,5 @@
 import numpy
+import math
 
 def convert_string_to_char_array(string):
 	char_array = []
@@ -21,7 +22,7 @@ def convert_sequence_label_dict_to_matrices(sequence_label_dict):
 	for sequence, feature in sequence_label_dict.items():
 		for sequence_element_index in range(0, num_sequence_elements):
 			sequence_matrix[sequence_index][sequence_element_index] = sequence[sequence_element_index]
-			label_matrix[sequence_index] = feature
+		label_matrix[sequence_index] = feature
 		sequence_index += 1
 
 	return (sequence_matrix, label_matrix)
