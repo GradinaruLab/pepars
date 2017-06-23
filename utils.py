@@ -26,6 +26,57 @@ def convert_sequence_label_dict_to_matrices(sequence_label_dict):
 
 	return (sequence_matrix, label_matrix)
 
+def convert_sequence_label_dict_and_weights_to_matrices_and_weights(sequence_label_dict, sequence_weights):
+
+	num_sequences = len(sequence_label_dict)
+	num_sequence_elements = len(list(sequence_label_dict.items())[0][0])
+
+	sequence_matrix = numpy.empty([num_sequences, num_sequence_elements], dtype=numpy.str)
+	label_matrix = numpy.zeros([num_sequences], dtype=numpy.float32)
+	weight_matrix = numpy.zeros([num_sequences, 1], dtype=numpy.float32)
+
+	sequence_index = 0
+	for sequence, feature in sequence_label_dict.items():
+		for sequence_element_index in range(0, num_sequence_elements):
+			sequence_matrix[sequence_index][sequence_element_index] = sequence[sequence_element_index]
+		label_matrix[sequence_index] = feature
+		weight_matrix[sequence_index] = sequence_weights[sequence]
+		sequence_index += 1
+
+	weight_matrix = weight_matrix.squeeze()
+	return (sequence_matrix, label_matrix, weight_matrix)
+
+def convert_sequence_label_dict_and_weights_to_matrices(sequence_label_dict, sequence_weights):
+
+	num_sequences = len(sequence_label_dict)
+	num_sequence_elements = len(list(sequence_label_dict.items())[0][0])
+
+	sequence_matrix = []#numpy.empty([num_sequences, num_sequence_elements], dtype=numpy.str)
+	label_matrix = []#numpy.zeros([num_sequences, 1], dtype=numpy.float32)
+
+	for sequence, feature in sequence_label_dict.items():
+
+		sequence_count_log = math.ceil(sequence_weights[sequence])
+
+		for i in range(sequence_count_log):
+			sequence_array = []
+			for sequence_element_index in range(0, num_sequence_elements):
+				sequence_array.append(sequence[sequence_element_index])
+
+			sequence_matrix.append(sequence_array)
+			label_matrix.append(feature)
+
+	sequence_matrix = numpy.array(sequence_matrix, dtype=numpy.str)
+
+	rng_state = numpy.random.get_state()
+	numpy.random.shuffle(sequence_matrix)
+	label_matrix = numpy.array(label_matrix, dtype=numpy.float32)
+	label_matrix = numpy.reshape(label_matrix, (label_matrix.shape[0], 1))
+	numpy.random.set_state(rng_state)
+	numpy.random.shuffle(label_matrix)
+
+	return (sequence_matrix, label_matrix)
+
 def convert_string_keys_to_ints(dictionary):
 
 	new_dictionary = {}
