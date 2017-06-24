@@ -12,14 +12,14 @@ def generate_excluded_sequences(template, included_sequences, num_sequences):
 
     while len(excluded_sequences) < num_sequences:
 
-        sequence = [''] * template_length
+        sequence = ''
 
         for element_index in range(template_length):
-            sequence[element_index] = random.choice(list(DNA.IUPAC[template[element_index]]))
+            sequence += random.choice(list(DNA.IUPAC[template[element_index]]))
 
         sequence = DNA.translate_dna_single(sequence)
         
-        if sequence not in included_sequences:
+        if sequence not in included_sequences and sequence.find('#') == -1:
             excluded_sequences.add(sequence)
 
     return excluded_sequences
