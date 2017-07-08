@@ -30,6 +30,7 @@ class Perfect_Match_Aligner(Aligner):
 
         extracted_sequences = []
         uuids = []
+        error_probabilities = []
 
         num_sequences = 0
 
@@ -52,12 +53,13 @@ class Perfect_Match_Aligner(Aligner):
                     
                     if (len(sequence)) == template_length:
 
-                        extracted_sequence, uuid, error_type = \
+                        extracted_sequence, uuid, error_type, error_probability = \
                             self.extract_sequence(sequence, quality_string)
                         
                         if error_type == 0:
                             extracted_sequences.append(extracted_sequence)
                             uuids.append(uuid)
+                            error_probabilities.append(error_probability)
                         elif error_type == 1:
                             template_mismatches += 1
                         elif error_type == 2:
@@ -87,6 +89,7 @@ class Perfect_Match_Aligner(Aligner):
         statistics["Variant Nucleotide Mismatch Rate"] = float(variant_nucleotide_mismatches)/float(num_sequences)
         statistics["Template Size Mismatch Rate"] = float(size_mismatches)/float(num_sequences)
         statistics["Invalid nucleotide Rate"] = float(invalid_nucleotides)/float(num_sequences)
+        statistics["Expected Number of Misreads"] = sum(error_probabilities)
 
         return extracted_sequences, uuids, statistics
 
@@ -95,10 +98,13 @@ class Perfect_Match_Aligner(Aligner):
         extracted_sequence = []
         uuid = []
         num_errors = 0
+        probability_of_perfect_read = 1.0
 
         template_length = len(self.template_sequence)
 
         quality_score = FASTQ.convert_quality_string_to_quality_score(quality_string)
+        #print("Quality score is: ")
+        #print(quality_score)
 
         for template_idx in range(template_length):
 
@@ -116,32 +122,37 @@ class Perfect_Match_Aligner(Aligner):
 
                 # If this isn't a match, it's an error
                 if self.template_sequence[template_idx].upper() != fastq_line[template_idx].upper():
-                    return False, False, 1
+                    return False, False, 1, 1
             # Case 3: If this is not a valid nucleotide, it's an error
             elif fastq_line[template_idx] not in DNA.get_nucleotides():
-                return False, False, 4
+                return False, False, 4, 1
             # Case 4: The template is an 'I', so this is part of the UUID
             elif self.template_sequence[template_idx] == 'I':
                 uuid.append(fastq_line[template_idx])
 
             # Case 5: the template is an N, so this is part of our variant sequence
-            elif self.template_sequence[template_idx] == 'N':
+            else:
+                if self.template_sequence[template_idx] == 'N':
 
-                if quality_score[template_idx] < int(self.variant_sequence_quality_threshold):
-                    return False, False, 2
+                    if quality_score[template_idx] < int(self.variant_sequence_quality_threshold):
+                        return False, False, 2, 1
+
+                    probability_of_error = FASTQ.convert_quality_score_to_probability_of_error(quality_score[template_idx]) * 0.75
+
+                # Case 6: the template is a K, so the variant should be a T or G
+                elif self.template_sequence[template_idx] == 'K':
+
+                    if quality_score[template_idx] < self.variant_sequence_quality_threshold:
+                        return False, False, 2, 1
+
+                    if fastq_line[template_idx] != 'G' and fastq_line[template_idx] != 'T':
+                        return False, False, 3, 1
+
+                    probability_of_error = FASTQ.convert_quality_score_to_probability_of_error(quality_score[template_idx]) * 0.5
 
                 extracted_sequence.append(fastq_line[template_idx])
+                probability_of_perfect_read *= (1.0 - probability_of_error)
 
-            # Case 6: the template is a K, so the variant should be a T or G
-            elif self.template_sequence[template_idx] == 'K':
+                #print("Probability of perfect read: %.6f" % probability_of_perfect_read)
 
-                if quality_score[template_idx] < self.variant_sequence_quality_threshold:
-                    return False, False, 2
-
-                if fastq_line[template_idx] != 'G' and fastq_line[template_idx] != 'T':
-                    return False, False, 3
-
-                extracted_sequence.append(fastq_line[template_idx])
-
-
-        return ''.join(extracted_sequence), ''.join(uuid), 0
+        return ''.join(extracted_sequence), ''.join(uuid), 0, 1.0 - probability_of_perfect_read
