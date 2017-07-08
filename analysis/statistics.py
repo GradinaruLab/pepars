@@ -72,15 +72,9 @@ def get_expected_count_distribution(template, num_samples):
 
         probability = binomial(num_samples, probability_of_sequence, k)
 
-        #print("Probability of seeing a sequence %i time(s): %0.4f%%" % (k, probability * 100))
-
         relative_probability = probability / probability_seen
 
-        #print("Relative probability of seeing a sequence %i time(s): %0.4f%%" % (k, relative_probability * 100))
-
         num_expected_sequences = round(relative_probability * num_samples)
-
-        #print("Expected number of sequences that are present %i time(s): %i" % (k, num_expected_sequences))
 
         if num_expected_sequences >= 1:
             distribution[k] = num_expected_sequences
