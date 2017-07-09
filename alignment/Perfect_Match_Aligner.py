@@ -31,6 +31,7 @@ class Perfect_Match_Aligner(Aligner):
         extracted_sequences = []
         uuids = []
         error_probabilities = []
+        sequence_counts = {}
 
         num_sequences = 0
 
@@ -58,6 +59,10 @@ class Perfect_Match_Aligner(Aligner):
                         
                         if error_type == 0:
                             extracted_sequences.append(extracted_sequence)
+                            if extracted_sequence in sequence_counts:
+                                sequence_counts[extracted_sequence] += 1
+                            else:
+                                sequence_counts[extracted_sequence] = 1
                             uuids.append(uuid)
                             error_probabilities.append(error_probability)
                         elif error_type == 1:
@@ -79,6 +84,11 @@ class Perfect_Match_Aligner(Aligner):
 
         mismatched_sequences = template_mismatches + variant_quality_mismatches\
             + variant_nucleotide_mismatches + size_mismatches
+
+        num_single_counts = 0
+        for sequence, count in sequence_counts.items():
+            if count == 1:
+                num_single_counts += 1
         
         statistics = {}
         
@@ -90,6 +100,7 @@ class Perfect_Match_Aligner(Aligner):
         statistics["Template Size Mismatch Rate"] = float(size_mismatches)/float(num_sequences)
         statistics["Invalid nucleotide Rate"] = float(invalid_nucleotides)/float(num_sequences)
         statistics["Expected Number of Misreads"] = sum(error_probabilities)
+        statistics["Number Single Count Sequences"] = num_single_counts
 
         return extracted_sequences, uuids, statistics
 
@@ -137,8 +148,6 @@ class Perfect_Match_Aligner(Aligner):
                     if quality_score[template_idx] < int(self.variant_sequence_quality_threshold):
                         return False, False, 2, 1
 
-                    probability_of_error = FASTQ.convert_quality_score_to_probability_of_error(quality_score[template_idx]) * 0.75
-
                 # Case 6: the template is a K, so the variant should be a T or G
                 elif self.template_sequence[template_idx] == 'K':
 
@@ -148,7 +157,7 @@ class Perfect_Match_Aligner(Aligner):
                     if fastq_line[template_idx] != 'G' and fastq_line[template_idx] != 'T':
                         return False, False, 3, 1
 
-                    probability_of_error = FASTQ.convert_quality_score_to_probability_of_error(quality_score[template_idx]) * 0.5
+                probability_of_error = FASTQ.convert_quality_score_to_probability_of_error(quality_score[template_idx])
 
                 extracted_sequence.append(fastq_line[template_idx])
                 probability_of_perfect_read *= (1.0 - probability_of_error)
