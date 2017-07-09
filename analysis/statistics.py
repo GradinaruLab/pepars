@@ -2,6 +2,44 @@ import numpy
 import math
 from utils import DNA
 from analysis.Sequence_Library import Sequence_Library
+from workspace import Workspace as ws
+from . import coverage
+
+def get_probability_of_unseen_sequence(library):
+
+    alignment = ws.get_active_alignment()
+
+    # Check the alignment statistics data to see if we've gotten calculated this before
+    if "Unseen Sequence Probability" in alignment.statistics[library.id]:
+        return alignment.statistics[library.id]["Unseeen Sequence Probability"]
+
+    if "Expected Number of Misreads" not in alignment.statistics[library.id]:
+        raise Exception("Missing 'Expected Number of Misreads' from statistics. Align with an alignment method that generates ")
+
+    sequence_library = Sequence_Library(library)
+
+    num_expected_misreads = alignment.statistics[library.id]["Expected Number of Misreads"]
+    sequence_counts = sequence_library.get_sequence_counts(by_amino_acid=False, count_threshold=0, filter_invalid=True)
+    num_single_counts = 0
+
+    for sequence, count in sequence_counts.items():
+        if count == 1:
+            num_single_counts += 1
+
+    probability_of_misread_overlap = coverage.get_probability_of_single_misread_existing(library)
+    unique_misreads = round(num_expected_misreads * (1-probability_of_misread_overlap))
+    num_expected_misreads = round(num_expected_misreads)
+
+    n_1 = num_single_counts - unique_misreads
+
+    if n_1 <= 0:
+        raise Exception("More expected unique misreads than there are single count sequences! This should be impossible")
+
+    probability_unseen = n_1 / alignment.statistics[library.id]["Number of Sequences"]
+
+    alignment.set_statistic(library, "Unseeen Sequence Probability", probability_unseen)
+
+    return probability_unseen
 
 def get_sequence_count_bins(sequence_library, bins = None):
 

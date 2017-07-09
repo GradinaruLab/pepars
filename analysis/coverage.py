@@ -3,6 +3,45 @@ import itertools
 from workspace import Workspace as ws
 from workspace import Database as db
 import random
+from .Sequence_Library import Sequence_Library
+
+def get_probability_of_single_misread_existing(library, num_samples = 10000):
+
+    alignment = ws.get_active_alignment()
+
+    template = db.get_template_by_id(alignment.library_templates[library.id]).get_variant_template()
+
+    sequence_library = Sequence_Library(library)
+
+    sequence_counts = sequence_library.get_sequence_counts(by_amino_acid=False, count_threshold=0, filter_invalid=True)
+
+    sequences = []
+
+    for sequence, count in sequence_counts.items():
+        for i in range(count):
+            sequences.append(sequence)
+
+    num_duplicates = 0
+    sample_index = 0
+
+    while sample_index < num_samples:
+        sequence = random.sample(sequences, 1)[0]
+
+        random_mutation_index = random.sample(range(len(template)), 1)[0]
+
+        new_nucleotide = None
+
+        while new_nucleotide == None or new_nucleotide == sequence[random_mutation_index]:
+            new_nucleotide = random.sample(list(DNA.IUPAC[template[random_mutation_index]]), 1)[0]
+
+        new_sequence = sequence[:random_mutation_index] + new_nucleotide + sequence[random_mutation_index+1:]
+
+        sample_index += 1
+
+        if new_sequence in sequence_counts:
+            num_duplicates += 1
+            
+    return num_duplicates / sample_index
 
 def generate_excluded_sequences(template, included_sequences, num_sequences):
 
