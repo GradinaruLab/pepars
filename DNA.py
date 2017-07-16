@@ -31,6 +31,13 @@ IUPAC = {
 	'N':'ACGT'
 }
 
+DNA_complements = {
+	'A': 'T',
+	'T': 'A',
+	'G': 'C',
+	'C': 'G'
+}
+
 def get_nucleotides():
 	return ['A','C','G','T']
 
@@ -45,3 +52,20 @@ def translate_dna_single(dna):
 		amino_acids += gencode[dna[start_index:start_index+3]]
 
 	return amino_acids
+
+def get_complement(sequence):
+
+	complement_sequence = ''
+
+	for character in sequence:
+		complement_sequence += DNA_complements[character]
+
+	return complement_sequence
+
+def get_reverse_complement(sequence):
+
+	reverse_sequence = sequence[::-1]
+
+	reverse_complement_sequence = get_complement(reverse_sequence)
+
+	return reverse_complement_sequence

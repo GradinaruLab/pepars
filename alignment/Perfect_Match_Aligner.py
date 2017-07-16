@@ -1,6 +1,7 @@
 from .Aligner import Aligner
 from sequencing import FASTQ
 from workspace import Workspace as ws
+from workspace import Database as db
 from utils import DNA
 
 class Perfect_Match_Aligner(Aligner):
@@ -14,6 +15,7 @@ class Perfect_Match_Aligner(Aligner):
         mismatch_quality_threshold = 0,
         output_frequency = 1e5):
 
+        self.template = template
         self.template_sequence = template.sequence
         self.variant_sequence_quality_threshold = \
             int(variant_sequence_quality_threshold)
@@ -37,6 +39,16 @@ class Perfect_Match_Aligner(Aligner):
 
         for fastq_file_name in library.fastq_files:
 
+            FASTQ_file_object = db.get_FASTQ_file(fastq_file_name)
+
+            self._progress_callback("Reading '%s'" % fastq_file_name)
+
+            if FASTQ_file_object.is_reverse_complement:
+                template = db.get_template_by_id(self.template.reverse_complement_template_id)
+                self.template_sequence = template.sequence
+            else:
+                self.template_sequence = self.template.sequence
+
             fastq_file = ws.get_fastq_file(fastq_file_name).read().splitlines()
 
             line_count = 0
@@ -46,6 +58,9 @@ class Perfect_Match_Aligner(Aligner):
                 if line_count % 4 == 1:
                     if int(line_count / 4) % output_frequency == 0:
                         self.update_num_sequences_aligned(num_sequences)
+                        # self._progress_callback("Comparing:")
+                        # self._progress_callback("%s" % self.template_sequence)
+                        # self._progress_callback("%s" % line)
                     sequence = line
 
                 elif line_count % 4 == 3:
@@ -56,8 +71,15 @@ class Perfect_Match_Aligner(Aligner):
 
                         extracted_sequence, uuid, error_type, error_probability = \
                             self.extract_sequence(sequence, quality_string)
+
+                        # if int(line_count / 4) % output_frequency == 0:
+                        #     self._progress_callback("Error type: %i" % error_type)
                         
                         if error_type == 0:
+
+                            if FASTQ_file_object.is_reverse_complement:
+                                extracted_sequence = DNA.get_reverse_complement(extracted_sequence)
+
                             extracted_sequences.append(extracted_sequence)
                             if extracted_sequence in sequence_counts:
                                 sequence_counts[extracted_sequence] += 1

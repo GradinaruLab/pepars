@@ -81,8 +81,7 @@ class Aligner(object):
 
         percent = num_sequences * 100.0 / self._num_sequences
 
-        progress_string = '{0:.2f}'.format(percent) + '% (' + \
-            str(num_sequences) + '/' + str(self._num_sequences) + ')'
+        progress_string = "%.2f%% (%i/%i)" % (percent, num_sequences, self._num_sequences)
 
         self._progress_callback(progress_string)
 
