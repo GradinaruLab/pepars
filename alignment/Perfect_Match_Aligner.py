@@ -25,6 +25,7 @@ class Perfect_Match_Aligner(Aligner):
         variant_nucleotide_mismatches = 0
         size_mismatches = 0
         invalid_nucleotides = 0
+        paired_end_mismatches = 0
 
         print('Aligning library \'' + library.name + '\'')
 
@@ -37,7 +38,26 @@ class Perfect_Match_Aligner(Aligner):
 
         num_sequences = 0
 
+        # Find if any files are the reverse complement
+
+        is_paired_end = False
+
         for fastq_file_name in library.fastq_files:
+
+            FASTQ_file_object = db.get_FASTQ_file(fastq_file_name)
+
+            if FASTQ_file_object.is_reverse_complement:
+                is_paired_end = True
+
+        if is_paired_end:
+            self._num_sequences = int(self._num_sequences / 2)
+
+        previous_FASTQ_sequences = []
+        paired_end_comparisons = 0
+ 
+        for fastq_file_index in range(len(library.fastq_files)):
+
+            fastq_file_name = library.fastq_files[fastq_file_index]
 
             FASTQ_file_object = db.get_FASTQ_file(fastq_file_name)
 
@@ -52,6 +72,8 @@ class Perfect_Match_Aligner(Aligner):
             fastq_file = ws.get_fastq_file(fastq_file_name).read().splitlines()
 
             line_count = 0
+
+            FASTQ_sequence_index = 0
 
             for line in fastq_file:
 
@@ -72,14 +94,37 @@ class Perfect_Match_Aligner(Aligner):
                         extracted_sequence, uuid, error_type, error_probability = \
                             self.extract_sequence(sequence, quality_string)
 
-                        # if int(line_count / 4) % output_frequency == 0:
-                        #     self._progress_callback("Error type: %i" % error_type)
-                        
-                        if error_type == 0:
+                        if is_paired_end:
 
-                            if FASTQ_file_object.is_reverse_complement:
+                            if error_type == 0 and FASTQ_file_object.is_reverse_complement:
                                 extracted_sequence = DNA.get_reverse_complement(extracted_sequence)
 
+                            # If this is paired end, we just log it and wait for the next pass
+                            if fastq_file_index == 0:
+                                sequence_error = [extracted_sequence, error_type, error_probability, uuid]
+                                previous_FASTQ_sequences.append(sequence_error)
+                                # Not really an error, but we want to skip it
+                                error_type = 6
+                            else:
+                                # If the previous FASTQ file had an error, we just use the new one
+                                if previous_FASTQ_sequences[FASTQ_sequence_index][1] != 0:
+                                    pass
+                                # If the current FASTQ file has an error, we just use the previous one
+                                elif error_type != 0:
+                                    extracted_sequence = previous_FASTQ_sequences[FASTQ_sequence_index][0]
+                                    uuid = previous_FASTQ_sequences[FASTQ_sequence_index][3]
+                                    error_type = previous_FASTQ_sequences[FASTQ_sequence_index][1]
+                                    error_probability = previous_FASTQ_sequences[FASTQ_sequence_index][2]
+                                # If neither had an error, we compare and only include if they match
+                                else:
+                                    paired_end_comparisons += 1
+                                    if previous_FASTQ_sequences[FASTQ_sequence_index][0] != extracted_sequence:
+                                        error_type = 5
+                                    # If the match, we have even greater confidence in them
+                                    else:
+                                        error_probability = error_probability * previous_FASTQ_sequences[FASTQ_sequence_index][2]
+                        
+                        if error_type == 0:
                             extracted_sequences.append(extracted_sequence)
                             if extracted_sequence in sequence_counts:
                                 sequence_counts[extracted_sequence] += 1
@@ -87,6 +132,7 @@ class Perfect_Match_Aligner(Aligner):
                                 sequence_counts[extracted_sequence] = 1
                             uuids.append(uuid)
                             error_probabilities.append(error_probability)
+
                         elif error_type == 1:
                             template_mismatches += 1
                         elif error_type == 2:
@@ -95,17 +141,22 @@ class Perfect_Match_Aligner(Aligner):
                             variant_nucleotide_mismatches += 1
                         elif error_type == 4:
                             invalid_nucleotides += 1
+                        elif error_type == 5:
+                            paired_end_mismatches += 1
                     else:
                         size_mismatches +=1
 
-                    num_sequences += 1
+                    FASTQ_sequence_index += 1
+
+                    if not is_paired_end or fastq_file_index == 1:
+                        num_sequences += 1
 
                 line_count += 1
 
             ws.close_fastq_file(fastq_file_name)
 
         mismatched_sequences = template_mismatches + variant_quality_mismatches\
-            + variant_nucleotide_mismatches + size_mismatches
+            + variant_nucleotide_mismatches + size_mismatches + paired_end_mismatches + invalid_nucleotides
 
         num_single_counts = 0
         for sequence, count in sequence_counts.items():
@@ -117,12 +168,14 @@ class Perfect_Match_Aligner(Aligner):
         statistics["Number of Sequences"] = num_sequences
         statistics["Alignment rate"] = float(1.0-float(mismatched_sequences)/float(num_sequences))
         statistics["Template Mismatch Failure Rate"] = float(template_mismatches)/float(num_sequences)
+        statistics["Paired End Mismatch Failure Rate"] = float(paired_end_mismatches)/float(num_sequences)
         statistics["Variant Quality Failure Rate"] = float(variant_quality_mismatches)/float(num_sequences)
         statistics["Variant Nucleotide Mismatch Rate"] = float(variant_nucleotide_mismatches)/float(num_sequences)
         statistics["Template Size Mismatch Rate"] = float(size_mismatches)/float(num_sequences)
         statistics["Invalid nucleotide Rate"] = float(invalid_nucleotides)/float(num_sequences)
         statistics["Expected Number of Misreads"] = sum(error_probabilities)
         statistics["Number Single Count Sequences"] = num_single_counts
+        statistics["Paired end match rate"] = 1 - (paired_end_mismatches / paired_end_comparisons) 
 
         return extracted_sequences, uuids, statistics
 
