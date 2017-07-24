@@ -1,4 +1,5 @@
 from Bio.SeqUtils.ProtParam import ProteinAnalysis
+import Bio.SeqUtils.ProtParamData
 
 def compare_to(val1, val2):
 
@@ -10,7 +11,7 @@ def compare_to(val1, val2):
 
 class AminoAcid:
 
-	properties = ['charge','phosphorylation','average_flexibility_idx','ionic_bond','molecular_weight','hydrophobicity','typically_helix','typically_turn','typically_sheet']
+	properties = ['charge','phosphorylation','average_flexibility_idx','ionic_bond','molecular_weight','hydrophobicity','typically_helix','typically_turn','typically_sheet','hydrophilicity','surface_accessibility','mutability','janin_interior_surface_energy_scale']
 
 
 	def __init__(self,amino_acid):
@@ -30,7 +31,9 @@ class AminoAcid:
 			self.properties['average_flexibility_idx'] = 0.530
 			self.properties['ionic_bond'] = 1.00
 			self.properties['hydrogen_bond'] = 1.00
-
+			self.properties['hydrophilicity'] = 3.0
+			self.properties['surface_accessibility'] = 1.475
+			self.properties['mutability'] = 65
 
 		elif amino_acid== 'N':
 			self.is_valid = True
@@ -43,6 +46,10 @@ class AminoAcid:
 			self.properties['average_flexibility_idx'] = 0.46
 			self.properties['ionic_bond'] = 0.00
 			self.properties['hydrogen_bond'] = 1.00
+			self.properties['hydrophilicity'] = 0.2
+			self.properties['hydrophilicity'] = 3.0
+			self.properties['surface_accessibility'] = 1.296
+			self.properties['mutability'] = 134
 
 		elif amino_acid == 'D':
 			self.is_valid = True
@@ -55,6 +62,9 @@ class AminoAcid:
 			self.properties['average_flexibility_idx'] = 0.510
 			self.properties['ionic_bond'] = 1.00
 			self.properties['hydrogen_bond'] = 1.00
+			self.properties['hydrophilicity'] = 3.0
+			self.properties['surface_accessibility'] = 1.283
+			self.properties['mutability'] = 106
 
 		elif amino_acid == 'E':
 			self.is_valid = True
@@ -67,6 +77,9 @@ class AminoAcid:
 			self.properties['average_flexibility_idx'] = 0.500
 			self.properties['ionic_bond'] = 1.00
 			self.properties['hydrogen_bond'] = 1.00
+			self.properties['hydrophilicity'] = 3.0
+			self.properties['surface_accessibility'] = 1.445
+			self.properties['mutability'] = 102
 
 		elif amino_acid== 'Q':
 			self.is_valid = True
@@ -79,6 +92,9 @@ class AminoAcid:
 			self.properties['average_flexibility_idx'] = 0.490
 			self.properties['ionic_bond'] = 0.00
 			self.properties['hydrogen_bond'] = 1.00
+			self.properties['hydrophilicity'] = 0.2
+			self.properties['surface_accessibility'] = 1.348
+			self.properties['mutability'] = 93
 
 		elif amino_acid== 'K':
 			self.is_valid = True
@@ -91,6 +107,9 @@ class AminoAcid:
 			self.properties['average_flexibility_idx'] = 0.470
 			self.properties['ionic_bond'] = 1.00
 			self.properties['hydrogen_bond'] = 1.00
+			self.properties['hydrophilicity'] = 3.0
+			self.properties['surface_accessibility'] = 1.545
+			self.properties['mutability'] = 56
 
 		elif amino_acid== 'S':
 			self.is_valid = True
@@ -103,6 +122,9 @@ class AminoAcid:
 			self.properties['average_flexibility_idx'] = 0.510
 			self.properties['ionic_bond'] = 0.00
 			self.properties['hydrogen_bond'] = 1.00
+			self.properties['hydrophilicity'] = 0.3
+			self.properties['surface_accessibility'] = 1.115
+			self.properties['mutability'] = 120
 
 		elif amino_acid== 'T':
 			self.is_valid = True
@@ -115,6 +137,9 @@ class AminoAcid:
 			self.properties['average_flexibility_idx'] = 0.440
 			self.properties['ionic_bond'] = 0.00
 			self.properties['hydrogen_bond'] = 1.00
+			self.properties['hydrophilicity'] = -0.4
+			self.properties['surface_accessibility'] = 1.184
+			self.properties['mutability'] = 97
 
 		elif amino_acid== 'C':
 			self.is_valid = True
@@ -127,6 +152,9 @@ class AminoAcid:
 			self.properties['average_flexibility_idx'] = 0.350
 			self.properties['ionic_bond'] = 0.00
 			self.properties['hydrogen_bond'] = 0.00
+			self.properties['hydrophilicity'] = -1.0
+			self.properties['surface_accessibility'] = 0.394
+			self.properties['mutability'] = 20
 
 		elif amino_acid== 'H':
 			self.is_valid = True
@@ -139,6 +167,10 @@ class AminoAcid:
 			self.properties['average_flexibility_idx'] = 0.320
 			self.properties['ionic_bond'] = 1.00
 			self.properties['hydrogen_bond'] = 1.00
+			self.properties['hydrophilicity'] = -0.5
+			self.properties['surface_accessibility'] = 1.180
+			self.properties['mutability'] = 66
+
 
 		elif amino_acid== 'M':
 			self.is_valid = True
@@ -151,6 +183,9 @@ class AminoAcid:
 			self.properties['average_flexibility_idx'] = 0.300
 			self.properties['ionic_bond'] = 0.00
 			self.properties['hydrogen_bond'] = 0.00
+			self.properties['hydrophilicity'] = -1.3
+			self.properties['surface_accessibility'] = 0.714
+			self.properties['mutability'] = 94
 
 
 		elif amino_acid== 'A':
@@ -164,6 +199,9 @@ class AminoAcid:
 			self.properties['average_flexibility_idx'] = 0.360
 			self.properties['ionic_bond'] = 0.00
 			self.properties['hydrogen_bond'] = 0.00
+			self.properties['hydrophilicity'] = -0.5
+			self.properties['surface_accessibility'] = 0.815
+			self.properties['mutability'] = 100
 
 		elif amino_acid== 'V':
 			self.is_valid = True
@@ -176,6 +214,9 @@ class AminoAcid:
 			self.properties['average_flexibility_idx'] = 0.390
 			self.properties['ionic_bond'] = 0.00
 			self.properties['hydrogen_bond'] = 0.00
+			self.properties['hydrophilicity'] = -1.5
+			self.properties['surface_accessibility'] = 0.606
+			self.properties['mutability'] = 74
 
 		elif amino_acid== 'G':
 			self.is_valid = True
@@ -188,6 +229,9 @@ class AminoAcid:
 			self.properties['average_flexibility_idx'] = 0.540
 			self.properties['ionic_bond'] = 0.00
 			self.properties['hydrogen_bond'] = 0.00
+			self.properties['hydrophilicity'] = 0.0
+			self.properties['surface_accessibility'] = 0.714
+			self.properties['mutability'] = 49
 
 		elif amino_acid== 'I':
 			self.is_valid = True
@@ -200,6 +244,9 @@ class AminoAcid:
 			self.properties['average_flexibility_idx'] = 0.460
 			self.properties['ionic_bond'] = 0.00
 			self.properties['hydrogen_bond'] = 0.00
+			self.properties['hydrophilicity'] = -1.8
+			self.properties['surface_accessibility'] = 0.603
+			self.properties['mutability'] = 96
 
 		elif amino_acid== 'L':
 			self.is_valid = True
@@ -212,6 +259,9 @@ class AminoAcid:
 			self.properties['average_flexibility_idx'] = 0.370
 			self.properties['ionic_bond'] = 0.00
 			self.properties['hydrogen_bond'] = 0.00
+			self.properties['hydrophilicity'] = -1.8
+			self.properties['surface_accessibility'] = 0.603
+			self.properties['mutability'] = 40
 
 		elif amino_acid== 'F':
 			self.is_valid = True
@@ -224,6 +274,9 @@ class AminoAcid:
 			self.properties['average_flexibility_idx'] = 0.310
 			self.properties['ionic_bond'] = 0.00
 			self.properties['hydrogen_bond'] = 0.00
+			self.properties['hydrophilicity'] = -2.5
+			self.properties['surface_accessibility'] = 0.695
+			self.properties['mutability'] = 41
 
 		elif amino_acid=='P':
 			self.is_valid = True
@@ -236,6 +289,9 @@ class AminoAcid:
 			self.properties['average_flexibility_idx'] = 0.510
 			self.properties['ionic_bond'] = 0.00
 			self.properties['hydrogen_bond'] = 0.00
+			self.properties['hydrophilicity'] = 0.0
+			self.properties['surface_accessibility'] = 1.236
+			self.properties['mutability'] = 56
 
 		elif amino_acid== 'W':
 			self.is_valid = True
@@ -248,6 +304,9 @@ class AminoAcid:
 			self.properties['average_flexibility_idx'] = 0.310
 			self.properties['ionic_bond'] = 0.00
 			self.properties['hydrogen_bond'] = 1.00
+			self.properties['hydrophilicity'] = -3.4
+			self.properties['surface_accessibility'] = 0.808
+			self.properties['mutability'] = 18
 
 		elif amino_acid== 'Y':
 			self.is_valid = True
@@ -260,6 +319,9 @@ class AminoAcid:
 			self.properties['average_flexibility_idx'] = 0.420
 			self.properties['ionic_bond'] = 0.00
 			self.properties['hydrogen_bond'] = 1.00
+			self.properties['hydrophilicity'] = -2.3
+			self.properties['surface_accessibility'] = 1.089
+			self.properties['mutability'] = 41
 
 		else:
 			self.is_valid = False
@@ -272,6 +334,8 @@ class AminoAcid:
 			self.properties['typically_helix'] = secondary_struct[0]
 			self.properties['typically_turn'] = secondary_struct[1]
 			self.properties['typically_sheet'] = secondary_struct[2]
+			self.properties['janin_interior_surface_energy_scale'] = Bio.SeqUtils.ProtParamData.ja[str(amino_acid)]
+
 
 
 
