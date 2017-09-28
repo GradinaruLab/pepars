@@ -334,7 +334,7 @@ class AminoAcid:
 			self.properties['typically_helix'] = secondary_struct[0]
 			self.properties['typically_turn'] = secondary_struct[1]
 			self.properties['typically_sheet'] = secondary_struct[2]
-			self.properties['janin_interior_surface_energy_scale'] = Bio.SeqUtils.ProtParamData.ja[str(amino_acid)]
+			#self.properties['janin_interior_surface_energy_scale'] = Bio.SeqUtils.ProtParamData.ja[str(amino_acid)]
 
 
 
