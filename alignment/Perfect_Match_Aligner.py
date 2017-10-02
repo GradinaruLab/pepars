@@ -175,7 +175,8 @@ class Perfect_Match_Aligner(Aligner):
         statistics["Invalid nucleotide Rate"] = float(invalid_nucleotides)/float(num_sequences)
         statistics["Expected Number of Misreads"] = sum(error_probabilities)
         statistics["Number Single Count Sequences"] = num_single_counts
-        statistics["Paired end match rate"] = 1 - (paired_end_mismatches / paired_end_comparisons) 
+        if paired_end_comparisons > 0:
+            statistics["Paired end match rate"] = 1 - (paired_end_mismatches / paired_end_comparisons) 
 
         return extracted_sequences, uuids, statistics
 
