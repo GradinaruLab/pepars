@@ -1,1 +1,1 @@
-# from AminoAcid import AminoAcid
+from . import DNA
