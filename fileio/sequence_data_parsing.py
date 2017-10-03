@@ -8,96 +8,96 @@ import utils.DNA as DNA
 
 def load_sequence_count_file(filename, minimum_num_sequence, group_by_amino_acid):
 
-	sequences = []
+    sequences = []
 
-	# 1xM list of all the initial counts of all examples
-	initial_counts = []
+    # 1xM list of all the initial counts of all examples
+    initial_counts = []
 
-	# MxN list, the counts of each extracted type for each example
-	extracted_counts = []
+    # MxN list, the counts of each extracted type for each example
+    extracted_counts = []
 
-	# Total count of all sequences initially injected into organism
-	total_initial_count = 0
+    # Total count of all sequences initially injected into organism
+    total_initial_count = 0
 
-	# 1xN list of the sum of all sequences, 1 for each extracted type
-	total_extracted_counts = []
+    # 1xN list of the sum of all sequences, 1 for each extracted type
+    total_extracted_counts = []
 
-	sequences = []
-	initial_counts = []
-	extracted_counts = []
+    sequences = []
+    initial_counts = []
+    extracted_counts = []
 
-	with open(filename, 'rb') as sequence_file:
-		sequence_reader = csv.reader(sequence_file, delimiter=',')
-		headers = next(sequence_reader, None)
+    with open(filename, 'rb') as sequence_file:
+        sequence_reader = csv.reader(sequence_file, delimiter=',')
+        headers = next(sequence_reader, None)
 
-		# Loop through all rows and read in their counts
-		for row in sequence_reader:
+        # Loop through all rows and read in their counts
+        for row in sequence_reader:
 
-			column_iterator = iter(row)
-			sequence = next(column_iterator, None)
+            column_iterator = iter(row)
+            sequence = next(column_iterator, None)
 
-			if group_by_amino_acid:
-				sequence = DNA.translate_dna_single(sequence)
+            if group_by_amino_acid:
+                sequence = DNA.translate_dna_single(sequence)
 
-				# If there are any invalid amino acids, skip them
-				if '#' in sequence:
-					continue
+                # If there are any invalid amino acids, skip them
+                if '#' in sequence:
+                    continue
 
-			sequences.append(sequence)
-			initial_counts.append(int(next(column_iterator, None)))
-			extracted_counts.append(int(next(column_iterator, None)))
+            sequences.append(sequence)
+            initial_counts.append(int(next(column_iterator, None)))
+            extracted_counts.append(int(next(column_iterator, None)))
 
-	sequence_initial_counts = dict()
-	sequence_extracted_counts = dict()
+    sequence_initial_counts = dict()
+    sequence_extracted_counts = dict()
 
-	num_sequences = len(sequences)
-	print('Num sequences: %d' % num_sequences)
+    num_sequences = len(sequences)
+    print('Num sequences: %d' % num_sequences)
 
-	# Loop through all the sequences we just read in
-	for sequence_index in range(0, num_sequences):
+    # Loop through all the sequences we just read in
+    for sequence_index in range(0, num_sequences):
 
-		# If this is the first time we're seeing this sequence, initialize our dict
-		if sequences[sequence_index] not in sequence_initial_counts:
-			sequence_initial_counts[sequences[sequence_index]] = initial_counts[sequence_index]
-			sequence_extracted_counts[sequences[sequence_index]] = extracted_counts[sequence_index]
-		else:
-			sequence_initial_counts[sequences[sequence_index]] += initial_counts[sequence_index]
-			sequence_extracted_counts[sequences[sequence_index]] += extracted_counts[sequence_index]
+        # If this is the first time we're seeing this sequence, initialize our dict
+        if sequences[sequence_index] not in sequence_initial_counts:
+            sequence_initial_counts[sequences[sequence_index]] = initial_counts[sequence_index]
+            sequence_extracted_counts[sequences[sequence_index]] = extracted_counts[sequence_index]
+        else:
+            sequence_initial_counts[sequences[sequence_index]] += initial_counts[sequence_index]
+            sequence_extracted_counts[sequences[sequence_index]] += extracted_counts[sequence_index]
 
-	total_initial_count = 0
-	total_extracted_count = 0
+    total_initial_count = 0
+    total_extracted_count = 0
 
-	sequences_set = set()
+    sequences_set = set()
 
-	for sequence in sequence_initial_counts:
-		sequences_set.add(sequence)
+    for sequence in sequence_initial_counts:
+        sequences_set.add(sequence)
 
-	# Loop through all our sequences, now that they're nice and grouped uniquely
-	for sequence in sequences_set:
+    # Loop through all our sequences, now that they're nice and grouped uniquely
+    for sequence in sequences_set:
 
-		if sequence_initial_counts[sequence] == 0:
-			del sequence_initial_counts[sequence]
-			del sequence_extracted_counts[sequence]
-		elif sequence_initial_counts[sequence] + sequence_extracted_counts[sequence] < minimum_num_sequence:
-			del sequence_initial_counts[sequence]
-			del sequence_extracted_counts[sequence]
-		else:
-			total_initial_count += sequence_initial_counts[sequence]
-			total_extracted_count += sequence_extracted_counts[sequence]
+        if sequence_initial_counts[sequence] == 0:
+            del sequence_initial_counts[sequence]
+            del sequence_extracted_counts[sequence]
+        elif sequence_initial_counts[sequence] + sequence_extracted_counts[sequence] < minimum_num_sequence:
+            del sequence_initial_counts[sequence]
+            del sequence_extracted_counts[sequence]
+        else:
+            total_initial_count += sequence_initial_counts[sequence]
+            total_extracted_count += sequence_extracted_counts[sequence]
 
-	sequence_matrix = []
+    sequence_matrix = []
 
-	for sequence in sequence_initial_counts:
-		sequence_matrix.append(utils.convert_string_to_char_array(sequence))
+    for sequence in sequence_initial_counts:
+        sequence_matrix.append(utils.convert_string_to_char_array(sequence))
 
-	num_sequences = len(sequences)
+    num_sequences = len(sequences)
 
-	# MxN
-	fold_enrichments = []
+    # MxN
+    fold_enrichments = []
 
-	for sequence in sequence_initial_counts:
+    for sequence in sequence_initial_counts:
 
-		fold_enrichment = (sequence_extracted_counts[sequence]* 1.0 / total_extracted_count) / (sequence_initial_counts[sequence] * 1.0/ total_initial_count)
-		fold_enrichments.append([fold_enrichment])
+        fold_enrichment = (sequence_extracted_counts[sequence]* 1.0 / total_extracted_count) / (sequence_initial_counts[sequence] * 1.0/ total_initial_count)
+        fold_enrichments.append([fold_enrichment])
 
-	return sequence_matrix, fold_enrichments
+    return sequence_matrix, fold_enrichments
