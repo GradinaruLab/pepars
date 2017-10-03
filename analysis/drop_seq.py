@@ -5,8 +5,6 @@ def get_barcodes_from_transcript_matrix(file_path):
 
     barcodes = []
 
-    file_path = os.path.join("..", "workspace", "drop_seq_1", "H2-small_matrix.csv")
-
     data_frame = pandas.read_csv(file_path)
 
     columns = list(data_frame.columns.values)
