@@ -69,13 +69,13 @@ class Perfect_Match_Aligner(Aligner):
             else:
                 self.template_sequence = self.template.sequence
 
-            fastq_file = ws.get_fastq_file(fastq_file_name).read().splitlines()
+            fastq_file = ws.get_fastq_file(fastq_file_name)
 
             line_count = 0
 
             FASTQ_sequence_index = 0
 
-            for line in fastq_file:
+            for i, line in enumerate(fastq_file):
 
                 if line_count % 4 == 1:
                     if int(line_count / 4) % output_frequency == 0:
@@ -83,11 +83,11 @@ class Perfect_Match_Aligner(Aligner):
                         # self._progress_callback("Comparing:")
                         # self._progress_callback("%s" % self.template_sequence)
                         # self._progress_callback("%s" % line)
-                    sequence = line
+                    sequence = line.strip()
 
                 elif line_count % 4 == 3:
 
-                    quality_string = line
+                    quality_string = line.strip()
                     
                     if (len(sequence)) == template_length:
 
