@@ -49,6 +49,8 @@ class heatmap:
         self.stop = None
         self.constant_scale = constant_scale
 
+
+
     #Plots data according to 
 
     def normalized_sequence_counts(self, library, by_amino_acid = True,
@@ -59,11 +61,16 @@ class heatmap:
         slib = Sequence_Library(library);
         slib_count = slib.get_sequence_counts(by_amino_acid=by_amino_acid,
             count_threshold=count_threshold, filter_invalid=filter_invalid)
+
+        self.amino_acid_distribution(slib_count, constant_scale)
+
+    def amino_acid_distribution(self, sequence_counts, constant_scale = True):
+        
         sequence_matrix = []
-        sequence_counts = []
-        for sequence, count in slib_count.items():
+        counts = []
+        for sequence, count in sequence_counts.items():
             sequence_matrix.append(list(sequence))
-            sequence_counts.append(count)
+            counts.append(count)
         
         sequence_matrix = np.array(sequence_matrix)
 
@@ -88,7 +95,7 @@ class heatmap:
             # note that aminos and sequence_counts have the same indices
             for sequence, amino in enumerate(aminos):
                 if amino in acid_labels:
-                    row[acid_labels[amino]] += sequence_counts[sequence]
+                    row[acid_labels[amino]] += counts[sequence]
                     # else: print 'acid: '+'\''+amino+'\''
             biased_counts.append(row)
 
@@ -103,12 +110,12 @@ class heatmap:
         for acid, index in acid_labels.items():
             self.x_labels[index]=acid
 
-        self.y_labels = range(1,1+positions)[::-1]
-        self.data = np.dot(biased_counts, weights)/sum(sequence_counts)
+        self.y_labels = range(1,1+positions)
+        self.data = np.dot(biased_counts, weights)/sum(counts)
         if constant_scale:
             self.start = 0.0
             self.midpoint = 1.0/32.0
-            self.data = np.dot(biased_counts, weights)/sum(sequence_counts)/self.midpoint
+            self.data = np.dot(biased_counts, weights)/sum(counts)/self.midpoint
         else:
             self.midpoint = 1.0/(32.0*np.amax(self.data)) if np.amax(self.data)>1.0/32.0 else 1.0
             self.start = np.amin(self.data)
