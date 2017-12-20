@@ -37,7 +37,7 @@ def get_probability_of_unseen_sequence(library):
 
     probability_unseen = n_1 / alignment.statistics[library.id]["Number of Sequences"]
 
-    alignment.set_statistic(library, "Unseeen Sequence Probability", probability_unseen)
+    alignment.set_statistic(library, "Unseen Sequence Probability", probability_unseen)
 
     return probability_unseen
 
