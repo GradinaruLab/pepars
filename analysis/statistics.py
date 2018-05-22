@@ -28,7 +28,6 @@ def get_probability_of_unseen_sequence(library):
 
     probability_of_misread_overlap = coverage.get_probability_of_single_misread_existing(library)
     unique_misreads = round(num_expected_misreads * (1-probability_of_misread_overlap))
-    num_expected_misreads = round(num_expected_misreads)
 
     n_1 = num_single_counts - unique_misreads
 
