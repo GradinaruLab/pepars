@@ -11,7 +11,7 @@ def get_probability_of_unseen_sequence(library):
 
     # Check the alignment statistics data to see if we've gotten calculated this before
     if "Unseen Sequence Probability" in alignment.statistics[library.id]:
-        return alignment.statistics[library.id]["Unseeen Sequence Probability"]
+        return alignment.statistics[library.id]["Unseen Sequence Probability"]
 
     if "Expected Number of Misreads" not in alignment.statistics[library.id]:
         raise Exception("Missing 'Expected Number of Misreads' from statistics. Align with an alignment method that generates ")
@@ -27,12 +27,18 @@ def get_probability_of_unseen_sequence(library):
             num_single_counts += 1
 
     probability_of_misread_overlap = coverage.get_probability_of_single_misread_existing(library)
+    print("num_expected_misreads: %.4f" % num_expected_misreads)
+    print("num_single_counts: %i" % num_single_counts)
+    print("probability_of_misread_overlap: %.4f" % probability_of_misread_overlap)
     unique_misreads = round(num_expected_misreads * (1-probability_of_misread_overlap))
 
     n_1 = num_single_counts - unique_misreads
 
+    if n_1 <= num_single_counts * -10:
+        raise Exception("Order of magnitude more expected unique misreads than there are single count sequences! This should be impossible")
+
     if n_1 <= 0:
-        raise Exception("More expected unique misreads than there are single count sequences! This should be impossible")
+        n_1 = 1
 
     probability_unseen = n_1 / alignment.statistics[library.id]["Number of Sequences"]
 
