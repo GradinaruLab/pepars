@@ -2,6 +2,33 @@ from utils import DNA
 import numpy
 
 
+def generate_random_sequences(
+        template_sequence="NNKNNKNNKNNKNNKNNKNNK",
+        num_sequences=1000000):
+
+    sequences = set()
+
+    while len(sequences) < num_sequences:
+
+        nucleotide_sequence = ""
+
+        for template_nucleotide in template_sequence:
+            possible_nucleotides = list(DNA.IUPAC[template_nucleotide])
+
+            nucleotide_sequence += numpy.random.choice(possible_nucleotides)
+
+        amino_acid_sequence = DNA.translate_dna_single(nucleotide_sequence)
+
+        if amino_acid_sequence.find("#") != -1:
+            continue
+
+        sequences.add(amino_acid_sequence)
+
+    sequences = list(sequences)
+
+    return sequences
+
+
 def generate_simulated_dataset(
         template_sequence="NNKNNKNNKNNKNNKNNKNNK",
         num_sequences=1000000,
