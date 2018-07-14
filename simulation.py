@@ -94,11 +94,14 @@ def generate_simulated_dataset(
 
             mean_rate = default_production_rate
 
-            if amino_acid_sequence[0] == "T" and amino_acid_sequence[1] == "L":
+            if (amino_acid_sequence[0] == "T" or amino_acid_sequence[0] == "S")\
+                    and (amino_acid_sequence[1] == "L" or amino_acid_sequence[1] == "I"):
                 mean_rate *= 5
-            elif amino_acid_sequence[1] == "T" and amino_acid_sequence[2] == "L":
+            elif (amino_acid_sequence[1] == "T" or amino_acid_sequence[1] == "S")\
+                    and (amino_acid_sequence[2] == "L" or amino_acid_sequence[2] == "I"):
                 mean_rate *= 5
-            elif amino_acid_sequence[2] == "T" and amino_acid_sequence[3] == "L":
+            elif (amino_acid_sequence[2] == "T" or amino_acid_sequence[2] == "S")\
+                    and (amino_acid_sequence[3] == "L" or amino_acid_sequence[3] == "I"):
                 mean_rate *= 5
 
             if amino_acid_sequence[6] == "Q" and amino_acid_sequence[5] != "H" \
