@@ -1,6 +1,7 @@
 import csv
 import pandas
 
+
 def write_csv_file(file_name, header, rows):
 
     file = open(file_name, 'w')
@@ -13,6 +14,7 @@ def write_csv_file(file_name, header, rows):
 
     file.close()
 
+
 def read_csv_file(file_name, skip_header_row = True):
 
     if skip_header_row:
@@ -20,4 +22,4 @@ def read_csv_file(file_name, skip_header_row = True):
     else:
         data = pandas.read_csv(file_name, header=None)
 
-    return data.as_matrix()
+    return data.values

@@ -83,7 +83,7 @@ class AminoAcid:
             self.properties['surface_accessibility'] = 1.445
             self.properties['mutability'] = 102
 
-        elif amino_acid== 'Q':
+        elif amino_acid == 'Q':
             self.is_valid = True
             self.amino_acid_letter = 'Q'
             self.amino_acid_name = 'Glutamine'
@@ -98,7 +98,7 @@ class AminoAcid:
             self.properties['surface_accessibility'] = 1.348
             self.properties['mutability'] = 93
 
-        elif amino_acid== 'K':
+        elif amino_acid == 'K':
             self.is_valid = True
             self.amino_acid_letter = 'K'
             self.amino_acid_name = 'Lysine'
@@ -113,7 +113,7 @@ class AminoAcid:
             self.properties['surface_accessibility'] = 1.545
             self.properties['mutability'] = 56
 
-        elif amino_acid== 'S':
+        elif amino_acid == 'S':
             self.is_valid = True
             self.amino_acid_letter = 'S'
             self.amino_acid_name = 'Serine'
@@ -128,7 +128,7 @@ class AminoAcid:
             self.properties['surface_accessibility'] = 1.115
             self.properties['mutability'] = 120
 
-        elif amino_acid== 'T':
+        elif amino_acid == 'T':
             self.is_valid = True
             self.amino_acid_letter = 'T'
             self.amino_acid_name = 'Threonine'
@@ -143,7 +143,7 @@ class AminoAcid:
             self.properties['surface_accessibility'] = 1.184
             self.properties['mutability'] = 97
 
-        elif amino_acid== 'C':
+        elif amino_acid == 'C':
             self.is_valid = True
             self.amino_acid_letter = 'C'
             self.amino_acid_name = 'Cysteine'
@@ -158,7 +158,7 @@ class AminoAcid:
             self.properties['surface_accessibility'] = 0.394
             self.properties['mutability'] = 20
 
-        elif amino_acid== 'H':
+        elif amino_acid == 'H':
             self.is_valid = True
             self.amino_acid_letter = 'H'
             self.amino_acid_name = 'Histidine'
@@ -174,7 +174,7 @@ class AminoAcid:
             self.properties['mutability'] = 66
 
 
-        elif amino_acid== 'M':
+        elif amino_acid == 'M':
             self.is_valid = True
             self.amino_acid_letter = 'M'
             self.amino_acid_name = 'Methionine'
@@ -190,7 +190,7 @@ class AminoAcid:
             self.properties['mutability'] = 94
 
 
-        elif amino_acid== 'A':
+        elif amino_acid == 'A':
             self.is_valid = True
             self.amino_acid_letter = 'A'
             self.amino_acid_name = 'Alanine'
@@ -205,7 +205,7 @@ class AminoAcid:
             self.properties['surface_accessibility'] = 0.815
             self.properties['mutability'] = 100
 
-        elif amino_acid== 'V':
+        elif amino_acid == 'V':
             self.is_valid = True
             self.amino_acid_letter = 'V'
             self.amino_acid_name = 'Valine'
@@ -220,7 +220,7 @@ class AminoAcid:
             self.properties['surface_accessibility'] = 0.606
             self.properties['mutability'] = 74
 
-        elif amino_acid== 'G':
+        elif amino_acid == 'G':
             self.is_valid = True
             self.amino_acid_letter = 'G'
             self.amino_acid_name = 'Glycine'
@@ -235,7 +235,7 @@ class AminoAcid:
             self.properties['surface_accessibility'] = 0.714
             self.properties['mutability'] = 49
 
-        elif amino_acid== 'I':
+        elif amino_acid == 'I':
             self.is_valid = True
             self.amino_acid_letter = 'I'
             self.amino_acid_name = 'Isoleucine'
@@ -250,7 +250,7 @@ class AminoAcid:
             self.properties['surface_accessibility'] = 0.603
             self.properties['mutability'] = 96
 
-        elif amino_acid== 'L':
+        elif amino_acid == 'L':
             self.is_valid = True
             self.amino_acid_letter = 'L'
             self.amino_acid_name = 'Leucine'
@@ -265,7 +265,7 @@ class AminoAcid:
             self.properties['surface_accessibility'] = 0.603
             self.properties['mutability'] = 40
 
-        elif amino_acid== 'F':
+        elif amino_acid == 'F':
             self.is_valid = True
             self.amino_acid_letter = 'F'
             self.amino_acid_name = 'Phenylalanine'
@@ -280,7 +280,7 @@ class AminoAcid:
             self.properties['surface_accessibility'] = 0.695
             self.properties['mutability'] = 41
 
-        elif amino_acid=='P':
+        elif amino_acid =='P':
             self.is_valid = True
             self.amino_acid_letter = 'P'
             self.amino_acid_name = 'Proline'
@@ -295,7 +295,7 @@ class AminoAcid:
             self.properties['surface_accessibility'] = 1.236
             self.properties['mutability'] = 56
 
-        elif amino_acid== 'W':
+        elif amino_acid == 'W':
             self.is_valid = True
             self.amino_acid_letter = 'W'
             self.amino_acid_name = 'Tryptophan'
@@ -310,7 +310,7 @@ class AminoAcid:
             self.properties['surface_accessibility'] = 0.808
             self.properties['mutability'] = 18
 
-        elif amino_acid== 'Y':
+        elif amino_acid == 'Y':
             self.is_valid = True
             self.amino_acid_letter = 'Y'
             self.amino_acid_name = 'Tyrosine'
