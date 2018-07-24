@@ -5,6 +5,7 @@ import seaborn as sns
 import numpy as np
 from utils.AminoAcid import AminoAcid
 
+
 def split_by_enrichment(sequence_enrichments, enrichment_threshold):
 
     for sequence in sequence_enrichments:

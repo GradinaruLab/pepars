@@ -92,6 +92,7 @@ def binomial(n, p, k):
 
     return answer
 
+
 def get_expected_count_distribution(template, num_samples):
 
     num_possible_sequences = 1
@@ -125,3 +126,28 @@ def get_expected_count_distribution(template, num_samples):
             break
 
     return distribution
+
+
+def find_threshold(labels,
+                   top_percent=None,
+                   bottom_percent=None,
+                   top_count=None,
+                   bottom_count=None):
+
+    num_labels = len(labels)
+
+    if top_count is not None:
+        top_percent = top_count / num_labels
+    elif bottom_count is not None:
+        bottom_percent = bottom_count / num_labels
+
+    if top_percent is not None:
+        threshold_index = (num_labels - 1) * (1 - top_percent)
+        threshold_index = int(math.ceil(threshold_index))
+    elif bottom_percent is not None:
+        threshold_index = (num_labels - 1) * bottom_percent
+        threshold_index = int(math.floor(threshold_index))
+
+    labels_sorted = numpy.sort(labels)
+
+    return labels_sorted[threshold_index]

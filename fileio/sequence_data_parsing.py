@@ -1,10 +1,8 @@
 import csv
-import random
-import numpy
-import math
 
 import utils.utils as utils
 import utils.DNA as DNA
+
 
 def load_sequence_count_file(filename, minimum_num_sequence, group_by_amino_acid):
 
@@ -101,3 +99,14 @@ def load_sequence_count_file(filename, minimum_num_sequence, group_by_amino_acid
         fold_enrichments.append([fold_enrichment])
 
     return sequence_matrix, fold_enrichments
+
+
+def get_sequences_from_file(file_path):
+
+    sequences = []
+
+    with open(file_path) as sequence_list_file:
+        for line in sequence_list_file.readlines():
+            sequences.append(line.strip())
+
+    return sequences
