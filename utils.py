@@ -86,3 +86,12 @@ def convert_string_keys_to_ints(dictionary):
         new_dictionary[int(key)] = value
 
     return new_dictionary
+
+
+def clean_string_for_filename(dirty_string):
+
+    clean_string = dirty_string
+    forbidden_characters = ["\\", "/", ":", "*", "?", "\"", "<", ">", "|"]
+    for character in forbidden_characters:
+        clean_string = clean_string.replace(character, "")
+    return clean_string
