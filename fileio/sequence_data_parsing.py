@@ -110,3 +110,10 @@ def get_sequences_from_file(file_path):
             sequences.append(line.strip())
 
     return sequences
+
+
+def write_sequences_to_file(sequences, file_path):
+
+    with open(file_path, "w") as sequence_list_file:
+        for sequence in sequences:
+            sequence_list_file.write("%s\n" % sequence)
