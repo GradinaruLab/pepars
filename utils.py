@@ -95,3 +95,5 @@ def clean_string_for_filename(dirty_string):
     for character in forbidden_characters:
         clean_string = clean_string.replace(character, "")
     return clean_string
+
+

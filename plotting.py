@@ -146,3 +146,46 @@ def generate_plotly_plot(figure, output_file_path=None, interactive=False):
 
     elif output_file_path:
         plotly_offline.plot(figure, filename=output_file_path, auto_open=False)
+
+
+def plot_nucleotide_prevalence_bar_chart(
+        nucleotide_counts,
+        output_file_path=None,
+        interactive=False):
+
+    position_labels = list(range(len(nucleotide_counts)))
+
+    trace_A = graph_objs.Bar(
+        x=position_labels,
+        y=nucleotide_counts["A"],
+        name="A"
+    )
+
+    trace_C = graph_objs.Bar(
+        x=position_labels,
+        y=nucleotide_counts["C"],
+        name="C"
+    )
+
+    trace_G = graph_objs.Bar(
+        x=position_labels,
+        y=nucleotide_counts["G"],
+        name="G"
+    )
+
+    trace_T = graph_objs.Bar(
+        x=position_labels,
+        y=nucleotide_counts["T"],
+        name="T"
+    )
+
+    data = [trace_A, trace_C, trace_G, trace_T]
+
+    layout = graph_objs.Layout(
+        barmode="stack"
+    )
+
+    figure = graph_objs.Figure(data=data, layout=layout)
+
+    return generate_plotly_plot(figure, output_file_path=output_file_path,
+                                interactive=interactive)
