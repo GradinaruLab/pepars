@@ -2,7 +2,6 @@ import seaborn
 import numpy
 import matplotlib.pyplot as plt
 from plotly import offline as plotly_offline
-from plotly import plotly
 from plotly import graph_objs
 
 
