@@ -188,3 +188,35 @@ def plot_nucleotide_prevalence_bar_chart(
 
     return generate_plotly_plot(figure, output_file_path=output_file_path,
                                 interactive=interactive)
+
+
+def plot_sequence_labels_predictions(
+        sequences,
+        labels,
+        predictions,
+        interactive=False,
+        output_file_path=None,
+        title="Predicted vs Actual"):
+
+    figure_traces = []
+
+    prediction_scatter = graph_objs.Scatter(
+        x=labels,
+        y=predictions,
+        mode="markers",
+        text=sequences
+    )
+
+    figure_traces.append(prediction_scatter)
+
+    layout = graph_objs.Layout(
+        title=title,
+        xaxis=dict(title="Actual"),
+        yaxis=dict(title="Predicted"),
+        hovermode="closest"
+    )
+
+    figure = graph_objs.Figure(data=figure_traces, layout=layout)
+
+    return generate_plotly_plot(figure, output_file_path=output_file_path,
+                                interactive=interactive)
