@@ -220,3 +220,43 @@ def plot_sequence_labels_predictions(
 
     return generate_plotly_plot(figure, output_file_path=output_file_path,
                                 interactive=interactive)
+
+
+def plot_training_test_losses(
+        training_losses,
+        test_losses=None,
+        output_file_path=None,
+        interactive=False):
+
+    figure_traces = []
+
+    training_scatter = graph_objs.Scatter(
+        x=list(range(len(training_losses))),
+        y=training_losses,
+        mode="markers",
+        name="Training Loss"
+    )
+
+    figure_traces.append(training_scatter)
+
+    if test_losses is not None:
+        test_scatter = graph_objs.Scatter(
+            x=list(range(len(test_losses))),
+            y=test_losses,
+            mode="markers",
+            name="Test Loss"
+        )
+
+        figure_traces.append(test_scatter)
+
+    layout = graph_objs.Layout(
+        title="Loss over Epochs",
+        xaxis=dict(title="Epoch"),
+        yaxis=dict(title="Loss"),
+        hovermode="closest"
+    )
+
+    figure = graph_objs.Figure(data=figure_traces, layout=layout)
+
+    return generate_plotly_plot(figure, output_file_path=output_file_path,
+                                interactive=interactive)
