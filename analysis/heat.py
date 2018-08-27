@@ -16,6 +16,8 @@ import csv
 
 from multiprocessing import Process
 
+MIDPOINT_DEFAULT = 1.0/32.0
+
 
 #Returns the number of combinations of 'acid' that endt with 'g' or 't'
 def get_amino_factor(acid, gencode):
@@ -37,7 +39,7 @@ gencode = {
 
 class heatmap:
     def __init__(self, data = None, x_labels = None, y_labels = None,
-        title = None, constant_scale = False):
+        title = None, constant_scale=False, midpoint=MIDPOINT_DEFAULT):
         self.data = np.array(data)
         self.x_labels = x_labels
         self.y_labels = y_labels
@@ -114,7 +116,7 @@ class heatmap:
         self.data = np.dot(biased_counts, weights)/sum(counts)
         if constant_scale:
             self.start = 0.0
-            self.midpoint = 1.0/32.0
+            self.midpoint = midpoint
             self.data = np.dot(biased_counts, weights)/sum(counts)/self.midpoint
         else:
             self.midpoint = 1.0/(32.0*np.amax(self.data)) if np.amax(self.data)>1.0/32.0 else 1.0
