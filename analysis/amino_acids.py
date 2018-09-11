@@ -5,6 +5,8 @@ import matplotlib
 matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 import seaborn as sns
+from utils import DNA
+import pandas
 
 # Usage
 # enrichment_sequences_array: array of sequences that were under or above user's chosen enrichment threshold
@@ -78,6 +80,77 @@ def plot_amino_acid_property_distribution_from_array(array_of_interest_high,arra
     plt.ylabel('sequence counts')
     plt.title(plot_title_low)
     plt.show(block=False)
+
+
+def get_amino_acid_counts_by_position(sequences, counts=None):
+
+    unique_AAs = set(DNA.gencode.values())
+    unique_AAs = sorted(list(unique_AAs))
+    counts_by_position = np.zeros((len(unique_AAs), len(sequences[0])))
+
+    for sequence_index, sequence in enumerate(sequences):
+        for character_index, character in enumerate(sequence):
+            if counts is None:
+                counts_by_position[unique_AAs.index(character), character_index] += 1
+            else:
+                counts_by_position[unique_AAs.index(character), character_index] += counts[sequence_index]
+
+    counts_by_position = pandas.DataFrame(counts_by_position)
+    counts_by_position.index = unique_AAs
+    return counts_by_position
+
+
+def get_amino_acid_codon_biases(templates, template_ratios=None):
+
+    if isinstance(templates, str):
+        templates = [templates]
+
+    template_length = len(templates[0])
+
+    for template in templates:
+        if len(template) != template_length:
+            raise ValueError("All templates must have same length!")
+
+    if template_length % 3 != 0:
+        raise ValueError("Template must be a multiple of 3!")
+
+    num_templates = len(templates)
+
+    if template_ratios is None:
+        template_ratios = np.ones((num_templates,)) / num_templates
+
+    template_length = int(template_length / 3)
+
+    unique_AAs = set(DNA.gencode.values())
+    unique_AAs = sorted(list(unique_AAs))
+    num_AAs = len(unique_AAs)
+
+    weighted_AA_ratios = np.zeros((num_AAs, template_length))
+
+    for template_index, template in enumerate(templates):
+
+        amino_acid_ratios = np.zeros((num_AAs, template_length))
+
+        for codon_index in range(template_length):
+
+            for codon, amino_acid in DNA.gencode.items():
+
+                is_codon_allowed = True
+                for nucleotide_index in range(0, 3):
+                    template_nucleotide_index = codon_index * 3 + nucleotide_index
+                    allowable_nucleotides = DNA.IUPAC[template[template_nucleotide_index]]
+                    if codon[nucleotide_index] not in allowable_nucleotides:
+                        is_codon_allowed = False
+                        break
+                if is_codon_allowed:
+                    amino_acid_ratios[unique_AAs.index(amino_acid), codon_index] += 1
+
+        amino_acid_ratios /= amino_acid_ratios.sum(axis=0)
+        weighted_AA_ratios += amino_acid_ratios * template_ratios[template_index]
+
+    weighted_AA_ratios = pandas.DataFrame(weighted_AA_ratios)
+    weighted_AA_ratios.index = unique_AAs
+    return weighted_AA_ratios
 
 sns.set(color_codes=True)
 next_figure_index = 1

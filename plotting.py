@@ -260,3 +260,35 @@ def plot_training_test_losses(
 
     return generate_plotly_plot(figure, output_file_path=output_file_path,
                                 interactive=interactive)
+
+
+def plot_significance_z_scores(
+        z_scores,
+        output_file_path=None,
+        interactive=False):
+
+    max_value = max(z_scores.max().max(), -z_scores.min().min())
+
+    figure_traces = []
+
+    heatmap = graph_objs.Heatmap(
+        x=z_scores.index,
+        y=z_scores.columns,
+        z=z_scores.values.T,
+        zmin=-max_value,
+        zmax=max_value,
+        zauto=False
+    )
+
+    figure_traces.append(heatmap)
+
+    layout = graph_objs.Layout(
+        title="Amino Acid Presence",
+        xaxis=dict(title="Amino Acid"),
+        yaxis=dict(title="Position")
+    )
+
+    figure = graph_objs.Figure(data=figure_traces, layout=layout)
+
+    return generate_plotly_plot(figure, output_file_path=output_file_path,
+                                interactive=interactive)

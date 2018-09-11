@@ -4,6 +4,9 @@ from utils import DNA
 from analysis.Sequence_Library import Sequence_Library
 from workspace import Workspace as ws
 from . import coverage
+import pandas
+from scipy import stats
+from statsmodels.stats import multitest
 
 def get_probability_of_unseen_sequence(library):
 
@@ -151,3 +154,46 @@ def find_threshold(labels,
     labels_sorted = numpy.sort(labels)
 
     return labels_sorted[threshold_index]
+
+
+def get_significance_of_amino_acid_ratios(amino_acid_counts_by_position, amino_acid_biases,
+                                          multiple_comparison_correction=True):
+
+    p_values = pandas.DataFrame(numpy.zeros((len(amino_acid_biases.index), len(amino_acid_biases.columns))))
+    p_values.index = amino_acid_biases.index
+    z_scores = pandas.DataFrame(numpy.zeros((len(amino_acid_biases.index), len(amino_acid_biases.columns))))
+    z_scores.index = amino_acid_biases.index
+
+    num_trials = int(amino_acid_counts_by_position.sum(axis=0)[0])
+
+    for amino_acid in amino_acid_biases.index:
+        for position_index in range(len(amino_acid_biases.columns)):
+            count = int(amino_acid_counts_by_position.loc[amino_acid, position_index])
+            p = amino_acid_biases.loc[amino_acid, position_index]
+            p_value = stats.binom_test(count, n=num_trials, p=p, alternative="less")
+            # z_score = stats.norm.ppf(p_value)
+            # z_score = stats.binom.ppf(count, n=num_trials, p=p)
+            if p_value == 0:
+                z_score = -numpy.inf
+            else:
+                z_score = -numpy.log10(p_value)
+            if p_value > 0.5:
+                p_value = stats.binom_test(count, n=num_trials, p=p, alternative="greater")
+                # z_score = -stats.norm.ppf(p_value)
+                # z_score = -stats.binom.ppf(count, n=num_trials, p=p)
+                if p_value == 0:
+                    z_score = numpy.inf
+                else:
+                    z_score = numpy.log10(p_value)
+            p_values.loc[amino_acid, position_index] = p_value
+            z_scores.loc[amino_acid, position_index] = z_score
+
+    if multiple_comparison_correction:
+        _, corrected_p_values, _, _ = multitest.multipletests(
+            p_values.values.reshape((p_values.shape[0] * p_values.shape[1],)),
+            alpha=0.05, method='fdr_bh', is_sorted=False, returnsorted=False)
+        corrected_p_values = pandas.DataFrame(corrected_p_values.reshape(p_values.shape))
+        corrected_p_values.index = amino_acid_biases.index
+        p_values = corrected_p_values
+
+    return p_values, z_scores

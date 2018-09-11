@@ -1,3 +1,4 @@
+import numpy
 
 # Function to convert nucleotide to amino acid sequence
 
@@ -52,6 +53,43 @@ def translate_dna_single(dna):
         amino_acids += gencode[dna[start_index:start_index+3]]
 
     return amino_acids
+
+
+def translate_amino_acid_to_random_codons(amino_acid_sequence, template="NNN"):
+
+    nucleotide_sequence = ""
+
+    for amino_acid_to_generate in amino_acid_sequence:
+
+        possible_codons = []
+
+        for codon in gencode:
+
+            if amino_acid_to_generate != gencode[codon]:
+                continue
+
+            is_valid_codon = True
+
+            for nucleotide_index, nucleotide in enumerate(codon):
+
+                if nucleotide not in IUPAC[template[nucleotide_index]]:
+                    is_valid_codon = False
+                    break
+
+            if not is_valid_codon:
+                continue
+
+            possible_codons.append(codon)
+
+        if len(possible_codons) == 0:
+            raise ValueError("Template does not allow for this amino acid sequence!")
+
+        codon = numpy.random.choice(possible_codons)
+
+        nucleotide_sequence += codon
+
+    return nucleotide_sequence
+
 
 def get_complement(sequence):
 
