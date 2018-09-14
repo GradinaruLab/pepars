@@ -47,7 +47,7 @@ class heatmap:
 
         self.start = None
 
-        self.midpoint = None
+        self.midpoint = midpoint
         self.stop = None
         self.constant_scale = constant_scale
 
@@ -115,10 +115,9 @@ class heatmap:
         self.y_labels = range(1,1+positions)
         self.data = np.dot(biased_counts, weights)/sum(counts)
         if constant_scale:
-            self.start = min
-            self.midpoint = midpoint
+            self.start = 0.0
+            self.midpoint = MIDPOINT_DEFAULT
             self.data = np.dot(biased_counts, weights)/sum(counts)/self.midpoint
-            self.stop = max
         else:
             self.midpoint = 1.0/(32.0*np.amax(self.data)) if np.amax(self.data)>1.0/32.0 else 1.0
             self.start = np.amin(self.data)

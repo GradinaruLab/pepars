@@ -265,9 +265,15 @@ def plot_training_test_losses(
 def plot_significance_z_scores(
         z_scores,
         output_file_path=None,
-        interactive=False):
+        interactive=False,
+        colorscale="RdBu",
+        min_value=None,
+        max_value=None):
 
-    max_value = max(z_scores.max().max(), -z_scores.min().min())
+    if min_value is None:
+        min_value = -max(z_scores.max().max(), -z_scores.min().min())
+    if max_value is None:
+        max_value = max(z_scores.max().max(), -z_scores.min().min())
 
     figure_traces = []
 
@@ -275,9 +281,10 @@ def plot_significance_z_scores(
         x=z_scores.index,
         y=z_scores.columns,
         z=z_scores.values.T,
-        zmin=-max_value,
+        zmin=min_value,
         zmax=max_value,
-        zauto=False
+        zauto=False,
+        colorscale=colorscale
     )
 
     figure_traces.append(heatmap)

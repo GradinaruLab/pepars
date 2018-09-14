@@ -2,7 +2,7 @@ from utils.AminoAcid import AminoAcid
 import numpy as np
 from Bio.SeqUtils.ProtParam import ProteinAnalysis
 import matplotlib
-matplotlib.use("TkAgg")
+# matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 import seaborn as sns
 from utils import DNA
@@ -97,6 +97,7 @@ def get_amino_acid_counts_by_position(sequences, counts=None):
 
     counts_by_position = pandas.DataFrame(counts_by_position)
     counts_by_position.index = unique_AAs
+    counts_by_position.columns = list(range(1, len(sequences[0]) + 1))
     return counts_by_position
 
 
@@ -148,7 +149,7 @@ def get_amino_acid_codon_biases(templates, template_ratios=None):
         amino_acid_ratios /= amino_acid_ratios.sum(axis=0)
         weighted_AA_ratios += amino_acid_ratios * template_ratios[template_index]
 
-    weighted_AA_ratios = pandas.DataFrame(weighted_AA_ratios)
+    weighted_AA_ratios = pandas.DataFrame(weighted_AA_ratios, columns=list(range(1, template_length + 1)))
     weighted_AA_ratios.index = unique_AAs
     return weighted_AA_ratios
 
