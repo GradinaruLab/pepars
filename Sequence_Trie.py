@@ -50,6 +50,21 @@ class Sequence_Trie_Node(object):
 
         return node._leaf_value
 
+    def get_child(self, sequence):
+
+        node = self
+
+        for element in sequence:
+
+            child_node = node._children[element]
+
+            if child_node is None:
+                return None
+            else:
+                node = child_node
+
+        return node
+
 
 class Sequence_Trie(object):
 
@@ -91,4 +106,8 @@ class Sequence_Trie(object):
     def get_value(self, sequence):
 
         return self._root.get_value(self.convert_sequence_to_index_array(sequence))
+
+    def get_node(self, sequence):
+
+        return self._root.get_child(self.convert_sequence_to_index_array(sequence))
 
