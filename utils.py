@@ -1,6 +1,7 @@
 import numpy
 import math
 
+
 def convert_string_to_char_array(string):
     char_array = []
 
@@ -9,6 +10,7 @@ def convert_string_to_char_array(string):
             char_array.append(char);
         return char_array
     return list(string)
+
 
 def convert_sequence_label_dict_to_matrices(sequence_label_dict):
 
@@ -26,6 +28,7 @@ def convert_sequence_label_dict_to_matrices(sequence_label_dict):
         sequence_index += 1
 
     return (sequence_matrix, label_matrix)
+
 
 def convert_sequence_label_dict_and_weights_to_matrices_and_weights(sequence_label_dict, sequence_weights):
 
@@ -46,6 +49,7 @@ def convert_sequence_label_dict_and_weights_to_matrices_and_weights(sequence_lab
 
     weight_matrix = weight_matrix.squeeze()
     return (sequence_matrix, label_matrix, weight_matrix)
+
 
 def convert_sequence_label_dict_and_weights_to_matrices(sequence_label_dict, sequence_weights):
 
@@ -78,6 +82,7 @@ def convert_sequence_label_dict_and_weights_to_matrices(sequence_label_dict, seq
 
     return (sequence_matrix, label_matrix)
 
+
 def convert_string_keys_to_ints(dictionary):
 
     new_dictionary = {}
@@ -97,3 +102,17 @@ def clean_string_for_filename(dirty_string):
     return clean_string
 
 
+def get_sequence_distance(sequence_1, sequence_2):
+
+    min_length = min(len(sequence_1), len(sequence_2))
+    max_length = max(len(sequence_1), len(sequence_2))
+
+    distance = 0
+
+    for character_index in range(0, min_length):
+        if sequence_1[character_index] != sequence_2[character_index]:
+            distance += 1
+
+    distance += max_length - min_length
+
+    return distance
