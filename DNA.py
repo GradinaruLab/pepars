@@ -39,6 +39,36 @@ DNA_complements = {
     'C': 'G'
 }
 
+NUCLEOTIDE_INDEX_MAP = {
+    "A": 0,
+    "C": 1,
+    "G": 2,
+    "T": 3
+}
+
+AMINO_ACID_INDEX_MAP = {
+    "A": 0,
+    "C": 1,
+    "D": 2,
+    "E": 3,
+    "F": 4,
+    "G": 5,
+    "H": 6,
+    "I": 7,
+    "K": 8,
+    "L": 9,
+    "M": 10,
+    "N": 11,
+    "P": 12,
+    "Q": 13,
+    "R": 14,
+    "S": 15,
+    "T": 16,
+    "V": 17,
+    "W": 18,
+    "Y": 19
+}
+
 def get_nucleotides():
     return ['A','C','G','T']
 
