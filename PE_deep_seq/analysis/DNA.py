@@ -148,3 +148,74 @@ def collapse_similar_sequences(sequence_counts,
                 (sequence, int(round(new_sequence_count))))
 
     return collapsed_sequence_counts
+
+
+def get_all_sequences_of_distance_n(sequence, n=1):
+    """
+    Given a sequence, returns a list of all possible sequences that are distance
+    n or less away from the given sequence.
+
+    :param sequence: The parent sequence
+    :param n: How many nucleotides different each sequence can be
+    :return: A list of sequences
+    """
+
+    if n != 1:
+        raise NotImplementedError("Only doing n=1 for now")
+
+    alphabet = set(DNA.NUCLEOTIDES)
+
+    sequences = []
+
+    # Find all possible parent sequences
+    for index, character in enumerate(sequence):
+
+        prefix = sequence[0:index]
+
+        for other_character in alphabet.difference(character):
+            postfix = other_character + sequence[index + 1:]
+
+            sequences.append(prefix + postfix)
+
+    return sequences
+
+
+def find_all_sequences_of_distance_n(sequence, sequence_trie, n=1):
+    """
+    Given a sequence and corresponding sequence trie, find all sequences
+    that are distance n or less away.
+
+    :param sequence: The sequence to search for
+    :param sequence_trie: The trie to search in
+    :param n: How far a sequence can be to be returned
+    :return: A list of sequences
+    """
+
+    if n != 1:
+        raise NotImplementedError("Only doing n=1 for now")
+
+    alphabet = set(DNA.get_nucleotides())
+    alphabet.add("N")
+
+    sequences = []
+
+    # Find all possible parent sequences
+    for index, character in enumerate(sequence):
+
+        prefix = sequence[0:index]
+
+        parent_node = sequence_trie.get_node(prefix)
+
+        if parent_node is None:
+            continue
+
+        for other_character in alphabet.difference(character):
+
+            postfix = other_character + sequence[index + 1:]
+
+            exists = parent_node.find(postfix)
+
+            if exists:
+                sequences.append(prefix + postfix)
+
+    return sequences

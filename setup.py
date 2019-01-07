@@ -9,5 +9,5 @@ setup(
         "PE_deep_seq.plotting",
         "PE_deep_seq.utils"
     ],
-    install_requires=["numpy", "plotly"]
+    install_requires=["numpy", "plotly", "pandas"]
 )

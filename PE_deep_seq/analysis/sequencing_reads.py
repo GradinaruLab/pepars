@@ -172,3 +172,26 @@ def get_matching_sequence_counts(
                        sequence, count in sequence_counts.items()]
 
     return sequence_counts
+
+
+def get_read_count(FASTQ_file_path):
+    """
+    Get the number of reads in a FASTQ file path. Line count / 4
+
+    :param FASTQ_file_path: Path to the uncompressed FASTQ file
+    :return: The number of reads
+    """
+
+    file = open(FASTQ_file_path)
+
+    line_count = 0
+
+    while True:
+        line = file.readline()
+        if not line:
+            break
+        line_count += 1
+
+    file.close()
+
+    return int(line_count / 4)
