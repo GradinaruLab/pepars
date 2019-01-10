@@ -106,3 +106,4 @@ class Sequence_Trie(object):
     def get_node(self, sequence):
 
         return self._root.get_child(sequence)
+

@@ -180,7 +180,8 @@ def get_all_sequences_of_distance_n(sequence, n=1):
     return sequences
 
 
-def find_all_sequences_of_distance_n(sequence, sequence_trie, n=1):
+def find_all_sequences_of_distance_n(sequence, sequence_trie, n=1,
+                                     allow_invalid=True):
     """
     Given a sequence and corresponding sequence trie, find all sequences
     that are distance n or less away.
@@ -188,14 +189,17 @@ def find_all_sequences_of_distance_n(sequence, sequence_trie, n=1):
     :param sequence: The sequence to search for
     :param sequence_trie: The trie to search in
     :param n: How far a sequence can be to be returned
+    :param allow_invalid: Whether to consider sequences with Ns
     :return: A list of sequences
     """
 
-    if n != 1:
-        raise NotImplementedError("Only doing n=1 for now")
+    if n != 1 and n != 2:
+        raise NotImplementedError("Only doing n={1,2} for now")
 
     alphabet = set(DNA.get_nucleotides())
-    alphabet.add("N")
+
+    if allow_invalid:
+        alphabet.add("N")
 
     sequences = []
 
@@ -218,4 +222,24 @@ def find_all_sequences_of_distance_n(sequence, sequence_trie, n=1):
             if exists:
                 sequences.append(prefix + postfix)
 
+            if n > 1:
+                for index_2 in range(index + 1, len(sequence)):
+
+                    midfix = other_character + sequence[index + 1:index_2]
+
+                    middle_node = parent_node.get_child(midfix)
+
+                    if middle_node is None:
+                        continue
+
+                    character = sequence[index_2]
+
+                    for other_other_character in alphabet.difference(character):
+
+                        postfix = other_other_character + sequence[index_2 + 1:]
+
+                        exists = middle_node.find(postfix)
+
+                        if exists:
+                            sequences.append(prefix + midfix + postfix)
     return sequences
