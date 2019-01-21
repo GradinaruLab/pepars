@@ -1,5 +1,6 @@
-from utils import DNA
 import numpy
+
+from .utils import DNA
 
 
 def generate_random_sequences(

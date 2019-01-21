@@ -1,13 +1,25 @@
 from distutils.core import setup
 
 setup(
-    name="PE_deep_seq",
+    name="peseq",
     version="0.1",
     packages=[
-        "PE_deep_seq",
-        "PE_deep_seq.analysis",
-        "PE_deep_seq.plotting",
-        "PE_deep_seq.utils"
+        "peseq",
+        "peseq.analysis",
+        "peseq.plotting",
+        "peseq.utils",
+        "peseq.alignment",
+        "peseq.fileio"
     ],
-    install_requires=["numpy", "plotly", "pandas"]
+    install_requires=[
+        "numpy",
+        "plotly",
+        "pandas",
+        "matplotlib",
+        "biopython",
+        "seaborn",
+        "h5py",
+        "scipy",
+        "statsmodels"
+    ]
 )

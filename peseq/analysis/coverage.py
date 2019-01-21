@@ -1,4 +1,4 @@
-from utils import DNA
+from ..utils import DNA
 import itertools
 from workspace import Workspace as ws
 from workspace import Database as db

@@ -3,7 +3,7 @@ matplotlib.use("TkAgg")
 from matplotlib import pyplot as plt
 import seaborn as sns
 import numpy as np
-from utils.AminoAcid import AminoAcid
+from ..utils.AminoAcid import AminoAcid
 
 
 def split_by_enrichment(sequence_enrichments, enrichment_threshold):

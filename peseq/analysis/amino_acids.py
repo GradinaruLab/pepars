@@ -1,11 +1,9 @@
-from utils.AminoAcid import AminoAcid
+from ..utils.AminoAcid import AminoAcid
 import numpy as np
 from Bio.SeqUtils.ProtParam import ProteinAnalysis
-import matplotlib
-# matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 import seaborn as sns
-from utils import DNA
+from ..utils import DNA
 import pandas
 
 # Usage

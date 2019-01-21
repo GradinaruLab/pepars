@@ -1,6 +1,6 @@
 import numpy
 import math
-from utils import DNA
+from ..utils import DNA
 from analysis.Sequence_Library import Sequence_Library
 from workspace import Workspace as ws
 from . import coverage

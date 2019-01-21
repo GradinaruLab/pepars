@@ -1,7 +1,7 @@
 import csv
 
-import utils.utils as utils
-import utils.DNA as DNA
+from ..utils import utils
+from ..utils import DNA
 
 
 def load_sequence_count_file(filename, minimum_num_sequence, group_by_amino_acid):
