@@ -69,6 +69,31 @@ def plot_histogram(values,
                          interactive=interactive)
 
 
+def plot_scatter(x_values,
+                 y_values,
+                 output_file_path=None,
+                 interactive=False):
+
+    figure_traces = []
+
+    scatter = graph_objs.Scatter(
+        x=list(x_values),
+        y=list(y_values),
+        mode="markers"
+    )
+
+    figure_traces.append(scatter)
+
+    layout = graph_objs.Layout(
+        hovermode="closest"
+    )
+
+    figure = graph_objs.Figure(data=figure_traces, layout=layout)
+
+    return generate_plotly_plot(figure, output_file_path=output_file_path,
+                                interactive=interactive)
+
+
 def plot_bar_chart(values,
                    condition_names,
                    group_names=None,

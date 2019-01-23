@@ -92,32 +92,38 @@ def get_template_distances(template, FASTQ_file_path):
 
 
 def get_matching_sequence_counts(
-        candidate_FASTQ_file_path,
         extract_FASTQ_file_path,
-        template,
-        distance_threshold,
-        quality_threshold=None):
+        candidate_FASTQ_file_path=None,
+        template=None,
+        distance_threshold=None,
+        quality_threshold=30,
+        exclude_match=False):
     """
     Given a FASTQ file with sequences to match and a corresponding FASTQ file
     with sequences to extract, extract all the sequences where the matching
     sequence matches the given template.
 
-    :param candidate_FASTQ_file_path: Path to an uncompressed FASTQ file
     :param extract_FASTQ_file_path: Path to an uncompressed FASTQ file of
         sequences to extract
+    :param candidate_FASTQ_file_path: Path to an uncompressed FASTQ file
     :param template: The template sequence that reads in the matching file
         should match
     :param distance_threshold: How far off from the template a transcript can
         be to still be considered matching.
     :param quality_threshold: The quality that all reads in the barcode UMI
         sequence must meet to be considered
+    :param exclude_match: Whether to include (False) or exclude (True) the
+        matches
     :return: A dictionary of barcodes, each entry containing a dictionary of
         UMIs and the number of times this barcode/UMI combo appeared
     """
 
     line_index = 0
-    candidate_file = open(candidate_FASTQ_file_path)
     extract_file = open(extract_FASTQ_file_path)
+    if candidate_FASTQ_file_path is not None:
+        candidate_file = open(candidate_FASTQ_file_path)
+    else:
+        candidate_file = None
 
     sequence_counts = {}
 
@@ -126,25 +132,34 @@ def get_matching_sequence_counts(
 
     while True:
 
-        candidate_line = candidate_file.readline()
         extract_line = extract_file.readline()
-
-        if not candidate_line:
+        if not extract_line:
             break
 
+        if candidate_file is not None:
+            candidate_line = candidate_file.readline()
+        else:
+            candidate_line = None
+
         if line_index % 4 == 1:
-            candidate = candidate_line.strip()
+            if candidate_file is not None:
+                candidate = candidate_line.strip()
             extract = extract_line.strip()
 
         elif line_index % 4 == 3:
 
             quality_score_string = extract_line.strip()
 
-            distance = utils.get_sequence_distance(template, candidate)
+            if candidate_file is not None:
+                distance = utils.get_sequence_distance(template, candidate)
 
-            if distance > distance_threshold:
-                line_index += 1
-                continue
+                if distance > distance_threshold:
+                    if not exclude_match:
+                        line_index += 1
+                        continue
+                elif exclude_match:
+                    line_index += 1
+                    continue
 
             meets_quality_threshold = True
 
@@ -165,7 +180,8 @@ def get_matching_sequence_counts(
 
         line_index += 1
 
-    candidate_file.close()
+    if candidate_file is not None:
+        candidate_file.close()
     extract_file.close()
 
     sequence_counts = [(sequence, count) for

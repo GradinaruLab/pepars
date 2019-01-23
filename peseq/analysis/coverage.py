@@ -1,47 +1,7 @@
 from ..utils import DNA
 import itertools
-from workspace import Workspace as ws
-from workspace import Database as db
 import random
-from .Sequence_Library import Sequence_Library
 
-def get_probability_of_single_misread_existing(library, num_samples = 10000):
-
-    alignment = ws.get_active_alignment()
-
-    template = db.get_template_by_id(alignment.library_templates[library.id]).get_variant_template()
-
-    sequence_library = Sequence_Library(library)
-
-    sequence_counts = sequence_library.get_sequence_counts(by_amino_acid=False, count_threshold=0, filter_invalid=True)
-
-    sequences = []
-
-    for sequence, count in sequence_counts.items():
-        for i in range(count):
-            sequences.append(sequence)
-
-    num_duplicates = 0
-    sample_index = 0
-
-    while sample_index < num_samples:
-        sequence = random.sample(sequences, 1)[0]
-
-        random_mutation_index = random.sample(range(len(template)), 1)[0]
-
-        new_nucleotide = None
-
-        while new_nucleotide == None or new_nucleotide == sequence[random_mutation_index]:
-            new_nucleotide = random.sample(list(DNA.IUPAC[template[random_mutation_index]]), 1)[0]
-
-        new_sequence = sequence[:random_mutation_index] + new_nucleotide + sequence[random_mutation_index+1:]
-
-        sample_index += 1
-
-        if new_sequence in sequence_counts:
-            num_duplicates += 1
-            
-    return num_duplicates / sample_index
 
 def generate_excluded_sequences(template, included_sequences, num_sequences):
 
@@ -62,6 +22,7 @@ def generate_excluded_sequences(template, included_sequences, num_sequences):
             excluded_sequences.add(sequence)
 
     return excluded_sequences
+
 
 def get_possible_sequences_by_template(template, by_amino_acid = True):
 
@@ -86,6 +47,7 @@ def get_possible_sequences_by_template(template, by_amino_acid = True):
         print(possible_sequence)
 
     return possible_sequences
+
 
 def get_possible_sequences(analysis_set, by_amino_acid = True, use_multiple_templates = False):
 
@@ -169,6 +131,7 @@ def get_possible_sequences(analysis_set, by_amino_acid = True, use_multiple_temp
             sequences.add(sequence)
     return sequences
 
+
 def get_coverage_sequences(analysis_set, by_amino_acid = True, use_multiple_templates = False, max_num_sequences = None):
 
     possible_sequences = get_possible_sequences(analysis_set, by_amino_acid, use_multiple_templates)
@@ -195,48 +158,3 @@ def get_coverage_sequences(analysis_set, by_amino_acid = True, use_multiple_temp
             excluded_sequences.add(possible_sequence)
 
     return included_sequences, excluded_sequences
-
-def get_coverage(analysis_set, by_amino_acid = True):
-
-    num_included_sequences = 0
-
-    variant_template = ''
-
-    alignment = ws.get_active_alignment()
-
-    # Get the templates for each analysis set
-    for library_name in analysis_set.get_libraries():
-        db_library = db.get_library(library_name)
-        template_id = alignment.library_templates[db_library.id]
-        template = db.get_template_by_id(template_id)
-        if len(variant_template) == 0:
-            variant_template = template.get_variant_template()
-        elif variant_template != template.get_variant_template():
-            raise Exception('Variant templates must match in an analysis set to do coverage analysis!')
-
-    num_possible_sequences = 1
-
-    if by_amino_acid:
-        if len(variant_template) % 3 != 0:
-            raise Exception('Can\'t analyze by amino acid when variant sequence isn\'t groups of 3!')
-        variant_length = int(len(variant_template) / 3)
-
-        # For now, assume all amino acids are possible. Should do something with IUPAC later
-        for variant_index in range(0, variant_length):
-            num_possible_sequences *= 20;
-    else:
-        for variant_index in range(0, len(variant_template)):
-            num_possible_sequences *= len(DNA.IUPAC[variant_template[variant_index]])
-
-    # We assume all sequences in the analysis set have been aligned against the template,
-    # so they must match the template. So, all unique sequences are the included sequences
-
-    included_sequences = set()
-
-    for library_name, library in analysis_set.get_libraries().items():
-        sequence_counts = library.get_sequence_counts(by_amino_acid, count_threshold = 0)
-
-        for sequence, count in sequence_counts.items():
-            included_sequences.add(sequence)
-
-    return len(included_sequences), num_possible_sequences

@@ -107,7 +107,7 @@ def get_amino_acids():
     return AMINO_ACIDS
 
 
-def translate_DNA_sequence_to_AA_sequence(DNA_sequence):
+def translate_DNA_to_AA(DNA_sequence):
 
     amino_acids = ""
 
@@ -117,7 +117,7 @@ def translate_DNA_sequence_to_AA_sequence(DNA_sequence):
     return amino_acids
 
 
-def translate_AA_to_random_codons(amino_acid_sequence, template="NNN"):
+def translate_AA_to_DNA(amino_acid_sequence, template="NNN"):
 
     nucleotide_sequence = ""
 
