@@ -1,3 +1,5 @@
+import numpy
+
 from plotly import offline as plotly_offline
 from plotly import graph_objs
 
