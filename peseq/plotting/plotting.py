@@ -74,15 +74,25 @@ def plot_histogram(values,
 def plot_scatter(x_values,
                  y_values,
                  output_file_path=None,
-                 interactive=False):
+                 interactive=False,
+                 text_labels=None):
 
     figure_traces = []
 
-    scatter = graph_objs.Scatter(
-        x=list(x_values),
-        y=list(y_values),
-        mode="markers"
-    )
+    if text_labels is None:
+        scatter = graph_objs.Scatter(
+            x=list(x_values),
+            y=list(y_values),
+            mode="markers"
+        )
+    else:
+        scatter = graph_objs.Scatter(
+            x=list(x_values),
+            y=list(y_values),
+            mode="markers",
+            hoverinfo="text",
+            text=text_labels
+        )
 
     figure_traces.append(scatter)
 

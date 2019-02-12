@@ -32,7 +32,7 @@ def plot_nucleotide_prevalence_bar_chart(
 
     traces = []
 
-    for nucleotide in nucleotide_counts:
+    for nucleotide in sorted(nucleotide_counts):
 
         trace = graph_objs.Bar(
             x=position_labels,
