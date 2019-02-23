@@ -1,5 +1,5 @@
-from workspace import Workspace as ws
-from workspace import Database as db
+from protfarm.workspace import Workspace as ws
+from protfarm.workspace import Database as db
 import numpy as np
 
 class Aligner(object):

@@ -1,8 +1,8 @@
 from .Aligner import Aligner
-from sequencing import FASTQ
-from workspace import Workspace as ws
-from workspace import Database as db
-from utils import DNA
+from ..utils import FASTQ
+from protfarm.workspace import Workspace as ws
+from protfarm.workspace import Database as db
+from ..utils import DNA
 
 class Perfect_Match_Aligner(Aligner):
 
