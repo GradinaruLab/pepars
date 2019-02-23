@@ -1,6 +1,6 @@
 from .Aligner import Aligner
-from sequencing import FASTQ
-from workspace import Workspace as ws
+from ..utils import FASTQ
+from protfarm.workspace import Workspace as ws
 import subprocess
 import re
 import os
