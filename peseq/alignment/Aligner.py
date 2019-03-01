@@ -1,10 +1,13 @@
 from protfarm.workspace import Workspace as ws
 from protfarm.workspace import Database as db
-import numpy as np
+
+from ..analysis import sequencing_reads as sequencing_reads_analysis
 
 class Aligner(object):
 
     def __init__(self):
+
+        self._num_sequences = 0
         pass
 
     def align(self, alignment, library, progress_callback):
@@ -17,17 +20,11 @@ class Aligner(object):
         if ws.alignment_exists(library, alignment):
             return
 
-        line_count = 0
+        self._num_sequences = 0
 
         for fastq_file_name in library.fastq_files:
             fastq_file = ws.get_fastq_file(fastq_file_name)
-
-            for line in fastq_file:
-                line_count += 1
-
-            ws.close_fastq_file(fastq_file_name)
-
-        self._num_sequences = line_count / 4
+            self._num_sequences += fastq_file.get_read_count()
 
         sequences, uuids, statistics = self.align_library(library, \
             template, **alignment.parameters)
@@ -37,7 +34,6 @@ class Aligner(object):
                 UUIDs!')
 
         sequence_index = 0
-
 
         sequence_uuid_counts = {}
 

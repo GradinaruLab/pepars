@@ -71,87 +71,77 @@ class Perfect_Match_Aligner(Aligner):
 
             fastq_file = ws.get_fastq_file(fastq_file_name)
 
-            line_count = 0
+            sequence_count = 0
 
             FASTQ_sequence_index = 0
 
-            for i, line in enumerate(fastq_file):
+            for sequence, quality_string in \
+                    fastq_file.get_sequence_quality_iterator():
 
-                if line_count % 4 == 1:
-                    if int(line_count / 4) % output_frequency == 0:
-                        self.update_num_sequences_aligned(num_sequences)
-                        # self._progress_callback("Comparing:")
-                        # self._progress_callback("%s" % self.template_sequence)
-                        # self._progress_callback("%s" % line)
-                    sequence = line.strip()
+                if sequence_count % output_frequency == 0:
+                    self.update_num_sequences_aligned(num_sequences)
 
-                elif line_count % 4 == 3:
+                if (len(sequence)) == template_length:
 
-                    quality_string = line.strip()
-                    
-                    if (len(sequence)) == template_length:
+                    extracted_sequence, uuid, error_type, error_probability = \
+                        self.extract_sequence(sequence, quality_string)
 
-                        extracted_sequence, uuid, error_type, error_probability = \
-                            self.extract_sequence(sequence, quality_string)
+                    if is_paired_end:
 
-                        if is_paired_end:
+                        if error_type == 0 and FASTQ_file_object.is_reverse_complement:
+                            extracted_sequence = DNA.get_reverse_complement(extracted_sequence)
 
-                            if error_type == 0 and FASTQ_file_object.is_reverse_complement:
-                                extracted_sequence = DNA.get_reverse_complement(extracted_sequence)
-
-                            # If this is paired end, we just log it and wait for the next pass
-                            if fastq_file_index == 0:
-                                sequence_error = [extracted_sequence, error_type, error_probability, uuid]
-                                previous_FASTQ_sequences.append(sequence_error)
-                                # Not really an error, but we want to skip it
-                                error_type = 6
+                        # If this is paired end, we just log it and wait for the next pass
+                        if fastq_file_index == 0:
+                            sequence_error = [extracted_sequence, error_type, error_probability, uuid]
+                            previous_FASTQ_sequences.append(sequence_error)
+                            # Not really an error, but we want to skip it
+                            error_type = 6
+                        else:
+                            # If the previous FASTQ file had an error, we just use the new one
+                            if previous_FASTQ_sequences[FASTQ_sequence_index][1] != 0:
+                                pass
+                            # If the current FASTQ file has an error, we just use the previous one
+                            elif error_type != 0:
+                                extracted_sequence = previous_FASTQ_sequences[FASTQ_sequence_index][0]
+                                uuid = previous_FASTQ_sequences[FASTQ_sequence_index][3]
+                                error_type = previous_FASTQ_sequences[FASTQ_sequence_index][1]
+                                error_probability = previous_FASTQ_sequences[FASTQ_sequence_index][2]
+                            # If neither had an error, we compare and only include if they match
                             else:
-                                # If the previous FASTQ file had an error, we just use the new one
-                                if previous_FASTQ_sequences[FASTQ_sequence_index][1] != 0:
-                                    pass
-                                # If the current FASTQ file has an error, we just use the previous one
-                                elif error_type != 0:
-                                    extracted_sequence = previous_FASTQ_sequences[FASTQ_sequence_index][0]
-                                    uuid = previous_FASTQ_sequences[FASTQ_sequence_index][3]
-                                    error_type = previous_FASTQ_sequences[FASTQ_sequence_index][1]
-                                    error_probability = previous_FASTQ_sequences[FASTQ_sequence_index][2]
-                                # If neither had an error, we compare and only include if they match
+                                paired_end_comparisons += 1
+                                if previous_FASTQ_sequences[FASTQ_sequence_index][0] != extracted_sequence:
+                                    error_type = 5
+                                # If the match, we have even greater confidence in them
                                 else:
-                                    paired_end_comparisons += 1
-                                    if previous_FASTQ_sequences[FASTQ_sequence_index][0] != extracted_sequence:
-                                        error_type = 5
-                                    # If the match, we have even greater confidence in them
-                                    else:
-                                        error_probability = error_probability * previous_FASTQ_sequences[FASTQ_sequence_index][2]
-                        
-                        if error_type == 0:
-                            extracted_sequences.append(extracted_sequence)
-                            if extracted_sequence in sequence_counts:
-                                sequence_counts[extracted_sequence] += 1
-                            else:
-                                sequence_counts[extracted_sequence] = 1
-                            uuids.append(uuid)
-                            error_probabilities.append(error_probability)
+                                    error_probability = error_probability * previous_FASTQ_sequences[FASTQ_sequence_index][2]
 
-                        elif error_type == 1:
-                            template_mismatches += 1
-                        elif error_type == 2:
-                            variant_quality_mismatches += 1
-                        elif error_type == 3:
-                            variant_nucleotide_mismatches += 1
-                        elif error_type == 4:
-                            invalid_nucleotides += 1
-                        elif error_type == 5:
-                            paired_end_mismatches += 1
-                    else:
-                        size_mismatches +=1
+                    if error_type == 0:
+                        extracted_sequences.append(extracted_sequence)
+                        if extracted_sequence in sequence_counts:
+                            sequence_counts[extracted_sequence] += 1
+                        else:
+                            sequence_counts[extracted_sequence] = 1
+                        uuids.append(uuid)
+                        error_probabilities.append(error_probability)
 
-                    FASTQ_sequence_index += 1
+                    elif error_type == 1:
+                        template_mismatches += 1
+                    elif error_type == 2:
+                        variant_quality_mismatches += 1
+                    elif error_type == 3:
+                        variant_nucleotide_mismatches += 1
+                    elif error_type == 4:
+                        invalid_nucleotides += 1
+                    elif error_type == 5:
+                        paired_end_mismatches += 1
+                else:
+                    size_mismatches +=1
 
-                    if not is_paired_end or fastq_file_index == 1:
-                        num_sequences += 1
+                FASTQ_sequence_index += 1
 
-                line_count += 1
+                if not is_paired_end or fastq_file_index == 1:
+                    num_sequences += 1
 
             ws.close_fastq_file(fastq_file_name)
 

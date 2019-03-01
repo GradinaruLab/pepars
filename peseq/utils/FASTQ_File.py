@@ -26,6 +26,15 @@ class FASTQ_File:
 
         return FASTQ_Sequence_Quality_Iterator(self)
 
+    def get_read_count(self):
+
+        read_count = 0
+
+        for _ in self.get_sequence_iterator():
+            read_count += 1
+
+        return read_count
+
     def open(self):
 
         if self._is_open:
