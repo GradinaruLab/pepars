@@ -51,7 +51,7 @@ def get_template_from_nucleotide_distribution(
 
         possible_nucleotides = ""
 
-        for nucleotide in nucleotide_percentiles:
+        for nucleotide in sorted(nucleotide_percentiles):
 
             if nucleotide_percentiles[nucleotide][sequence_index] > \
                     percentile_threshold:
@@ -83,7 +83,6 @@ def collapse_similar_sequences(sequence_counts,
     # Sort list in reverse order (smallest counts first)
     sequence_counts.sort(key=operator.itemgetter(1), reverse=True)
 
-    print("Building sequence trie")
     sequence_trie = Sequence_Trie(by_nucleotide=True, allow_invalid=True)
     for sequence, count in sequence_counts:
         sequence_trie.add(sequence, count)
@@ -93,7 +92,7 @@ def collapse_similar_sequences(sequence_counts,
 
     for sequence_index, (sequence, count) in enumerate(sequence_counts):
 
-        if sequence_index % 10000 == 0:
+        if sequence_index > 0 and sequence_index % 10000 == 0:
             print("Analyzing sequence %i" % sequence_index)
 
         min_parent_count = count * 2 - 1

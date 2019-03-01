@@ -172,3 +172,15 @@ def translate_reverse_complement(sequence):
     reverse_complement_sequence = translate_complement(reverse_sequence)
 
     return reverse_complement_sequence
+
+
+def is_template_match(template, sequence):
+
+    if len(template) != len(sequence):
+        return False
+
+    for character_index, character in enumerate(sequence):
+        if character not in IUPAC_GRAMMAR_MAP[template[character_index]]:
+            return False
+
+    return True

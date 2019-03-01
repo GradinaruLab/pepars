@@ -2,6 +2,7 @@ import seaborn
 from plotly import graph_objs
 
 from . import plotting
+from ..utils import DNA as DNA_utils
 
 
 def plot_sequence_count_histogram(sequence_counts):
@@ -10,10 +11,80 @@ def plot_sequence_count_histogram(sequence_counts):
     plt.show()
 
 
+def plot_quality_score_distribution(
+        quality_score_distribution,
+        output_file_path=None,
+        interactive=False,
+        sample_name=None):
+
+    num_reads = quality_score_distribution.sum(axis=1)[0]
+
+    traces = []
+
+    for position in range(quality_score_distribution.shape[0]):
+
+        min_value = None
+        q1_value = None
+        median_value = None
+        q3_value = None
+        max_value = None
+        cumulative_count = 0
+
+        for quality_score in range(quality_score_distribution.shape[1]):
+
+            quality_score_count = quality_score_distribution[position][
+                quality_score]
+
+            cumulative_count += quality_score_count
+
+            if min_value is None and quality_score_count > 0:
+                min_value = quality_score
+
+            if q1_value is None and cumulative_count >= 0.25 * num_reads:
+                q1_value = quality_score
+
+            if median_value is None and cumulative_count >= 0.5 * num_reads:
+                median_value = quality_score
+
+            if q3_value is None and cumulative_count >= 0.75 * num_reads:
+                q3_value = quality_score
+
+            if quality_score_count > 0:
+                max_value = quality_score
+
+        y_values = [min_value, q1_value, median_value, median_value, q3_value,
+                    max_value]
+
+        trace = graph_objs.Box(
+            y=y_values,
+            name="%i" % (position + 1)
+        )
+
+        traces.append(trace)
+
+    if sample_name is None:
+        title = "Quality Score Distribution"
+    else:
+        title = "%s Quality Score Distribution" % sample_name
+
+    layout = graph_objs.Layout(
+        title=title,
+        xaxis=dict(title="Position"),
+        yaxis=dict(title="Quality score")
+    )
+
+    figure = graph_objs.Figure(data=traces, layout=layout)
+
+    return plotting.generate_plotly_plot(figure,
+                                         output_file_path=output_file_path,
+                                         interactive=interactive)
+
+
 def plot_nucleotide_prevalence_bar_chart(
         nucleotide_counts,
         output_file_path=None,
-        interactive=False):
+        interactive=False,
+        sample_name=None):
     """
     Generates a stacked bar chart of the prevalence of different nucleotides.
 
@@ -22,6 +93,7 @@ def plot_nucleotide_prevalence_bar_chart(
         of that nucleotide in that position in the sequence
     :param output_file_path: The path to save the file, optional
     :param interactive: Whether this is an interactive plot (i.e. in a notebook)
+    :param sample_name: The name of the sample to include in the plot title
     :return: Nothing
     """
 
@@ -32,7 +104,7 @@ def plot_nucleotide_prevalence_bar_chart(
 
     traces = []
 
-    for nucleotide in sorted(nucleotide_counts):
+    for nucleotide in DNA_utils.get_nucleotides():
 
         trace = graph_objs.Bar(
             x=position_labels,
@@ -42,8 +114,24 @@ def plot_nucleotide_prevalence_bar_chart(
 
         traces.append(trace)
 
+    if "N" in nucleotide_counts:
+
+        trace = graph_objs.Bar(
+            x=position_labels,
+            y=nucleotide_counts["N"],
+            name="N"
+        )
+
+        traces.append(trace)
+
+    if sample_name is None:
+        title = "Nucleotide Distribution"
+    else:
+        title = "%s Nucleotide Distribution" % sample_name
+
     layout = graph_objs.Layout(
-        barmode="stack"
+        barmode="stack",
+        title=title
     )
 
     figure = graph_objs.Figure(data=traces, layout=layout)

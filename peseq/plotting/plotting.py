@@ -31,7 +31,9 @@ def plot_histogram(values,
                    x_axis_title=None,
                    y_axis_title="Count",
                    num_bins=None,
-                   log_scale=False):
+                   log_scale=False,
+                   x_range=None,
+                   y_range=None):
 
     figure_traces = []
 
@@ -58,6 +60,11 @@ def plot_histogram(values,
 
     if x_axis_title is not None:
         layout_parameters["xaxis"]["title"] = x_axis_title
+
+    if x_range is not None:
+        layout_parameters["xaxis"]["range"] = x_range
+    if y_range is not None:
+        layout_parameters["yaxis"]["range"] = y_range
 
     if log_scale:
         layout_parameters["yaxis"]["type"] = "log"
@@ -132,7 +139,7 @@ def plot_bar_chart(values,
 
     figure_traces = []
 
-    if len(values.shape) == 1:
+    if len(values.shape) == 1 or values.shape[1] == 1:
         values = numpy.reshape(values, newshape=(values.shape[0], 1))
     else:
         if group_names is None:

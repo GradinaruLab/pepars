@@ -17,7 +17,6 @@ class AminoAcid:
     properties = ['charge', 'phosphorylation', 'average_flexibility_idx',
                   'ionic_bond', 'molecular_weight', 'hydrophobicity']
 
-
     def __init__(self,amino_acid):
 
         self.properties = {}

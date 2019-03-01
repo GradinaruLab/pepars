@@ -1,3 +1,5 @@
+import queue
+
 from . import DNA as DNA_utils
 
 
@@ -107,3 +109,33 @@ class Sequence_Trie(object):
 
         return self._root.get_child(sequence)
 
+    def __iter__(self):
+
+        self._current_node_chain = [self._root]
+        self._current_node_element_index = [0]
+
+        return self
+
+    def __next__(self):
+
+        # Get the last node in the chain
+        current_node = self._current_node_chain[-1]
+        current_child_index = self._current_node_element_index[-1]
+
+        next_child_index = None
+
+        for child_index in range(current_child_index + 1,
+                                 len(current_node.children)):
+            if current_node.children[child_index] is not None:
+                next_child_index = child_index + 1
+                self._current_node_chain.append(
+                    current_node.children[child_index])
+                self._current_node_element_index.append(0)
+            break
+
+        # If we didn't find a next child,
+        if next_child_index is None:
+            if len(self._current_node_chain) == 1:
+                raise StopIteration
+            else:
+                pass
