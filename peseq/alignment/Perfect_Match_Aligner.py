@@ -145,8 +145,6 @@ class Perfect_Match_Aligner(Aligner):
                 if not is_paired_end or fastq_file_index == 1:
                     num_sequences += 1
 
-            ws.close_fastq_file(fastq_file_name)
-
         mismatched_sequences = template_mismatches + variant_quality_mismatches\
             + variant_nucleotide_mismatches + size_mismatches + paired_end_mismatches + invalid_nucleotides
 

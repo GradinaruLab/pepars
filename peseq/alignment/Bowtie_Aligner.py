@@ -114,7 +114,7 @@ class Bowtie_Aligner(Aligner):
 
             num_sequences += len(file)
 
-            ws.close_fastq_file(fastq_file_name)
+            fastq_file.close()
         
         statistics = {}
 
