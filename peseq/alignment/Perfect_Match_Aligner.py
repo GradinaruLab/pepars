@@ -138,6 +138,8 @@ class Perfect_Match_Aligner(Aligner):
                 else:
                     size_mismatches +=1
 
+                sequence_count += 1
+
                 FASTQ_sequence_index += 1
 
                 if not is_paired_end or fastq_file_index == 1:
