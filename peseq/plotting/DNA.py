@@ -187,7 +187,6 @@ def plot_amino_acid_bias(amino_acid_sequence_counts,
                          template_sequence,
                          sample_name=None,
                          **kwargs):
-
     amino_acids = DNA_utils.get_amino_acids()
 
     amino_acid_position_counts = numpy.zeros(
@@ -208,13 +207,22 @@ def plot_amino_acid_bias(amino_acid_sequence_counts,
         DNA_analysis.get_amino_acid_probabilities_from_template(
             template_sequence, allow_stop_codon=False)
 
+    sample_amino_acid_probabilities_min = sample_amino_acid_probabilities[
+        sample_amino_acid_probabilities > 0].min() / 2
+
+    sample_amino_acid_probabilities[sample_amino_acid_probabilities == 0.0] = \
+        sample_amino_acid_probabilities_min
+
     amino_acid_biases = numpy.log2(
         sample_amino_acid_probabilities / unbiased_amino_acid_probabilities)
 
+    biggest_value = max(abs(amino_acid_biases.max()),
+                        abs(amino_acid_biases.min()))
+
     trace = graph_objs.Heatmap(
         z=amino_acid_biases,
-        zmin=-amino_acid_biases.max(),
-        zmax=amino_acid_biases.max(),
+        zmin=-biggest_value,
+        zmax=biggest_value,
         zauto=False,
         x=amino_acids,
         colorbar=dict(
