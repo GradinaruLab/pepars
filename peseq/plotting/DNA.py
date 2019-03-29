@@ -142,6 +142,7 @@ def plot_nucleotide_prevalence_bar_chart(
                                          output_file_path=output_file_path,
                                          interactive=interactive)
 
+
 def plot_significance_z_scores(
         z_scores,
         output_file_path=None,
@@ -184,7 +185,7 @@ def plot_significance_z_scores(
 
 def plot_amino_acid_bias(amino_acid_sequence_counts,
                          template_sequence,
-                         allow_stop_codon=False,
+                         sample_name=None,
                          **kwargs):
 
     amino_acids = DNA_utils.get_amino_acids()
@@ -205,7 +206,7 @@ def plot_amino_acid_bias(amino_acid_sequence_counts,
 
     unbiased_amino_acid_probabilities = \
         DNA_analysis.get_amino_acid_probabilities_from_template(
-            template_sequence, allow_stop_codon=allow_stop_codon)
+            template_sequence, allow_stop_codon=False)
 
     amino_acid_biases = numpy.log2(
         sample_amino_acid_probabilities / unbiased_amino_acid_probabilities)
@@ -216,11 +217,22 @@ def plot_amino_acid_bias(amino_acid_sequence_counts,
         zmax=amino_acid_biases.max(),
         zauto=False,
         x=amino_acids,
-        y=list(range(1, len(template_sequence)))
+        colorbar=dict(
+            title="Log2 Bias"
+        )
+    )
+
+    if sample_name is None:
+        title = "Amino Acid Bias"
+    else:
+        title = "%s Amino Acid Bias" % sample_name
+
+    layout = graph_objs.Layout(
+        title=title
     )
 
     data = [trace]
 
-    figure = graph_objs.Figure(data=data)
+    figure = graph_objs.Figure(data=data, layout=layout)
 
     plotting.generate_plotly_plot(figure, **kwargs)
