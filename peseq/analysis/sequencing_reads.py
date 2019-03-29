@@ -92,6 +92,8 @@ def get_nucleotide_distribution(FASTQ_file_path, include_N=True):
 
     for sequence in file.get_sequence_iterator():
         for character_index, character in enumerate(sequence):
+            if character_index >= read_length:
+                break
             sequence_counts[character][character_index] += 1
 
     if not include_N:
