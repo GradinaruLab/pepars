@@ -186,6 +186,7 @@ def plot_significance_z_scores(
 def plot_amino_acid_bias(amino_acid_sequence_counts,
                          template_sequence,
                          sample_name=None,
+                         ignore_counts=False,
                          **kwargs):
     amino_acids = DNA_utils.get_amino_acids()
 
@@ -193,6 +194,9 @@ def plot_amino_acid_bias(amino_acid_sequence_counts,
         (int(len(template_sequence) / 3), len(amino_acids)))
 
     for sequence, count in amino_acid_sequence_counts.items():
+
+        if ignore_counts:
+            count = 1
 
         for amino_acid_index, amino_acid in enumerate(sequence):
             amino_acid_position_counts[
