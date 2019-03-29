@@ -229,6 +229,7 @@ def plot_amino_acid_bias(amino_acid_sequence_counts,
         zmax=biggest_value,
         zauto=False,
         x=amino_acids,
+        y=[str(i) for i in range(1, int(len(template_sequence) / 3) + 1)],
         colorbar=dict(
             title="Log2 Bias"
         ),
