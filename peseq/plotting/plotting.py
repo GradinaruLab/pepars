@@ -87,9 +87,13 @@ def plot_count_distribution(sample_counts, **kwargs):
 
     for sample, counts in sample_counts.items():
 
+        counts = sorted(counts)
+
         values, counts = numpy.unique(counts, return_counts=True)
 
-        percentiles = 1 - counts / sum(counts)
+        cumulative_counts = numpy.cumsum(counts)
+
+        percentiles = cumulative_counts / sum(counts)
 
         scatter = graph_objs.Scatter(
             x=values,
