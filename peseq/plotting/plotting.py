@@ -78,6 +78,50 @@ def plot_histogram(values,
                          interactive=interactive)
 
 
+def plot_count_distribution(sample_counts, **kwargs):
+
+    if isinstance(sample_counts, list):
+        sample_counts = {"": sample_counts}
+
+    figure_traces = []
+
+    for sample, counts in sample_counts.items():
+
+        values, counts = numpy.unique(counts, return_counts=True)
+
+        percentiles = 1 - counts / sum(counts)
+
+        scatter = graph_objs.Scatter(
+            x=values,
+            y=percentiles,
+            name=sample
+        )
+
+        figure_traces.append(scatter)
+
+    if len(sample_counts) == 1:
+        title = "%s Sequence Count Distribution" % list(sample_counts)[0]
+    else:
+        title = "Sequence Count Distribution"
+
+    layout = graph_objs.Layout(
+        hovermode="closest",
+        xaxis=dict(
+            type="log",
+            title="Sequence Count"
+        ),
+        yaxis=dict(
+            range=[0, 1],
+            title="Probability"
+        ),
+        title=title
+    )
+
+    figure = graph_objs.Figure(data=figure_traces, layout=layout)
+
+    return generate_plotly_plot(figure, **kwargs)
+
+
 def plot_scatter(x_values,
                  y_values,
                  output_file_path=None,
