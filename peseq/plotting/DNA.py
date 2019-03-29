@@ -1,8 +1,10 @@
 import seaborn
+import numpy
 from plotly import graph_objs
 
 from . import plotting
 from ..utils import DNA as DNA_utils
+from ..analysis import DNA as DNA_analysis
 
 
 def plot_sequence_count_histogram(sequence_counts):
@@ -175,5 +177,50 @@ def plot_significance_z_scores(
 
     figure = graph_objs.Figure(data=figure_traces, layout=layout)
 
-    return generate_plotly_plot(figure, output_file_path=output_file_path,
-                                interactive=interactive)
+    return plotting.generate_plotly_plot(figure,
+                                         output_file_path=output_file_path,
+                                         interactive=interactive)
+
+
+def plot_amino_acid_bias(amino_acid_sequence_counts,
+                         template_sequence,
+                         allow_stop_codon=False,
+                         **kwargs):
+
+    amino_acids = DNA_utils.get_amino_acids()
+
+    amino_acid_position_counts = numpy.zeros(
+        (int(len(template_sequence) / 3), len(amino_acids)))
+
+    for sequence, count in amino_acid_sequence_counts.items():
+
+        for amino_acid_index, amino_acid in enumerate(sequence):
+            amino_acid_position_counts[
+                amino_acid_index, DNA_utils.AMINO_ACID_INDEX_MAP[
+                    amino_acid]] += count
+
+    sample_amino_acid_probabilities = \
+        amino_acid_position_counts / \
+        amino_acid_position_counts.sum(axis=1)[:, None]
+
+    unbiased_amino_acid_probabilities = \
+        DNA_analysis.get_amino_acid_probabilities_from_template(
+            template_sequence, allow_stop_codon=allow_stop_codon)
+
+    amino_acid_biases = numpy.log2(
+        sample_amino_acid_probabilities / unbiased_amino_acid_probabilities)
+
+    trace = graph_objs.Heatmap(
+        z=amino_acid_biases,
+        zmin=-amino_acid_biases.max(),
+        zmax=amino_acid_biases.max(),
+        zauto=False,
+        x=amino_acids,
+        y=list(range(1, len(template_sequence)))
+    )
+
+    data = [trace]
+
+    figure = graph_objs.Figure(data=data)
+
+    plotting.generate_plotly_plot(figure, **kwargs)

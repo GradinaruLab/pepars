@@ -1,4 +1,6 @@
 import operator
+import numpy
+import itertools
 
 from ..utils import DNA
 from ..utils import Sequence_Trie
@@ -242,3 +244,52 @@ def find_all_sequences_of_distance_n(sequence, sequence_trie, n=1,
                         if exists:
                             sequences.append(prefix + midfix + postfix)
     return sequences
+
+
+def get_amino_acid_probabilities_from_template(template,
+                                               allow_stop_codon=False):
+    """
+    Given a template, return an NxM matrix representing the probability of each
+    amino acid in each position
+
+    :param template: A sequence of codons of length N*3
+
+    :param allow_stop_codon: Whether to allow/account for stop codons (True)
+        or ignore them (False)
+
+    :return: An NxM numpy array, M is either the number of amino acids (20) or
+        the number of amino acids + 1 (for stop codon), if allow_stop_codon
+    """
+
+    if len(template) % 3 != 0:
+        raise ValueError("Template must be a multiple of 3 in length")
+
+    num_amino_acids = len(DNA.get_amino_acids())
+
+    if allow_stop_codon:
+        num_amino_acids += 1
+
+    amino_acid_counts = numpy.zeros((int(len(template) / 3), num_amino_acids))
+
+    for i in range(0, len(template), 3):
+
+        possible_nucleotides = [DNA.IUPAC_GRAMMAR_MAP[nucleotide] for
+                                nucleotide in template[i:i + 3]]
+        for combination in itertools.product(*possible_nucleotides):
+            codon = "".join(combination)
+            amino_acid = DNA.CODON_AA_MAP[codon]
+
+            if amino_acid == "#":
+                if allow_stop_codon:
+                    amino_acid_index = -1
+                else:
+                    continue
+            else:
+                amino_acid_index = DNA.AMINO_ACID_INDEX_MAP[amino_acid]
+
+            amino_acid_counts[int(i / 3), amino_acid_index] += 1
+
+    amino_acid_probabilities = \
+        numpy.divide(amino_acid_counts, amino_acid_counts.sum(axis=1)[:, None])
+
+    return amino_acid_probabilities
