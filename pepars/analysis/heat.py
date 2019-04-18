@@ -7,7 +7,6 @@ matplotlib.use("TkAgg")
 from matplotlib import pyplot as plt
 import seaborn as sns
 
-#from analysis.Sequence_Library import Sequence_Library
 from ..utils import utils
 from ..utils import DNA as DNA
 from ..fileio import sequence_data_parsing
@@ -50,20 +49,6 @@ class heatmap:
         self.stop = None
         self.constant_scale = constant_scale
 
-
-
-    #Plots data according to 
-
-#    def normalized_sequence_counts(self, library, by_amino_acid = True,
-#        count_threshold = 10, filter_invalid = True, constant_scale = True):
-
-        # TODO: Update to use new Sequence Library format (accepts library instead of file)
-#        get sequencedata
-#        slib = Sequence_Library(library);
-#        slib_count = slib.get_sequence_counts(by_amino_acid=by_amino_acid,
-#            count_threshold=count_threshold, filter_invalid=filter_invalid)
-
-#        self.amino_acid_distribution(slib_count, constant_scale)
 
     def amino_acid_distribution(self, sequence_counts, constant_scale = True):
         
