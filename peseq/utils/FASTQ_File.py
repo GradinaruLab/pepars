@@ -1,4 +1,5 @@
 import gzip
+import os
 
 
 class FASTQ_File:
@@ -6,6 +7,11 @@ class FASTQ_File:
     def __init__(self, file_path):
 
         if file_path.endswith(".gz"):
+            self._is_compressed = True
+        elif not os.path.isfile(file_path) and \
+                os.path.isfile(file_path + ".gz"):
+
+            file_path += ".gz"
             self._is_compressed = True
         else:
             self._is_compressed = False
