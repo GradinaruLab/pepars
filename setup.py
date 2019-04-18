@@ -1,15 +1,15 @@
 from distutils.core import setup
 
 setup(
-    name="peseq",
-    version="0.1",
+    name="pepars",
+    version="0.2",
     packages=[
-        "peseq",
-        "peseq.analysis",
-        "peseq.plotting",
-        "peseq.utils",
-        "peseq.alignment",
-        "peseq.fileio"
+        "pepars",
+        "pepars.analysis",
+        "pepars.plotting",
+        "pepars.utils",
+        "pepars.alignment",
+        "pepars.fileio"
     ],
     install_requires=[
         "numpy",
