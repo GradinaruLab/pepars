@@ -1,57 +1,73 @@
-from protfarm.workspace import Workspace as ws
-from protfarm.workspace import Database as db
+from ..utils import DNA
 
-from ..analysis import sequencing_reads as sequencing_reads_analysis
 
 class Aligner(object):
 
     def __init__(self):
 
         self._num_sequences = 0
-        pass
+        self._progress_callback = None
+        self._is_paired_end = False
 
-    def align(self, alignment, library, progress_callback):
+    def align(self,
+              template,
+              FASTQ_file_sets,
+              alignment_parameters=None,
+              progress_callback=None,
+              reverse_complement_template=None):
 
         self._progress_callback = progress_callback
 
-        template_id = alignment.library_templates[library.id]
-        template = db.get_template_by_id(template_id)
-
-        if ws.alignment_exists(library, alignment):
-            return
-
         self._num_sequences = 0
 
-        for fastq_file_name in library.fastq_files:
-            fastq_file = ws.get_fastq_file(fastq_file_name)
-            self._num_sequences += fastq_file.get_read_count()
+        num_files_per_set = []
 
-        sequences, uuids, statistics = self.align_library(library, \
-            template, **alignment.parameters)
+        for FASTQ_file_set in FASTQ_file_sets:
+
+            self._num_sequences += FASTQ_file_set.get_read_count()
+
+            num_files_per_set.append(FASTQ_file_set.num_files)
+
+            if FASTQ_file_set.num_files == 1:
+                self._is_paired_end = False
+            elif FASTQ_file_set.num_files == 2:
+                self._is_paired_end = True
+            else:
+                raise NotImplementedError("Only expecting 1 or 2 files per set")
+
+        if len(set(num_files_per_set)) > 1:
+            raise ValueError("All file sets must have the same number of files")
+
+        if alignment_parameters is None:
+            alignment_parameters = {}
+
+        sequences, uuids, statistics = self._align(
+            FASTQ_file_sets,
+            template,
+            reverse_complement_template=reverse_complement_template,
+            **alignment_parameters)
 
         if len(sequences) != len(uuids) and len(uuids) != 0:
             raise Exception('Number of sequences must match number of \
                 UUIDs!')
-
-        sequence_index = 0
 
         sequence_uuid_counts = {}
 
         if len(uuids) > 0:
             for sequence_index in range(0, len(sequences)):
                 if (sequences[sequence_index], uuids[sequence_index]) not \
-                    in sequence_uuid_counts:
+                        in sequence_uuid_counts:
 
-                    sequence_uuid_counts[(sequences[sequence_index], \
-                        uuids[sequence_index])] = 0
+                    sequence_uuid_counts[(sequences[sequence_index],
+                                          uuids[sequence_index])] = 0
 
-                sequence_uuid_counts[(sequences[sequence_index], \
-                        uuids[sequence_index])] += 1                    
+                sequence_uuid_counts[(sequences[sequence_index],
+                                      uuids[sequence_index])] += 1
         else:
             for sequence_index in range(0, len(sequences)):
 
                 if (sequences[sequence_index], '') not in \
-                    sequence_uuid_counts:
+                        sequence_uuid_counts:
 
                     sequence_uuid_counts[(sequences[sequence_index], '')] \
                         = 0
@@ -64,49 +80,36 @@ class Aligner(object):
 
         for sequence_uuids, counts in sequence_uuid_counts.items():
 
-            sequence_uuid_counts_array[sequence_index] = [sequence_uuids[0], sequence_uuids[1], counts]
+            sequence_uuid_counts_array[sequence_index] = \
+                [sequence_uuids[0], sequence_uuids[1], counts]
 
             sequence_index += 1
 
-        ws.write_sequence_file(library, alignment, \
-            sequence_uuid_counts_array)
-
-        alignment.add_statistics(library, statistics)
+        return sequence_uuid_counts_array, statistics
 
     def update_num_sequences_aligned(self, num_sequences):
 
         percent = num_sequences * 100.0 / self._num_sequences
 
-        progress_string = "%.2f%% (%i/%i)" % (percent, num_sequences, self._num_sequences)
+        progress_string = "%.2f%% (%i/%i)" % (percent, num_sequences,
+                                              self._num_sequences)
 
         self._progress_callback(progress_string)
-
-    @staticmethod
-    def validate_alignment(alignment):
-
-        previous_num_variants = -1
-
-        for library, template_id in alignment.library_templates.items():
-
-            template = db.get_template_by_id(template_id)
-            num_variants = Aligner.get_num_variants(template)
-
-            if previous_num_variants != -1 and \
-                num_variants != previous_num_variants:
-
-                raise Exception('Num variants does not match between all \
-                    templates!')
-
-            previous_num_variants = num_variants
 
     @staticmethod
     def get_num_variants(template):
 
         num_variants = 0
 
-        variant_markers = set({'N', 'K'})
-
-        for variant_marker in variant_markers:
+        for variant_marker in DNA.get_degenerate_nucleotides():
             num_variants += template.sequence.count(variant_marker)
 
         return num_variants
+
+    def _align(self,
+               FASTQ_file_sets,
+               template,
+               reverse_complement_template,
+               alignment_parameters):
+
+        raise NotImplementedError("Aligner subclass must implement _align")

@@ -1,13 +1,10 @@
-from .Aligner import Aligner
-from ..utils import FASTQ
-from protfarm.workspace import Workspace as ws
 import subprocess
 import re
 import os
-# import DNA
-import sys
 
-# iupac = DNA.IUPAC
+from .Aligner import Aligner
+from ..utils import DNA
+
 
 class Bowtie_Aligner(Aligner):
 
@@ -17,51 +14,51 @@ class Bowtie_Aligner(Aligner):
         self.ids = []
         self.sequences = []
 
-    def align_library(self, library, template,
-        is_local = False,
-        output_frequency = 1e5,
-        approach = None,
-        allow_insertions_deletions = False,
-        quality_threshold = 0.0):
+    def _align(
+            self, FASTQ_file_sets, template,
+            reverse_complement_template,
+            working_directory=os.getcwd(),
+            is_local = False,
+            output_frequency = 1e5,
+            approach = None,
+            allow_insertions_deletions = False,
+            quality_threshold = 0.0):
         """
         Aligns given library with the given template using Shashank's bottom-up
         method with Bowtie2
         """
 
-        template_id = template.id
         ##
-        reference_name = '_'.join(['bowtie', approach, 'template',
-            str(template_id)])
-        other_name = '_'.join(['bowtie',approach,'template', str(template_id),
-                    'library',str(library.id)])
+        reference_name = '_'.join(['bowtie', approach])
+        other_name = '_'.join(['bowtie',approach])
         
         ##
         reference_file_name = reference_name + '.fa'
 
         if approach == 'elimination':
-            parse_function = parse_elimination
+            parse_function = self.parse_elimination
         elif approach == 'mismatch':
-            parse_function = parse_nnt
+            parse_function = self.parse_nnt
 
-        variants = self.get_variants(template.sequence)
+        variants = self.get_variants(template)
 
         num_sequences = 0.0
 
-        reference_file_name = ws.get_raw_data_path(reference_file_name)
+        reference_file_name = \
+            os.path.join(working_directory, reference_file_name)
         # Create reference file if not exists
         try:
             reference_file = open(reference_file_name, 'r')
         except:
             reference_file = open(reference_file_name, 'w')
-            template_string = template.sequence
 
             if approach == 'elimination':
-                template_string.replace('NNK','')
+                template.replace('NNK','')
             elif approach == 'mismatch':
-                template_string.replace('K','T')
+                template.replace('K','T')
             
             reference_file.write('>' + reference_name + os.linesep)
-            reference_file.write(template_string)
+            reference_file.write(template)
         
         reference_file.close()
 
@@ -71,17 +68,16 @@ class Bowtie_Aligner(Aligner):
 
         subprocess.call([stringer], shell = True, executable = '/bin/bash')
 
+        for FASTQ_file_set in FASTQ_file_sets:
 
-        for fastq_file_name in library.fastq_files:
-
-            if (line_count / 4) % output_frequency == 0:
+            if (num_sequences / 4) % output_frequency == 0:
                 self.update_num_sequences_aligned(num_sequences)
             
             # file_id = fastq_file_name.split('_')[0]
-            
-            fastq_file = ws.get_fastq_file(fastq_file_name)
-            fastq_file_path = ws.get_raw_data_path(fastq_file_name)
-            sam_path = ws.get_raw_data_path(other_name + '.sam')
+
+            fastq_file_path = os.path.join(working_directory,
+                                           FASTQ_file_set.files[0].file_name)
+            sam_path = os.path.join(working_directory, other_name + '.sam')
 
             # Create .sam file if not exists
             if not os.path.exists(sam_path):
@@ -98,9 +94,9 @@ class Bowtie_Aligner(Aligner):
             
             # From .sam file, create .txt file
             cmd = ' '.join(['cut -f1,6,10,11 ', sam_path,
-                '> ' + ws.get_raw_data_path(other_name + '.txt')])
+                '> ' + os.path.join(working_directory, other_name + '.txt')])
             subprocess.call([cmd], shell=True, executable='/bin/bash')
-            file = ws.get_raw_data_path(other_name + '.txt')
+            file = os.path.join(working_directory, other_name + '.txt')
 
             # Process the .txt file
             file = open(file, 'r').readlines()[3:]
@@ -113,13 +109,12 @@ class Bowtie_Aligner(Aligner):
                 parse_function(id, cigar, sequence, variants)
 
             num_sequences += len(file)
-
-            fastq_file.close()
         
         statistics = {}
 
         statistics['Number of Sequences'] = num_sequences
-        statistics['Alignment rate'] = float(len(self.sequences))/float(num_sequences)
+        statistics['Alignment rate'] = float(len(self.sequences))/\
+                                       float(num_sequences)
 
         return self.sequences, self.ids, statistics
 
@@ -155,13 +150,12 @@ class Bowtie_Aligner(Aligner):
             return
         # variants.append(row)
 
-        
         self.sequences.append(seq)
         self.ids.append(id)
 
     def get_variants(self, sequence):
         # Add more IUPAC characters
-        chars = ''.join(iupac.items())
+        chars = ''.join(DNA.IUPAC_GRAMMAR_MAP.items())
         variants = re.findall('['+chars+']+',sequence)
         return variants
 
@@ -171,7 +165,8 @@ class Bowtie_Aligner(Aligner):
         for i in range(len(template_fraction)):
             if sequence_fraction[i] in ('I', 'X'):
                 return True
-            if not sequence_fraction[i] in iupac[template_fraction[i]]:
+            if not sequence_fraction[i] in \
+                   DNA.IUPAC_GRAMMAR_MAP[template_fraction[i]]:
                 return False
 
         return True

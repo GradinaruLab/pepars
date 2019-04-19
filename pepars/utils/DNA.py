@@ -107,6 +107,10 @@ def get_amino_acids():
     return AMINO_ACIDS
 
 
+def get_degenerate_nucleotides():
+    return set(IUPAC_GRAMMAR_MAP.keys()).difference(set(NUCLEOTIDES))
+
+
 def translate_DNA_to_AA(DNA_sequence):
 
     amino_acids = ""

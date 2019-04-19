@@ -19,6 +19,7 @@ class FASTQ_File:
         self._file_path = file_path
         self._file = None
         self._is_open = False
+        self._file_name = os.path.basename(file_path)
 
     def get_sequence_iterator(self):
 
@@ -73,6 +74,10 @@ class FASTQ_File:
     @property
     def file_handle(self):
         return self._file
+
+    @property
+    def file_name(self):
+        return self._file_name
 
 
 class FASTQ_Sequence_Iterator:
