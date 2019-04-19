@@ -6,3 +6,7 @@ You can install Pepars via pip:
 ```
 pip install git+https://github.com/GradinaruLab/pepars.git
 ```
+
+
+## License
+License information can be found in the LICENSE file
