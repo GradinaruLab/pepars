@@ -82,7 +82,7 @@ def plot_amino_acid_property_distribution_from_array(array_of_interest_high,arra
 
 def get_amino_acid_counts_by_position(sequences, counts=None):
 
-    unique_AAs = set(DNA.gencode.values())
+    unique_AAs = DNA.get_amino_acids()
     unique_AAs = sorted(list(unique_AAs))
     counts_by_position = np.zeros((len(unique_AAs), len(sequences[0])))
 
@@ -99,7 +99,8 @@ def get_amino_acid_counts_by_position(sequences, counts=None):
     return counts_by_position
 
 
-def get_amino_acid_codon_biases(templates, template_ratios=None):
+def get_amino_acid_codon_biases(templates, template_ratios=None,
+                                allow_stop_codons=False):
 
     if isinstance(templates, str):
         templates = [templates]
@@ -120,7 +121,7 @@ def get_amino_acid_codon_biases(templates, template_ratios=None):
 
     template_length = int(template_length / 3)
 
-    unique_AAs = set(DNA.gencode.values())
+    unique_AAs = DNA.get_amino_acids()
     unique_AAs = sorted(list(unique_AAs))
     num_AAs = len(unique_AAs)
 
@@ -132,12 +133,15 @@ def get_amino_acid_codon_biases(templates, template_ratios=None):
 
         for codon_index in range(template_length):
 
-            for codon, amino_acid in DNA.gencode.items():
+            for codon, amino_acid in DNA.CODON_AA_MAP.items():
+
+                if not allow_stop_codons and amino_acid == "#":
+                    continue
 
                 is_codon_allowed = True
                 for nucleotide_index in range(0, 3):
                     template_nucleotide_index = codon_index * 3 + nucleotide_index
-                    allowable_nucleotides = DNA.IUPAC[template[template_nucleotide_index]]
+                    allowable_nucleotides = DNA.IUPAC_GRAMMAR_MAP[template[template_nucleotide_index]]
                     if codon[nucleotide_index] not in allowable_nucleotides:
                         is_codon_allowed = False
                         break
