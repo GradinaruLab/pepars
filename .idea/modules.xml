@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/PE-deep-seq.iml" filepath="$PROJECT_DIR$/.idea/PE-deep-seq.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/pepars.iml" filepath="$PROJECT_DIR$/.idea/pepars.iml" />
     </modules>
   </component>
 </project>
