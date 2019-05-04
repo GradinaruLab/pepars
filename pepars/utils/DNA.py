@@ -1,3 +1,5 @@
+import itertools
+
 import numpy
 
 CODON_AA_MAP = {
@@ -119,6 +121,52 @@ def translate_DNA_to_AA(DNA_sequence):
         amino_acids += CODON_AA_MAP[DNA_sequence[start_index:start_index + 3]]
 
     return amino_acids
+
+
+def get_all_possible_nucleotide_seqs(amino_acid_sequence, template="NNN"):
+    '''Returns all the possible nucleotide sequences of an input amino acid
+    sequence
+
+    Inputs:
+        - amino_acid_sequence: The query amino acid sequence
+        - template: Which template to follow to generate sequences
+    Outputs:
+        - all_pos_seqs: All the possible sequences for given amino_acid_sequence
+
+    '''
+    all_pos_codons = []
+
+    for amino_acid_to_generate in amino_acid_sequence:
+
+        possible_codons = []
+
+        for codon in CODON_AA_MAP:
+
+            if amino_acid_to_generate != CODON_AA_MAP[codon]:
+                continue
+
+            is_valid_codon = True
+
+            for nucleotide_index, nucleotide in enumerate(codon):
+
+                if nucleotide not in \
+                        IUPAC_GRAMMAR_MAP[template[nucleotide_index]]:
+                    is_valid_codon = False
+                    break
+
+            if not is_valid_codon:
+                continue
+
+            possible_codons.append(codon)
+
+        if len(possible_codons) == 0:
+            raise ValueError(
+                "Template does not allow for this amino acid sequence!")
+
+        all_pos_codons.append(possible_codons)
+
+    all_pos_seqs = [''.join(i) for i in itertools.product(*all_pos_codons)]        
+    return all_pos_seqs
 
 
 def translate_AA_to_DNA(amino_acid_sequence, template="NNN"):
