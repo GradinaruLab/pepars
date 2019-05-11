@@ -1,5 +1,6 @@
 import gzip
 import os
+from enum import Enum
 
 
 class FASTQ_File:
@@ -164,3 +165,54 @@ class FASTQ_Sequence_Quality_Iterator:
 
         return sequence_line.strip(), quality_line.strip()
 
+
+class Illumina_FASTQ_File(FASTQ_File):
+
+    def __init__(self, file_path):
+        super().__init__(file_path)
+
+        file_name = os.path.basename(file_path)
+
+        file_name_parts = file_name.split("_")
+
+        if len(file_name_parts) < 5:
+            raise ValueError("Illumina FASTQ file should have at least 5 \
+                             underscore-separated components!")
+
+        self._sample_name = "_".join(file_name_parts[0:-4])
+        self._sample_number = int(file_name_parts[-4][1:])
+        self._lane_number = int(file_name_parts[-3][1:])
+
+        read_type = file_name_parts[-2]
+
+        if read_type[0] == "I":
+            self._is_index_read = True
+        else:
+            self._is_index_read = False
+
+        self._read_number = int(read_type[1:])
+        self._file_number = int(file_name_parts[-1].split(".")[0])
+
+    @property
+    def sample_name(self):
+        return self._sample_name
+
+    @property
+    def sample_number(self):
+        return self._sample_number
+
+    @property
+    def lane_number(self):
+        return self._lane_number
+
+    @property
+    def is_index_read(self):
+        return self._is_index_read
+
+    @property
+    def read_number(self):
+        return self._read_number
+
+    @property
+    def file_number(self):
+        return self._file_number

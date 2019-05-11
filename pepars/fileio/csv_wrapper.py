@@ -6,6 +6,7 @@ def write_csv_file(file_name, header, rows):
 
     file = open(file_name, 'w')
     writer = csv.writer(file)
+
     if header != None:
         writer.writerow(header)
 

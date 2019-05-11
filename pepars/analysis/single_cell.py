@@ -48,7 +48,11 @@ def add_barcode_UMI_counts_to_gene_counts(gene_counts_file_path,
     :return: The gene_counts DataFrame
     """
 
-    gene_counts = pandas.read_csv(gene_counts_file_path, index_col=0)
+    gene_counts = pandas.DataFrame()
+
+    for chunk in pandas.read_csv(gene_counts_file_path, index_col=0,
+                                 chunksize=10000):
+        gene_counts = pandas.concat([gene_counts, chunk])
 
     valid_barcodes = [barcode[0:-2] for barcode in gene_counts.columns]
 
@@ -57,31 +61,39 @@ def add_barcode_UMI_counts_to_gene_counts(gene_counts_file_path,
     for barcode in valid_barcodes:
         barcodes_trie.add(barcode)
 
-    gene_counts.drop(gene_name, inplace=True, errors="ignore")
+    if not isinstance(gene_name, list):
+        gene_names = [gene_name]
+        barcode_UMI_counts = [barcode_UMI_counts]
+    else:
+        gene_names = gene_name
 
-    gene_count_dict = {}
+    for gene_index, gene_name in enumerate(gene_names):
 
-    for barcode, UMI_counts in barcode_UMI_counts.items():
+        gene_counts.drop(gene_name, inplace=True, errors="ignore")
 
-        if "N" in barcode:
-            continue
+        gene_count_dict = {}
 
-        if not barcodes_trie.find(barcode):
-            continue
+        for barcode, UMI_counts in barcode_UMI_counts[gene_index].items():
 
-        UMI_count = 0
+            if "N" in barcode:
+                continue
 
-        for UMI, count in UMI_counts.items():
-            if count > UMI_count_threshold:
-                UMI_count += 1
+            if not barcodes_trie.find(barcode):
+                continue
 
-        gene_count_dict[barcode + "-1"] = UMI_count
+            UMI_count = 0
 
-    new_gene_counts = pandas.DataFrame.from_dict(gene_count_dict,
-                                                 orient="index",
-                                                 columns=[gene_name])
+            for UMI, count in UMI_counts.items():
+                if count > UMI_count_threshold:
+                    UMI_count += 1
 
-    gene_counts = gene_counts.append(new_gene_counts.transpose(), sort=False)
+            gene_count_dict[barcode + "-1"] = UMI_count
+
+        new_gene_counts = pandas.DataFrame.from_dict(gene_count_dict,
+                                                     orient="index",
+                                                     columns=[gene_name])
+
+        gene_counts = gene_counts.append(new_gene_counts.transpose(), sort=False)
     gene_counts = gene_counts.fillna(0)
     gene_counts = gene_counts.astype(dtype=numpy.uint32)
 
@@ -100,8 +112,9 @@ def get_barcodes_from_gene_counts(gene_counts_file_path):
     :return: A list of cell barcodes
     """
 
-    gene_counts = pandas.read_csv(gene_counts_file_path, index_col=0)
+    with open(gene_counts_file_path, "r") as file:
+        column_headers = file.readline().strip().split(",")[1:]
 
-    valid_barcodes = [barcode[0:-2] for barcode in gene_counts.columns]
+        valid_barcodes = [barcode[0:-2] for barcode in column_headers]
 
     return valid_barcodes

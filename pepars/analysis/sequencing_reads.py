@@ -131,7 +131,8 @@ def get_matching_sequence_counts(
         template=None,
         distance_threshold=None,
         quality_threshold=30,
-        exclude_match=False):
+        exclude_match=False,
+        extract_indices=None):
     """
     Given a FASTQ file with sequences to match and a corresponding FASTQ file
     with sequences to extract, extract all the sequences where the matching
@@ -148,6 +149,7 @@ def get_matching_sequence_counts(
         sequence must meet to be considered
     :param exclude_match: Whether to include (False) or exclude (True) the
         matches
+    :param extract_indices: The indices to extract. If None, extracts all
     :return: A dictionary of barcodes, each entry containing a dictionary of
         UMIs and the number of times this barcode/UMI combo appeared
     """
@@ -171,6 +173,8 @@ def get_matching_sequence_counts(
 
         try:
             extract, extract_quality = next(extract_iterator)
+            if extract_indices is not None:
+                extract = extract[extract_indices[0]:extract_indices[1]]
         except StopIteration:
             break
 

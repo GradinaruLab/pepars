@@ -1,4 +1,6 @@
+import os
 from . import FASTQ_File
+from . import Illumina_FASTQ_File
 
 
 class FASTQ_File_Set:
@@ -141,3 +143,66 @@ class FASTQ_Set_Sequence_Quality_Iterator:
 
         return sequences, quality_scores
 
+
+class Illumina_FASTQ_File_Set(FASTQ_File_Set):
+
+    def __init__(self, FASTQ_directory_path, sample_name):
+        super().__init__([])
+
+        directory_entries = os.listdir(FASTQ_directory_path)
+
+        illumina_files = []
+
+        for entry in directory_entries:
+
+            if entry.startswith(sample_name):
+
+                file_path = os.path.join(FASTQ_directory_path, entry)
+                illumina_files.append(Illumina_FASTQ_File(file_path))
+
+        # Now we add the Illumina files in the following order: indexes,
+        # followed by reads
+
+        latest_read_number = 0
+
+        added_file = True
+
+        while added_file:
+            added_file = False
+            for file in illumina_files:
+                if file.is_index_read and \
+                        file.read_number == latest_read_number + 1:
+                    self._files.append(file)
+                    latest_read_number += 1
+                    added_file = True
+                    break
+
+        latest_read_number = 0
+
+        added_file = True
+
+        while added_file:
+            added_file = False
+            for file in illumina_files:
+                if not file.is_index_read and \
+                        file.read_number == latest_read_number + 1:
+                    self._files.append(file)
+                    latest_read_number += 1
+                    added_file = True
+                    break
+
+    def get_index_file(self, index_number=1):
+
+        for file in self._files:
+            if file.is_index_read and file.read_number == index_number:
+                return file
+
+        return None
+
+    def get_read_file(self, read_number=1):
+
+        for file in self._files:
+            if not file.is_index_read and file.read_number == read_number:
+                return file
+
+        return None

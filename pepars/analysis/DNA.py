@@ -82,12 +82,19 @@ def collapse_similar_sequences(sequence_counts,
     if num_nucleotides_off != 1:
         raise NotImplementedError("Only support single nucleotide errors")
 
+    print("Sorting sequence counts")
     # Sort list in reverse order (smallest counts first)
     sequence_counts.sort(key=operator.itemgetter(1), reverse=True)
 
+    print("Constructing sequence trie")
     sequence_trie = Sequence_Trie(by_nucleotide=True, allow_invalid=True)
+
+    sequence_index = 0
     for sequence, count in sequence_counts:
         sequence_trie.add(sequence, count)
+        sequence_index += 1
+        if sequence_index % 100000 == 0:
+            print("Added %i sequences" % sequence_index)
 
     alphabet = set(DNA.get_nucleotides())
     alphabet.add("N")

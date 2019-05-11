@@ -35,16 +35,45 @@ def plot_histogram(values,
                    x_range=None,
                    y_range=None):
 
+    is_integer_values = True
+
+    # There has got to be a better way to do this...
+    # Sample 10% of the values to see if they're all integers
+    num_values_to_sample = int(numpy.ceil(numpy.sqrt(len(values))))
+    for i in range(num_values_to_sample):
+        random_index = numpy.random.randint(0, len(values))
+        if values[random_index] != int(values[random_index]):
+            is_integer_values = False
+            break
+
     figure_traces = []
 
-    figure_parameters = {
-        "x": values
-    }
+    if num_bins is None:
+        # Estimate the number of bins using the Rice Rule
+        num_bins = int(2 * numpy.ceil(numpy.power(len(values), 1 / 3)))
 
-    if num_bins is not None:
-        figure_parameters["nbinsx"] = num_bins
+        if is_integer_values and num_bins > max(values):
+            num_bins = int(numpy.ceil(max(values)))
 
-    histogram = graph_objs.Histogram(figure_parameters)
+    if is_integer_values:
+
+        min_value = min(values)
+        max_value = max(values)
+
+        value_range = max_value - min_value
+        bin_size = numpy.ceil(value_range / num_bins)
+        min_bin = numpy.floor(min_value / bin_size) * bin_size
+        max_bin = numpy.ceil(max_value / bin_size) * bin_size
+        bins = numpy.arange(min_bin, max_bin, bin_size)
+    else:
+        bins=num_bins
+
+    y, x = numpy.histogram(values, bins=bins)
+
+    histogram = graph_objs.Bar(
+        x=x,
+        y=y,
+    )
 
     figure_traces.append(histogram)
 
@@ -55,7 +84,8 @@ def plot_histogram(values,
         "yaxis": {
             "title": y_axis_title
         },
-        "hovermode": "closest"
+        "hovermode": "closest",
+        "bargap": 0
     }
 
     if x_axis_title is not None:
@@ -130,26 +160,58 @@ def plot_scatter(x_values,
                  y_values,
                  output_file_path=None,
                  interactive=False,
-                 text_labels=None):
+                 text_labels=None,
+                 trace_names=None):
 
     figure_traces = []
 
-    if text_labels is None:
-        scatter = graph_objs.Scatter(
-            x=list(x_values),
-            y=list(y_values),
-            mode="markers"
-        )
-    else:
-        scatter = graph_objs.Scatter(
-            x=list(x_values),
-            y=list(y_values),
-            mode="markers",
-            hoverinfo="text",
-            text=text_labels
-        )
+    # If the x values have a 2nd dimension, we have multiple traces
+    try:
+        len(x_values[0])
 
-    figure_traces.append(scatter)
+        for series_index in range(len(x_values)):
+
+            if trace_names is not None:
+                trace_name = trace_names[series_index]
+            else:
+                trace_name = "%i" % (series_index + 1)
+
+            if text_labels is None:
+                scatter = graph_objs.Scatter(
+                    x=list(x_values[series_index]),
+                    y=list(y_values[series_index]),
+                    mode="markers",
+                    name=trace_name
+                )
+            else:
+                scatter = graph_objs.Scatter(
+                    x=list(x_values[series_index]),
+                    y=list(y_values[series_index]),
+                    mode="markers",
+                    hoverinfo="text",
+                    text=text_labels,
+                    name=trace_name
+                )
+            figure_traces.append(scatter)
+
+    except TypeError:
+
+        if text_labels is None:
+            scatter = graph_objs.Scatter(
+                x=list(x_values),
+                y=list(y_values),
+                mode="markers"
+            )
+        else:
+            scatter = graph_objs.Scatter(
+                x=list(x_values),
+                y=list(y_values),
+                mode="markers",
+                hoverinfo="text",
+                text=text_labels
+            )
+
+        figure_traces.append(scatter)
 
     layout = graph_objs.Layout(
         hovermode="closest"
