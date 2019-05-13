@@ -64,7 +64,7 @@ def plot_histogram(values,
         bin_size = numpy.ceil(value_range / num_bins)
         min_bin = numpy.floor(min_value / bin_size) * bin_size
         max_bin = numpy.ceil(max_value / bin_size) * bin_size
-        bins = numpy.arange(min_bin, max_bin, bin_size)
+        bins = numpy.arange(min_bin, max_bin+bin_size, bin_size)
     else:
         bins=num_bins
 
@@ -161,7 +161,10 @@ def plot_scatter(x_values,
                  output_file_path=None,
                  interactive=False,
                  text_labels=None,
-                 trace_names=None):
+                 trace_names=None,
+                 title=None,
+                 x_range=None,
+                 y_range=None):
 
     figure_traces = []
 
@@ -216,6 +219,19 @@ def plot_scatter(x_values,
     layout = graph_objs.Layout(
         hovermode="closest"
     )
+
+    if x_range:
+        layout["xaxis"] = dict(
+            range=x_range
+        )
+
+    if y_range:
+        layout["yaxis"] = dict(
+            range=y_range
+        )
+
+    if title:
+        layout["title"] = title
 
     figure = graph_objs.Figure(data=figure_traces, layout=layout)
 

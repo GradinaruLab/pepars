@@ -73,6 +73,11 @@ def add_barcode_UMI_counts_to_gene_counts(gene_counts_file_path,
 
         gene_count_dict = {}
 
+        if isinstance(UMI_count_threshold, list):
+            gene_UMI_count_threshold = UMI_count_threshold[gene_index]
+        else:
+            gene_UMI_count_threshold = UMI_count_threshold
+
         for barcode, UMI_counts in barcode_UMI_counts[gene_index].items():
 
             if "N" in barcode:
@@ -84,7 +89,7 @@ def add_barcode_UMI_counts_to_gene_counts(gene_counts_file_path,
             UMI_count = 0
 
             for UMI, count in UMI_counts.items():
-                if count > UMI_count_threshold:
+                if count > gene_UMI_count_threshold:
                     UMI_count += 1
 
             gene_count_dict[barcode + "-1"] = UMI_count
