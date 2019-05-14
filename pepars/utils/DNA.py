@@ -226,14 +226,23 @@ def translate_reverse_complement(sequence):
     return reverse_complement_sequence
 
 
-def is_template_match(template, sequence):
+def is_template_match(template, sequence, allowable_distance=0):
 
-    if len(template) != len(sequence):
-        return False
-
-    for character_index, character in enumerate(sequence):
-        if character not in IUPAC_GRAMMAR_MAP[template[character_index]]:
+    if allowable_distance == 0:
+        if len(template) != len(sequence):
             return False
+
+        for character_index, character in enumerate(sequence):
+            if character not in IUPAC_GRAMMAR_MAP[template[character_index]]:
+                return False
+    else:
+        num_nucleotides_off = 0
+
+        for character_index, character in enumerate(sequence):
+            if character not in IUPAC_GRAMMAR_MAP[template[character_index]]:
+                num_nucleotides_off += 1
+                if num_nucleotides_off > allowable_distance:
+                    return False
 
     return True
 
