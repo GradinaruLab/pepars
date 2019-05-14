@@ -150,8 +150,7 @@ def get_matching_sequence_counts(
     :param exclude_match: Whether to include (False) or exclude (True) the
         matches
     :param extract_indices: The indices to extract. If None, extracts all
-    :return: A dictionary of barcodes, each entry containing a dictionary of
-        UMIs and the number of times this barcode/UMI combo appeared
+    :return: A list of tuples of extract sequences and their count
     """
 
     line_index = 0

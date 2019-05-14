@@ -164,7 +164,9 @@ def plot_scatter(x_values,
                  trace_names=None,
                  title=None,
                  x_range=None,
-                 y_range=None):
+                 y_range=None,
+                 x_axis_title=None,
+                 y_axis_title=None):
 
     figure_traces = []
 
@@ -220,15 +222,20 @@ def plot_scatter(x_values,
         hovermode="closest"
     )
 
+    layout["xaxis"] = {}
+    layout["yaxis"] = {}
+
     if x_range:
-        layout["xaxis"] = dict(
-            range=x_range
-        )
+        layout["xaxis"]["range"] = x_range
 
     if y_range:
-        layout["yaxis"] = dict(
-            range=y_range
-        )
+        layout["yaxis"]["range"] = y_range
+
+    if x_axis_title:
+        layout["xaxis"]["title"] = x_axis_title
+
+    if y_axis_title:
+        layout["yaxis"]["title"] = y_axis_title
 
     if title:
         layout["title"] = title
