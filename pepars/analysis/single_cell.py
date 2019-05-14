@@ -5,12 +5,13 @@ from ..utils import Sequence_Trie
 from ..utils import DNA as DNA_utils
 
 
-def get_barcode_UMI_counts(sequence_counts):
+def get_barcode_UMI_counts(sequence_counts, barcode_length=16):
     """
     Given a list of sequences and their counts, generate a dictionary of cell
     barcodes and their respective UMI counts. Assumes a 16:10 barcode/UMI split
 
     :param sequence_counts: A list of tuples of sequences and their count
+    :param barcode_length: The length of the barcode
     :return: A dictionary of sequences representing cell barcodes, each of which
         contains a dictionary of their UMIs and counts for each UMI
     """
@@ -19,8 +20,8 @@ def get_barcode_UMI_counts(sequence_counts):
 
     for sequence, count in sequence_counts:
 
-        barcode = sequence[0:16]
-        UMI = sequence[16:]
+        barcode = sequence[0:barcode_length]
+        UMI = sequence[barcode_length:]
 
         if barcode not in barcode_UMI_counts:
             barcode_UMI_counts[barcode] = {UMI: count}

@@ -236,3 +236,16 @@ def is_template_match(template, sequence):
             return False
 
     return True
+
+
+def get_variant_indices_from_template(template_sequence):
+
+    template_indices = []
+
+    degenerate_nucleotides = get_degenerate_nucleotides()
+
+    for character_index, character in enumerate(template_sequence):
+        if character in degenerate_nucleotides:
+            template_indices.append(character_index)
+
+    return template_indices
