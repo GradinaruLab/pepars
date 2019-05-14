@@ -252,7 +252,8 @@ def plot_bar_chart(values,
                    errors=None,
                    interactive=False,
                    output_file_path=None,
-                   title="Bar Chart"):
+                   title="Bar Chart",
+                   y_axis_title=None):
     """
     Values can be either a 1-dimensional array or 2-dimensional array.
     If 1-dimensional, the values should correspond to different conditions and
@@ -306,6 +307,10 @@ def plot_bar_chart(values,
         },
         "hovermode": "closest"
     }
+
+    if y_axis_title:
+        layout_parameters["yaxis"] = {}
+        layout_parameters["yaxis"]["title"] = y_axis_title
 
     if group_names is None:
         layout_parameters["xaxis"]["visible"] = False
