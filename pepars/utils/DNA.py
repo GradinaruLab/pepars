@@ -258,3 +258,14 @@ def get_variant_indices_from_template(template_sequence):
             template_indices.append(character_index)
 
     return template_indices
+
+
+def get_template_distance(template, sequence):
+
+    template_distance = 0
+
+    for character_index, character in enumerate(sequence):
+        if character not in IUPAC_GRAMMAR_MAP[template[character_index]]:
+            template_distance += 1
+
+    return template_distance

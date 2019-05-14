@@ -118,7 +118,7 @@ def get_template_distances(template, FASTQ_file_path):
 
     for sequence in file.get_sequence_iterator():
 
-        distance = utils.get_sequence_distance(template, sequence)
+        distance = DNA_utils.get_template_distance(template, sequence)
 
         distances.append(distance)
 
