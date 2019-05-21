@@ -76,6 +76,8 @@ class FASTQ_Set_Sequence_Iterator:
             self._sequence_iterators.append(iterator)
             iter(iterator)
 
+        self._is_open = True
+
         return self
 
     def __next__(self):
@@ -115,6 +117,8 @@ class FASTQ_Set_Sequence_Quality_Iterator:
             iterator = file.get_sequence_quality_iterator()
             self._sequence_quality_iterators.append(iterator)
             iter(iterator)
+
+        self._is_open = True
 
         return self
 

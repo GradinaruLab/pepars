@@ -226,6 +226,19 @@ def translate_reverse_complement(sequence):
     return reverse_complement_sequence
 
 
+def is_sequence_match(sequence_1, sequence_2, allowable_distance=0):
+
+    num_mismatches = 0
+
+    for character_index, character in enumerate(sequence_1):
+        if character != sequence_2[character_index]:
+            num_mismatches += 1
+            if num_mismatches > allowable_distance:
+                return False
+
+    return True
+
+
 def is_template_match(template, sequence, allowable_distance=0):
 
     if allowable_distance == 0:

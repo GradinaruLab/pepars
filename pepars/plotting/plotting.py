@@ -3,9 +3,13 @@ import numpy
 from plotly import offline as plotly_offline
 from plotly import graph_objs
 
+INTERACTIVE_MODE = False
+
 
 def init_notebook_mode():
     plotly_offline.init_notebook_mode()
+    global INTERACTIVE_MODE
+    INTERACTIVE_MODE = True
 
 
 def generate_plotly_plot(figure, output_file_path=None, interactive=False):
