@@ -100,13 +100,83 @@ AMINO_ACIDS = [
     "Y"
 ]
 
+# Codon frequencies from http://hive.biochemistry.gwu.edu/review/codon
+CODON_FREQUENCIES = {
+    "mus_musculus": {
+        "AAA": 21336462,
+        "AAC": 17634886,
+        "AAG": 30304539,
+        "AAT": 14225820,
+        "ACA": 14874852,
+        "ACC": 16170180,
+        "ACG": 5110332,
+        "ACT": 12423691,
+        "AGA": 11643187,
+        "AGC": 18543196,
+        "AGG": 11531432,
+        "AGT": 12613419,
+        "ATA": 6519548,
+        "ATC": 18116609,
+        "ATG": 19360204,
+        "ATT": 13112138,
+        "CAA": 11725522,
+        "CAC": 13569509,
+        "CAG": 32740441,
+        "CAT": 10021378,
+        "CCA": 16999974,
+        "CCC": 16305633,
+        "CCG": 5442893,
+        "CCT": 17872896,
+        "CGA": 6143838,
+        "CGC": 7654491,
+        "CGG": 9299948,
+        "CGT": 4129594,
+        "CTA": 7175663,
+        "CTC": 16747656,
+        "CTG": 33194957,
+        "CTT": 11998369,
+        "GAA": 27149113,
+        "GAC": 23457466,
+        "GAG": 36979161,
+        "GAT": 19954082,
+        "GCA": 14997741,
+        "GCC": 22410169,
+        "GCG": 5227733,
+        "GCT": 18003486,
+        "GGA": 14936244,
+        "GGC": 17622820,
+        "GGG": 13233138,
+        "GGT": 9877142,
+        "GTA": 6680252,
+        "GTC": 12937644,
+        "GTG": 23653667,
+        "GTT": 9664997,
+        "TAA": 346998,
+        "TAC": 12845107,
+        "TAG": 310192,
+        "TAT": 9950306,
+        "TCA": 11896395,
+        "TCC": 16330278,
+        "TCG": 3829599,
+        "TCT": 15524659,
+        "TGA": 663764,
+        "TGC": 9741288,
+        "TGG": 10179088,
+        "TGT": 9509181,
+        "TTA": 6532569,
+        "TTC": 16734250,
+        "TTG": 11852515,
+        "TTT": 14238031
+    }
+}
+
 
 def get_nucleotides():
     return NUCLEOTIDES
 
 
 def get_amino_acids():
-    return AMINO_ACIDS
+    return AMINO_ACIDS[:]
 
 
 def get_degenerate_nucleotides():
@@ -121,6 +191,48 @@ def translate_DNA_to_AA(DNA_sequence):
         amino_acids += CODON_AA_MAP[DNA_sequence[start_index:start_index + 3]]
 
     return amino_acids
+
+
+def get_optimal_codon(
+        amino_acid_sequence,
+        template="NNN",
+        species="mus_musculus"):
+
+    nucleotide_sequence = ""
+
+    for amino_acid in amino_acid_sequence:
+
+        possible_codons = []
+
+        for possible_codon in CODON_AA_MAP:
+
+            if CODON_AA_MAP[possible_codon] != amino_acid:
+                continue
+
+            is_possible_codon = True
+
+            for nucleotide_index, nucleotide in enumerate(possible_codon):
+                if nucleotide not in \
+                        IUPAC_GRAMMAR_MAP[template[nucleotide_index]]:
+                    is_possible_codon = False
+                    break
+
+            if not is_possible_codon:
+                continue
+
+            possible_codons.append(possible_codon)
+
+        optimal_codon = None
+        optimal_codon_frequency = -numpy.infty
+
+        for codon in possible_codons:
+            if CODON_FREQUENCIES[species][codon] > optimal_codon_frequency:
+                optimal_codon_frequency = CODON_FREQUENCIES[species][codon]
+                optimal_codon = codon
+
+        nucleotide_sequence += optimal_codon
+
+    return nucleotide_sequence
 
 
 def get_all_possible_nucleotide_seqs(amino_acid_sequence, template="NNN"):
