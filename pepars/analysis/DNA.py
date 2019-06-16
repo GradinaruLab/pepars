@@ -363,3 +363,71 @@ def get_amino_acid_probabilities_from_template(template,
         numpy.divide(amino_acid_counts, amino_acid_counts.sum(axis=1)[:, None])
 
     return amino_acid_probabilities
+
+
+def get_amino_acid_probabilities_from_sequence_counts(
+        sequence_counts,
+        allow_stop_codon=False):
+
+    amino_acids = DNA.get_amino_acids()
+
+    if allow_stop_codon:
+        amino_acids.append("#")
+
+    amino_acid_position_counts = numpy.zeros(
+        (len(sequence_counts[0]), len(amino_acids)))
+
+    for sequence, count in sequence_counts.items():
+
+        for character_index, amino_acid in enumerate(sequence):
+
+            if not allow_stop_codon and amino_acid == "#":
+                continue
+
+            if amino_acid == "#":
+                amino_acid_index = len(amino_acids) - 1
+            else:
+                amino_acid_index = DNA.AMINO_ACID_INDEX_MAP[amino_acid]
+
+            amino_acid_position_counts[
+                character_index, amino_acid_index] += count
+
+    amino_acid_probabilities = \
+        amino_acid_position_counts / \
+        amino_acid_position_counts.sum(axis=1)[:, None]
+
+    return amino_acid_probabilities
+
+
+def get_amino_acid_probabilities_from_sequences(
+        sequences,
+        allow_stop_codon=False):
+
+    amino_acids = DNA.get_amino_acids()
+
+    if allow_stop_codon:
+        amino_acids.append("#")
+
+    amino_acid_position_counts = numpy.zeros(
+        (len(sequences[0]), len(amino_acids)))
+
+    for sequence in sequences:
+
+        for character_index, amino_acid in enumerate(sequence):
+
+            if not allow_stop_codon and amino_acid == "#":
+                continue
+
+            if amino_acid == "#":
+                amino_acid_index = len(amino_acids) - 1
+            else:
+                amino_acid_index = DNA.AMINO_ACID_INDEX_MAP[amino_acid]
+
+            amino_acid_position_counts[
+                character_index, amino_acid_index] += 1
+
+    amino_acid_probabilities = \
+        amino_acid_position_counts / \
+        amino_acid_position_counts.sum(axis=1)[:, None]
+
+    return amino_acid_probabilities

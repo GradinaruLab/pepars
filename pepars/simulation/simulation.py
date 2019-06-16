@@ -1,11 +1,12 @@
 import numpy
 
-from .utils import DNA
+from ..utils import DNA
 
 
 def generate_random_sequences(
         template_sequence="NNKNNKNNKNNKNNKNNKNNK",
-        num_sequences=1000000):
+        num_sequences=1000000,
+        allow_stop_codon=False):
 
     sequences = set()
 
@@ -14,13 +15,13 @@ def generate_random_sequences(
         nucleotide_sequence = ""
 
         for template_nucleotide in template_sequence:
-            possible_nucleotides = list(DNA.IUPAC[template_nucleotide])
+            possible_nucleotides = list(DNA.IUPAC_GRAMMAR_MAP[template_nucleotide])
 
             nucleotide_sequence += numpy.random.choice(possible_nucleotides)
 
-        amino_acid_sequence = DNA.translate_dna_single(nucleotide_sequence)
+        amino_acid_sequence = DNA.translate_DNA_to_AA(nucleotide_sequence)
 
-        if amino_acid_sequence.find("#") != -1:
+        if not allow_stop_codon and amino_acid_sequence.find("#") != -1:
             continue
 
         sequences.add(amino_acid_sequence)
@@ -58,11 +59,11 @@ def generate_simulated_dataset(
 
         for template_nucleotide in template_sequence:
 
-            possible_nucleotides = list(DNA.IUPAC[template_nucleotide])
+            possible_nucleotides = list(DNA.IUPAC_GRAMMAR_MAP[template_nucleotide])
 
             nucleotide_sequence += numpy.random.choice(possible_nucleotides)
 
-        amino_acid_sequence = DNA.translate_dna_single(nucleotide_sequence)
+        amino_acid_sequence = DNA.translate_DNA_to_AA(nucleotide_sequence)
 
         if amino_acid_sequence.find("#") != -1:
             continue
@@ -158,7 +159,7 @@ def generate_simulated_dataset(
             else:
                 read_sequence += nucleotide
 
-        amino_acid_sequence = DNA.translate_dna_single(read_sequence)
+        amino_acid_sequence = DNA.translate_DNA_to_AA(read_sequence)
 
         if amino_acid_sequence.find("#") != -1:
             continue
@@ -179,7 +180,7 @@ def generate_simulated_dataset(
             else:
                 read_sequence += nucleotide
 
-        amino_acid_sequence = DNA.translate_dna_single(read_sequence)
+        amino_acid_sequence = DNA.translate_DNA_to_AA(read_sequence)
 
         if amino_acid_sequence.find("#") != -1:
             continue

@@ -144,10 +144,12 @@ def plot_nucleotide_prevalence_bar_chart(
 
 
 def plot_amino_acid_bias(amino_acid_sequence_counts,
-                         template_sequence,
+                         template_sequence=None,
+                         amino_acid_probabilities=None,
                          sample_name=None,
                          ignore_counts=False,
                          **kwargs):
+
     amino_acids = DNA_utils.get_amino_acids()
 
     amino_acid_position_counts = numpy.zeros(
@@ -167,9 +169,12 @@ def plot_amino_acid_bias(amino_acid_sequence_counts,
         amino_acid_position_counts / \
         amino_acid_position_counts.sum(axis=1)[:, None]
 
-    unbiased_amino_acid_probabilities = \
-        DNA_analysis.get_amino_acid_probabilities_from_template(
-            template_sequence, allow_stop_codon=False)
+    if template_sequence is not None:
+        unbiased_amino_acid_probabilities = \
+            DNA_analysis.get_amino_acid_probabilities_from_template(
+                template_sequence, allow_stop_codon=False)
+    else:
+        unbiased_amino_acid_probabilities = amino_acid_probabilities
 
     sample_amino_acid_probabilities_min = sample_amino_acid_probabilities[
         sample_amino_acid_probabilities > 0].min() / 2

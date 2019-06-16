@@ -9,7 +9,8 @@ setup(
         "pepars.plotting",
         "pepars.utils",
         "pepars.alignment",
-        "pepars.fileio"
+        "pepars.fileio",
+        "pepars.simulation"
     ],
     install_requires=[
         "numpy",
