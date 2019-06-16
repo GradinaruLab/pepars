@@ -152,8 +152,17 @@ def plot_amino_acid_bias(amino_acid_sequence_counts,
 
     amino_acids = DNA_utils.get_amino_acids()
 
+    if template_sequence is not None:
+        unbiased_amino_acid_probabilities = \
+            DNA_analysis.get_amino_acid_probabilities_from_template(
+                template_sequence, allow_stop_codon=False)
+    else:
+        unbiased_amino_acid_probabilities = amino_acid_probabilities
+
+    sequence_length = unbiased_amino_acid_probabilities.shape[0]
+
     amino_acid_position_counts = numpy.zeros(
-        (int(len(template_sequence) / 3), len(amino_acids)))
+        unbiased_amino_acid_probabilities.shape)
 
     for sequence, count in amino_acid_sequence_counts.items():
 
@@ -168,13 +177,6 @@ def plot_amino_acid_bias(amino_acid_sequence_counts,
     sample_amino_acid_probabilities = \
         amino_acid_position_counts / \
         amino_acid_position_counts.sum(axis=1)[:, None]
-
-    if template_sequence is not None:
-        unbiased_amino_acid_probabilities = \
-            DNA_analysis.get_amino_acid_probabilities_from_template(
-                template_sequence, allow_stop_codon=False)
-    else:
-        unbiased_amino_acid_probabilities = amino_acid_probabilities
 
     sample_amino_acid_probabilities_min = sample_amino_acid_probabilities[
         sample_amino_acid_probabilities > 0].min() / 2
@@ -194,7 +196,7 @@ def plot_amino_acid_bias(amino_acid_sequence_counts,
         zmax=biggest_value,
         zauto=False,
         x=amino_acids,
-        y=[str(i) for i in range(1, int(len(template_sequence) / 3) + 1)],
+        y=[str(i) for i in range(1, sequence_length + 1)],
         colorbar=dict(
             title="Log2 Bias"
         ),
