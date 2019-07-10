@@ -37,7 +37,9 @@ def plot_histogram(values,
                    num_bins=None,
                    log_scale=False,
                    x_range=None,
-                   y_range=None):
+                   y_range=None,
+                   x_axis_log_scale=False,
+                   y_axis_log_scale=False):
 
     is_integer_values = True
 
@@ -102,6 +104,12 @@ def plot_histogram(values,
 
     if log_scale:
         layout_parameters["yaxis"]["type"] = "log"
+
+    if x_axis_log_scale:
+        layout["xaxis"]["type"] = "log"
+
+    if y_axis_log_scale:
+        layout["yaxis"]["type"] = "log"
 
     layout = graph_objs.Layout(layout_parameters)
 
@@ -170,7 +178,9 @@ def plot_scatter(x_values,
                  x_range=None,
                  y_range=None,
                  x_axis_title=None,
-                 y_axis_title=None):
+                 y_axis_title=None,
+                 x_axis_log_scale=False,
+                 y_axis_log_scale=False):
 
     figure_traces = []
 
@@ -243,6 +253,12 @@ def plot_scatter(x_values,
 
     if title:
         layout["title"] = title
+
+    if x_axis_log_scale:
+        layout["xaxis"]["type"] = "log"
+
+    if y_axis_log_scale:
+        layout["yaxis"]["type"] = "log"
 
     figure = graph_objs.Figure(data=figure_traces, layout=layout)
 
