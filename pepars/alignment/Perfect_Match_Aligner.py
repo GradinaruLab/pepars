@@ -82,11 +82,10 @@ class Perfect_Match_Aligner(Aligner):
                                 quality_strings[1],
                                 self._reverse_complement_template)
 
-                        extracted_sequence_r2 = \
-                            DNA.translate_reverse_complement(
-                                extracted_sequence_r2)
-
                         if error_type == 0:
+                            extracted_sequence_r2 = \
+                                DNA.translate_reverse_complement(
+                                    extracted_sequence_r2)
                             if extracted_sequence_r2 != extracted_sequence:
                                 error_type = 5
 
