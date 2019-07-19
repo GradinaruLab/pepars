@@ -2,6 +2,8 @@ import operator
 import numpy
 import itertools
 
+from enum import Enum
+
 from ..utils import DNA
 from ..utils import Sequence_Trie
 
@@ -368,6 +370,18 @@ def get_amino_acid_probabilities_from_template(template,
 def get_amino_acid_probabilities_from_sequence_counts(
         sequence_counts,
         allow_stop_codon=False):
+    """
+    Given a dictionary of sequences and their count, returns an NxM matrix
+    representing the probability of each amino acid in each position
+
+    :param sequence_counts: A dictionary of sequences and their counts
+
+    :param allow_stop_codon: Whether to allow/account for stop codons (True)
+        or ignore them (False)
+
+    :return: An NxM numpy array, M is either the number of amino acids (20) or
+        the number of amino acids + 1 (for stop codon), if allow_stop_codon
+    """
 
     amino_acids = DNA.get_amino_acids()
 
@@ -375,7 +389,7 @@ def get_amino_acid_probabilities_from_sequence_counts(
         amino_acids.append("#")
 
     amino_acid_position_counts = numpy.zeros(
-        (len(sequence_counts[0]), len(amino_acids)))
+        (len(next(iter(sequence_counts))), len(amino_acids)))
 
     for sequence, count in sequence_counts.items():
 
