@@ -1,8 +1,7 @@
 import operator
 import numpy
 import itertools
-
-from enum import Enum
+import pandas
 
 from ..utils import DNA
 from ..utils import Sequence_Trie
@@ -336,10 +335,12 @@ def get_amino_acid_probabilities_from_template(template,
     if len(template) % 3 != 0:
         raise ValueError("Template must be a multiple of 3 in length")
 
-    num_amino_acids = len(DNA.get_amino_acids())
+    amino_acids = DNA.get_amino_acids()
 
     if allow_stop_codon:
-        num_amino_acids += 1
+        amino_acids.append("#")
+
+    num_amino_acids = len(amino_acids)
 
     amino_acid_counts = numpy.zeros((int(len(template) / 3), num_amino_acids))
 
@@ -363,6 +364,12 @@ def get_amino_acid_probabilities_from_template(template,
 
     amino_acid_probabilities = \
         numpy.divide(amino_acid_counts, amino_acid_counts.sum(axis=1)[:, None])
+
+    amino_acid_probabilities = pandas.DataFrame(
+        amino_acid_probabilities.transpose(),
+        index=amino_acids,
+        columns=[i + 1 for i in range(amino_acid_counts.shape[0])]
+    )
 
     return amino_acid_probabilities
 

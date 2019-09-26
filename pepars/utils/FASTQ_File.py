@@ -94,11 +94,20 @@ class FASTQ_Sequence_Iterator:
 
     def __next__(self):
 
-        line = self._file.file_handle.readline()
+        try:
+            line = self._file.file_handle.readline()
+        except OSError:
+            self._file.close()
+            raise StopIteration
+
         self._next_line_index += 1
 
         while self._next_line_index % 4 != 2:
-            line = self._file.file_handle.readline()
+            try:
+                line = self._file.file_handle.readline()
+            except OSError:
+                self._file.close()
+                raise StopIteration
             self._next_line_index += 1
 
         if not line:
@@ -121,11 +130,20 @@ class FASTQ_Quality_Iterator:
 
     def __next__(self):
 
-        line = self._file.file_handle.readline()
+        try:
+            line = self._file.file_handle.readline()
+        except OSError:
+            self._file.close()
+            raise StopIteration
+
         self._next_line_index += 1
 
         while self._next_line_index % 4 != 0:
-            line = self._file.file_handle.readline()
+            try:
+                line = self._file.file_handle.readline()
+            except OSError:
+                self._file.close()
+                raise StopIteration
             self._next_line_index += 1
 
         if not line:
@@ -148,15 +166,28 @@ class FASTQ_Sequence_Quality_Iterator:
 
     def __next__(self):
 
-        sequence_line = self._file.file_handle.readline()
+        try:
+            sequence_line = self._file.file_handle.readline()
+        except OSError:
+            self._file.close()
+            raise StopIteration
+
         self._next_line_index += 1
 
         while self._next_line_index % 4 != 2:
-            sequence_line = self._file.file_handle.readline()
+            try:
+                sequence_line = self._file.file_handle.readline()
+            except OSError:
+                self._file.close()
+                raise StopIteration
             self._next_line_index += 1
 
         while self._next_line_index % 4 != 0:
-            quality_line = self._file.file_handle.readline()
+            try:
+                quality_line = self._file.file_handle.readline()
+            except OSError:
+                self._file.close()
+                raise StopIteration
             self._next_line_index += 1
 
         if not sequence_line or not quality_line:

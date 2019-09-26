@@ -238,3 +238,194 @@ def plot_amino_acid_bias(amino_acid_sequence_counts,
     figure = graph_objs.Figure(data=data, layout=layout)
 
     plotting.generate_plotly_plot(figure, **kwargs)
+
+
+OUTLINE_WIDTH = 2
+OUTLINE_COLOR = "black"
+
+
+def plot_signficant_amino_acid_biases(
+        amino_acid_biases,
+        p_values=None,
+        biggest_value=None,
+        sample_name=None,
+        p_value_threshold=None,
+        invert_outline=False,
+        **kwargs
+):
+    amino_acid_biases = amino_acid_biases.transpose()
+
+    if p_values is not None:
+        p_values = p_values.transpose()
+
+    amino_acids = DNA_utils.get_amino_acids()
+    sequence_length = amino_acid_biases.shape[0]
+
+    if biggest_value is None:
+        biggest_value = max(abs(amino_acid_biases.max()),
+                            abs(amino_acid_biases.min()))
+
+    if invert_outline:
+        xgap = 0
+        ygap = 0
+    else:
+        xgap = 5
+        ygap = 5
+
+    traces = []
+
+    if not invert_outline:
+
+        for i in range(amino_acid_biases.shape[0]):
+            for j in range(amino_acid_biases.shape[1]):
+
+                if p_values[i, j] > p_value_threshold:
+                    amino_acid_biases[i, j] = 0
+                    continue
+
+                outline_trace = graph_objs.Scatter(
+                    x=[j + 1 - 0.45, j + 1 - 0.45],
+                    y=[i + 1 - 0.45, i + 1 + 0.45],
+                    mode="lines",
+                    line={
+                        "width": OUTLINE_WIDTH,
+                        "color": OUTLINE_COLOR
+                    },
+                    showlegend=False,
+                    hoverinfo="skip"
+                )
+
+                traces.append(outline_trace)
+
+                outline_trace = graph_objs.Scatter(
+                    x=[j + 1 + 0.45, j + 1 + 0.45],
+                    y=[i + 1 - 0.45, i + 1 + 0.45],
+                    mode="lines",
+                    line={
+                        "width": OUTLINE_WIDTH,
+                        "color": OUTLINE_COLOR
+                    },
+                    showlegend=False,
+                    hoverinfo="skip"
+                )
+
+                traces.append(outline_trace)
+
+                outline_trace = graph_objs.Scatter(
+                    x=[j + 1 - 0.45, j + 1 + 0.45],
+                    y=[i + 1 - 0.45, i + 1 - 0.45],
+                    mode="lines",
+                    line={
+                        "width": OUTLINE_WIDTH,
+                        "color": OUTLINE_COLOR
+                    },
+                    showlegend=False,
+                    hoverinfo="skip"
+                )
+
+                traces.append(outline_trace)
+
+                outline_trace = graph_objs.Scatter(
+                    x=[j + 1 + 0.45, j + 1 - 0.45],
+                    y=[i + 1 + 0.45, i + 1 + 0.45],
+                    mode="lines",
+                    line={
+                        "width": OUTLINE_WIDTH,
+                        "color": OUTLINE_COLOR
+                    },
+                    showlegend=False,
+                    hoverinfo="skip"
+                )
+
+                traces.append(outline_trace)
+    else:
+
+        crosshatch_x_values = []
+        crosshatch_y_values = []
+
+        for i in range(amino_acid_biases.shape[0]):
+            for j in range(amino_acid_biases.shape[1]):
+
+                if p_values[i, j] < p_value_threshold:
+                    continue
+
+                amino_acid_biases[i, j] = 0
+
+                for _ in range(4):
+                    crosshatch_x_values.extend(
+                        numpy.linspace(j + 1 - 1 / 3, j + 1 + 1 / 3, 3))
+
+                crosshatch_y_values.extend([i + 1 + 1 / 9] * 3)
+                crosshatch_y_values.extend([i + 1 - 1 / 9] * 3)
+                crosshatch_y_values.extend([i + 1 + 3 / 8] * 3)
+                crosshatch_y_values.extend([i + 1 - 3 / 8] * 3)
+
+        scatter = graph_objs.Scatter(
+            x=crosshatch_x_values,
+            y=crosshatch_y_values,
+            mode="markers",
+            marker={
+                "symbol": "x-thin-open",
+                "size": 11,
+                "color": "gray"
+            },
+            hoverinfo="skip",
+            showlegend=False
+        )
+
+        traces = [scatter]
+
+    trace = graph_objs.Heatmap(
+        z=amino_acid_biases,
+        zmin=-biggest_value,
+        zmax=biggest_value,
+        zauto=False,
+        x=[i + 1 for i in range(len(amino_acids))],
+        xgap=xgap,
+        ygap=ygap,
+        y=[str(i) for i in range(1, sequence_length + 1)],
+        colorbar=dict(
+            title="Bias Level"
+        ),
+        colorscale=[
+            [0.0, 'rgb(49,54,149)'],
+            [0.1111111111111111, 'rgb(69,117,180)'],
+            [0.2222222222222222, 'rgb(116,173,209)'],
+            [0.3333333333333333, 'rgb(171,217,233)'],
+            [0.4444444444444444, 'rgb(224,243,248)'],
+            [0.5, 'rgb(255, 255, 255)'],
+            [0.5555555555555556, 'rgb(254,224,144)'],
+            [0.6666666666666666, 'rgb(253,174,97)'],
+            [0.7777777777777778, 'rgb(244,109,67)'],
+            [0.8888888888888888, 'rgb(215,48,39)'],
+            [1.0, 'rgb(165,0,38)']
+        ]
+    )
+
+    if sample_name is None:
+        title = "Amino Acid Bias"
+    else:
+        title = "%s Amino Acid Bias" % sample_name
+
+    layout = graph_objs.Layout(
+        title=title,
+        xaxis={
+            "ticktext": amino_acids,
+            "tickvals": [i + 1 for i in range(len(amino_acids))],
+            "title": "Amino Acid",
+            "range": [0.5, len(amino_acids) + 0.5]
+        },
+        yaxis={
+            "title": "Position",
+            "range": [0.5, sequence_length + 0.5]
+        },
+        #             paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)'
+    )
+
+    data = [trace]
+    data.extend(traces)
+
+    figure = graph_objs.Figure(data=data, layout=layout)
+
+    plotting.generate_plotly_plot(figure, **kwargs)

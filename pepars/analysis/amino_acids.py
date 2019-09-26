@@ -82,8 +82,14 @@ def plot_amino_acid_property_distribution_from_array(array_of_interest_high,arra
 
 def get_amino_acid_counts_by_position(sequences, counts=None):
 
+    if isinstance(sequences, dict):
+        counts = sequences.copy()
+        sequences = list(sequences.keys())
+        counts = [counts[x] for x in sequences]
+
     unique_AAs = DNA.get_amino_acids()
     unique_AAs = sorted(list(unique_AAs))
+
     counts_by_position = np.zeros((len(unique_AAs), len(sequences[0])))
 
     for sequence_index, sequence in enumerate(sequences):

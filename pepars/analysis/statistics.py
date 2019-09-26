@@ -5,6 +5,7 @@ import pandas
 from scipy import stats
 from statsmodels.stats import multitest
 from enum import Enum
+from scipy.stats import binom
 
 
 class Test_Type(Enum):
@@ -14,6 +15,7 @@ class Test_Type(Enum):
     NORMAL_ASSUMPTION = 3
     LOG_FOLD_CHANGE = 4
     STANDARDIZATION = 5
+    BINOMIAL_LOG = 6
 
 def get_sequence_count_bins(sequence_library, bins = None):
 
@@ -122,26 +124,51 @@ def find_threshold(labels,
     return labels_sorted[threshold_index]
 
 
-def get_significance_of_amino_acid_ratios(amino_acid_counts_by_position, amino_acid_biases,
-                                          multiple_comparison_correction=True,
-                                          test_type=Test_Type.BINOMIAL_NORMAL_APPROXIMATION):
+def get_significance_of_amino_acid_ratios(
+        amino_acid_counts_by_position,
+        starting_amino_acid_counts,
+        multiple_comparison_correction=True,
+        test_type=Test_Type.BINOMIAL_NORMAL_APPROXIMATION):
+    """
+
+    :param amino_acid_counts_by_position: a pandas DataFrame of amino acid
+        counts, where rows are the amino acids, and columns are the positions
+        in the sequence
+    :param starting_amino_acid_counts: The expected amino acid probabilities. A pandas
+        DataFrame, where rows are the amino acids, and columns are the positions
+        in the sequence
+    :param multiple_comparison_correction: Whether to perform multiple
+        comparison correction
+    :param test_type: The type of statistical test to perform. See
+        statistics.Test_Type
+    :return: (p_values, significance_scores)
+        The p_values at each amino acid/position and their associated
+        significance scores. The meaning of this score is dependent on test_type
+    """
 
     p_values = pandas.DataFrame(
-        numpy.zeros((len(amino_acid_biases.index), len(amino_acid_biases.columns))),
-        index=amino_acid_biases.index,
-        columns=amino_acid_biases.columns)
-    z_scores = pandas.DataFrame(numpy.zeros((len(amino_acid_biases.index), len(amino_acid_biases.columns))),
-        index=amino_acid_biases.index,
-        columns=amino_acid_biases.columns)
-    z_scores.index = amino_acid_biases.index
-    p_values.columns = amino_acid_biases.columns
+        numpy.zeros((len(starting_amino_acid_counts.index),
+                     len(starting_amino_acid_counts.columns))),
+        index=starting_amino_acid_counts.index,
+        columns=starting_amino_acid_counts.columns
+    )
+
+    z_scores = pandas.DataFrame(
+        numpy.zeros((len(starting_amino_acid_counts.index),
+                     len(starting_amino_acid_counts.columns))),
+        index=starting_amino_acid_counts.index,
+        columns=starting_amino_acid_counts.columns
+    )
 
     num_trials = int(amino_acid_counts_by_position.sum(axis=0)[1])
 
     amino_acid_ratios = amino_acid_counts_by_position / num_trials
+    amino_acid_biases = starting_amino_acid_counts/starting_amino_acid_counts.sum(axis=0)
     amino_acid_ratios = amino_acid_ratios/amino_acid_biases
-    amino_acid_ratios_log = numpy.log2(amino_acid_ratios)
-    amino_acid_ratios_log[amino_acid_ratios_log == -numpy.inf] = amino_acid_ratios_log[amino_acid_ratios_log != -numpy.inf].min().min() - 1
+    amino_acid_ratios_log = amino_acid_ratios
+    non_zero_min = amino_acid_ratios_log[amino_acid_ratios_log != -numpy.inf].min().min()
+    amino_acid_ratios_log[amino_acid_ratios_log == 0] = non_zero_min / 2
+    amino_acid_ratios_log = numpy.log2(amino_acid_ratios_log)
 
     for amino_acid in amino_acid_biases.index:
         for position_index in amino_acid_biases.columns:
@@ -187,6 +214,14 @@ def get_significance_of_amino_acid_ratios(amino_acid_counts_by_position, amino_a
 
                 z_score = (amino_acid_ratios.loc[amino_acid, position_index] - amino_acid_ratios.values.mean()) / amino_acid_ratios.values.std()
                 p_value = stats.norm.cdf(z_score)
+                p_value = 1 - max(p_value, 1 - p_value)
+            elif test_type == Test_Type.BINOMIAL_LOG:
+                z_score = amino_acid_ratios_log.loc[amino_acid, position_index]
+
+                p_value = binom.cdf(count, num_trials, p)
+                p_value = 1 - max(p_value, 1 - p_value)
+            else:
+                raise NotImplementedError()
 
             p_values.loc[amino_acid, position_index] = p_value
             z_scores.loc[amino_acid, position_index] = z_score
