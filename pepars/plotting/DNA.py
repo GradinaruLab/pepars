@@ -422,3 +422,5 @@ def plot_signficant_amino_acid_biases(
     figure = graph_objs.Figure(data=data, layout=layout)
 
     plotting.generate_plotly_plot(figure, **kwargs)
+
+    return figure
