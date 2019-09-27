@@ -351,14 +351,8 @@ def plot_signficant_amino_acid_biases(
 
                 amino_acid_biases[i, j] = 0
 
-                for _ in range(4):
-                    crosshatch_x_values.extend(
-                        numpy.linspace(j + 1 - 1 / 3, j + 1 + 1 / 3, 3))
-
-                crosshatch_y_values.extend([i + 1 + 1 / 9] * 3)
-                crosshatch_y_values.extend([i + 1 - 1 / 9] * 3)
-                crosshatch_y_values.extend([i + 1 + 3 / 8] * 3)
-                crosshatch_y_values.extend([i + 1 - 3 / 8] * 3)
+                crosshatch_x_values.append(j + 1)
+                crosshatch_y_values.append(i + 1)
 
         scatter = graph_objs.Scatter(
             x=crosshatch_x_values,
@@ -366,7 +360,7 @@ def plot_signficant_amino_acid_biases(
             mode="markers",
             marker={
                 "symbol": "x-thin-open",
-                "size": 11,
+                "size": 35,
                 "color": "gray"
             },
             hoverinfo="skip",
@@ -419,7 +413,6 @@ def plot_signficant_amino_acid_biases(
             "title": "Position",
             "range": [0.5, sequence_length + 0.5]
         },
-        #             paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)'
     )
 
