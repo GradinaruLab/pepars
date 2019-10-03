@@ -162,7 +162,10 @@ class Illumina_FASTQ_File_Set(FASTQ_File_Set):
             if entry.startswith(sample_name):
 
                 file_path = os.path.join(FASTQ_directory_path, entry)
-                illumina_files.append(Illumina_FASTQ_File(file_path))
+                FASTQ_file = Illumina_FASTQ_File(file_path)
+
+                if FASTQ_file.sample_name == sample_name:
+                    illumina_files.append(FASTQ_file)
 
         # Now we add the Illumina files in the following order: indexes,
         # followed by reads
