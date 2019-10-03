@@ -240,7 +240,7 @@ def plot_amino_acid_bias(amino_acid_sequence_counts,
     plotting.generate_plotly_plot(figure, **kwargs)
 
 
-OUTLINE_WIDTH = 2
+OUTLINE_WIDTH = 2.5
 OUTLINE_COLOR = "black"
 
 
@@ -262,8 +262,8 @@ def plot_signficant_amino_acid_biases(
     sequence_length = amino_acid_biases.shape[0]
 
     if biggest_value is None:
-        biggest_value = max(abs(amino_acid_biases.max()),
-                            abs(amino_acid_biases.min()))
+        biggest_value = max(abs(numpy.nanmax(amino_acid_biases)),
+                            abs(numpy.nanmin(amino_acid_biases)))
 
     if invert_outline:
         xgap = 0
@@ -280,12 +280,16 @@ def plot_signficant_amino_acid_biases(
             for j in range(amino_acid_biases.shape[1]):
 
                 if p_values[i, j] > p_value_threshold:
-                    amino_acid_biases[i, j] = 0
+                    amino_acid_biases[i, j] = numpy.nan
+                    continue
+
+                if numpy.isnan(p_values[i, j]):
+                    amino_acid_biases[i, j] = numpy.nan
                     continue
 
                 outline_trace = graph_objs.Scatter(
-                    x=[j + 1 - 0.45, j + 1 - 0.45],
-                    y=[i + 1 - 0.45, i + 1 + 0.45],
+                    x=[j + 1 - 0.43, j + 1 - 0.43],
+                    y=[i + 1 - 0.43, i + 1 + 0.43],
                     mode="lines",
                     line={
                         "width": OUTLINE_WIDTH,
@@ -298,8 +302,8 @@ def plot_signficant_amino_acid_biases(
                 traces.append(outline_trace)
 
                 outline_trace = graph_objs.Scatter(
-                    x=[j + 1 + 0.45, j + 1 + 0.45],
-                    y=[i + 1 - 0.45, i + 1 + 0.45],
+                    x=[j + 1 + 0.43, j + 1 + 0.43],
+                    y=[i + 1 - 0.43, i + 1 + 0.43],
                     mode="lines",
                     line={
                         "width": OUTLINE_WIDTH,
@@ -312,8 +316,8 @@ def plot_signficant_amino_acid_biases(
                 traces.append(outline_trace)
 
                 outline_trace = graph_objs.Scatter(
-                    x=[j + 1 - 0.45, j + 1 + 0.45],
-                    y=[i + 1 - 0.45, i + 1 - 0.45],
+                    x=[j + 1 - 0.43, j + 1 + 0.43],
+                    y=[i + 1 - 0.43, i + 1 - 0.43],
                     mode="lines",
                     line={
                         "width": OUTLINE_WIDTH,
@@ -326,8 +330,8 @@ def plot_signficant_amino_acid_biases(
                 traces.append(outline_trace)
 
                 outline_trace = graph_objs.Scatter(
-                    x=[j + 1 + 0.45, j + 1 - 0.45],
-                    y=[i + 1 + 0.45, i + 1 + 0.45],
+                    x=[j + 1 + 0.43, j + 1 - 0.43],
+                    y=[i + 1 + 0.43, i + 1 + 0.43],
                     mode="lines",
                     line={
                         "width": OUTLINE_WIDTH,
@@ -346,7 +350,8 @@ def plot_signficant_amino_acid_biases(
         for i in range(amino_acid_biases.shape[0]):
             for j in range(amino_acid_biases.shape[1]):
 
-                if p_values[i, j] < p_value_threshold:
+                if not numpy.isnan(p_values[i, j]) and p_values[
+                        i, j] < p_value_threshold:
                     continue
 
                 amino_acid_biases[i, j] = 0
@@ -407,13 +412,16 @@ def plot_signficant_amino_acid_biases(
             "ticktext": amino_acids,
             "tickvals": [i + 1 for i in range(len(amino_acids))],
             "title": "Amino Acid",
-            "range": [0.5, len(amino_acids) + 0.5]
+            "range": [0.5, len(amino_acids) + 0.5],
+            "gridcolor": "rgba(0,0,0,0)"
         },
         yaxis={
             "title": "Position",
-            "range": [0.5, sequence_length + 0.5]
+            "range": [0.5, sequence_length + 0.5],
+            "gridcolor": "rgba(0,0,0,0)"
         },
-        plot_bgcolor='rgba(0,0,0,0)'
+        plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)"
     )
 
     data = [trace]

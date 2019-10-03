@@ -2,20 +2,17 @@ import numpy
 import math
 from ..utils import DNA
 import pandas
-from scipy import stats
 from statsmodels.stats import multitest
+from statsmodels.stats import proportion
+
 from enum import Enum
-from scipy.stats import binom
 
 
 class Test_Type(Enum):
 
-    BINOMIAL_NORMAL_APPROXIMATION = 1
-    BINOMIAL_LOG_SCORE = 2
-    NORMAL_ASSUMPTION = 3
-    LOG_FOLD_CHANGE = 4
-    STANDARDIZATION = 5
-    BINOMIAL_LOG = 6
+    BINOMIAL_NORMAL_APPROXIMATION_LOG2 = 1
+    BINOMIAL_NORMAL_APPROXIMATION_Z = 2
+
 
 def get_sequence_count_bins(sequence_library, bins = None):
 
@@ -26,12 +23,14 @@ def get_sequence_count_bins(sequence_library, bins = None):
 
     return get_bin_counts(list(sequence_counts.values()), bins)
 
+
 def get_enrichment_bins(sequence_enrichments, bins = None):
 
     if not bins:
         bins = [-4, -3, -2, -1, 0, 1, 2, 3, 4]
 
     return get_bin_counts(list(sequence_enrichments.values()), bins)
+
 
 def get_bin_counts(values, bins):
 
@@ -49,6 +48,7 @@ def get_bin_counts(values, bins):
         bin_counts[bin_index] += 1
 
     return bins, bin_counts
+
 
 def binomial(n, p, k):
 
@@ -125,117 +125,121 @@ def find_threshold(labels,
 
 
 def get_significance_of_amino_acid_ratios(
-        amino_acid_counts_by_position,
-        starting_amino_acid_counts,
+        amino_acid_counts_by_position_output,
+        amino_acid_counts_by_position_input,
         multiple_comparison_correction=True,
-        test_type=Test_Type.BINOMIAL_NORMAL_APPROXIMATION):
+        test_type=Test_Type.BINOMIAL_NORMAL_APPROXIMATION_LOG2
+):
     """
 
-    :param amino_acid_counts_by_position: a pandas DataFrame of amino acid
-        counts, where rows are the amino acids, and columns are the positions
-        in the sequence
-    :param starting_amino_acid_counts: The expected amino acid probabilities. A pandas
-        DataFrame, where rows are the amino acids, and columns are the positions
-        in the sequence
+    :param amino_acid_counts_by_position_output: a pandas DataFrame of amino
+        acid counts, where rows are the amino acids, and columns are the
+        positions in the sequence
+    :param amino_acid_counts_by_position_input: The expected amino acid
+        probabilities. A pandas DataFrame, where rows are the amino acids, and
+        columns are the positions in the sequence
     :param multiple_comparison_correction: Whether to perform multiple
         comparison correction
     :param test_type: The type of statistical test to perform. See
         statistics.Test_Type
-    :return: (p_values, significance_scores)
+    :return: (p_values, magnitude_scores)
         The p_values at each amino acid/position and their associated
-        significance scores. The meaning of this score is dependent on test_type
+        magnitude scores. The meaning of this score is dependent on test_type
     """
 
     p_values = pandas.DataFrame(
-        numpy.zeros((len(starting_amino_acid_counts.index),
-                     len(starting_amino_acid_counts.columns))),
-        index=starting_amino_acid_counts.index,
-        columns=starting_amino_acid_counts.columns
+        numpy.zeros((len(amino_acid_counts_by_position_input.index),
+                     len(amino_acid_counts_by_position_input.columns))),
+        index=amino_acid_counts_by_position_input.index,
+        columns=amino_acid_counts_by_position_input.columns
     )
 
-    z_scores = pandas.DataFrame(
-        numpy.zeros((len(starting_amino_acid_counts.index),
-                     len(starting_amino_acid_counts.columns))),
-        index=starting_amino_acid_counts.index,
-        columns=starting_amino_acid_counts.columns
+    magnitude_scores = pandas.DataFrame(
+        numpy.zeros((len(amino_acid_counts_by_position_input.index),
+                     len(amino_acid_counts_by_position_input.columns))),
+        index=amino_acid_counts_by_position_input.index,
+        columns=amino_acid_counts_by_position_input.columns
     )
 
-    num_trials = int(amino_acid_counts_by_position.sum(axis=0)[1])
+    num_trials_output = amino_acid_counts_by_position_output.sum(axis=0)[1]
+    num_trials_input = amino_acid_counts_by_position_input.sum(axis=0)[1]
 
-    amino_acid_ratios = amino_acid_counts_by_position / num_trials
-    amino_acid_biases = starting_amino_acid_counts/starting_amino_acid_counts.sum(axis=0)
-    amino_acid_ratios = amino_acid_ratios/amino_acid_biases
-    amino_acid_ratios_log = amino_acid_ratios
-    non_zero_min = amino_acid_ratios_log[amino_acid_ratios_log != -numpy.inf].min().min()
-    amino_acid_ratios_log[amino_acid_ratios_log == 0] = non_zero_min / 2
-    amino_acid_ratios_log = numpy.log2(amino_acid_ratios_log)
+    amino_acid_biases = amino_acid_counts_by_position_input /\
+        amino_acid_counts_by_position_input.sum(axis=0)
 
-    for amino_acid in amino_acid_biases.index:
-        for position_index in amino_acid_biases.columns:
-            count = int(amino_acid_counts_by_position.loc[amino_acid, position_index])
-            p = amino_acid_biases.loc[amino_acid, position_index]
+    # Check if the user has provided probabilities instead of counts
+    if round(num_trials_input) == 1.0:
+        is_single_sample = True
+    else:
+        is_single_sample = False
 
-            if test_type == Test_Type.BINOMIAL_NORMAL_APPROXIMATION:
-                q = 1 - p
-                standard_deviation = numpy.sqrt(num_trials * p * q)
-                expected_value = num_trials * p
-                z_score = (count - expected_value) / standard_deviation
-                p_value = stats.norm.cdf(z_score)
+    for amino_acid in p_values.index:
+        for position_index in p_values.columns:
 
-                # if p_value > 0.5:
-                #     p_value = (1 - p_value)
+            if is_single_sample:
+                amino_acid_count = round(amino_acid_counts_by_position_output.loc[
+                                           amino_acid, position_index])
 
-            elif test_type == Test_Type.BINOMIAL_LOG_SCORE:
-                p_value = stats.binom_test(count, n=num_trials, p=p, alternative="less")
-                if p_value == 0:
-                    z_score = numpy.inf
+                if amino_acid_count == 0:
+                    z_score = numpy.nan
+                    p_value = numpy.nan
                 else:
-                    z_score = numpy.log10(p_value)
-                if p_value > 0.5:
-                    p_value = stats.binom_test(count, n=num_trials, p=p, alternative="greater")
-                    if p_value == 0:
-                        z_score = -numpy.inf
-                    else:
-                        z_score = -numpy.log10(p_value)
-            elif test_type == Test_Type.NORMAL_ASSUMPTION:
-
-                ratio = amino_acid_ratios_log.loc[amino_acid, position_index]
-                z_score = ratio/amino_acid_ratios_log.values.std()
-                p_value = stats.norm.cdf(z_score)
-
-            elif test_type == Test_Type.LOG_FOLD_CHANGE:
-
-                ratio = amino_acid_ratios_log.loc[amino_acid, position_index]
-                z_score = ratio/amino_acid_ratios_log.values.std()
-                p_value = stats.norm.cdf(z_score)
-                z_score = ratio
-
-            elif test_type == Test_Type.STANDARDIZATION:
-
-                z_score = (amino_acid_ratios.loc[amino_acid, position_index] - amino_acid_ratios.values.mean()) / amino_acid_ratios.values.std()
-                p_value = stats.norm.cdf(z_score)
-                p_value = 1 - max(p_value, 1 - p_value)
-            elif test_type == Test_Type.BINOMIAL_LOG:
-                z_score = amino_acid_ratios_log.loc[amino_acid, position_index]
-
-                p_value = binom.cdf(count, num_trials, p)
-                p_value = 1 - max(p_value, 1 - p_value)
+                    amino_acid_bias = amino_acid_biases.loc[
+                        amino_acid, position_index]
+                    z_score, p_value = proportion.proportions_ztest(
+                        amino_acid_count,
+                        num_trials_output,
+                        value=amino_acid_bias
+                    )
             else:
-                raise NotImplementedError()
+                amino_acid_count_output = int(
+                    amino_acid_counts_by_position_output.loc[
+                        amino_acid, position_index])
+                amino_acid_count_input = int(
+                    amino_acid_counts_by_position_input.loc[
+                        amino_acid, position_index])
+
+                if amino_acid_count_input == 0 and \
+                        amino_acid_count_output == 0:
+                    z_score = numpy.nan
+                    p_value = numpy.nan
+                else:
+                    z_score, p_value = proportion.proportions_ztest(
+                        [amino_acid_count_output, amino_acid_count_input],
+                        [num_trials_output, num_trials_input],
+                        value=0
+                    )
 
             p_values.loc[amino_acid, position_index] = p_value
-            z_scores.loc[amino_acid, position_index] = z_score
+            magnitude_scores.loc[amino_acid, position_index] = z_score
 
-    z_scores[z_scores == -numpy.inf] = z_scores[z_scores != -numpy.inf].min().min() - 1
-    z_scores[z_scores == numpy.inf] = z_scores[z_scores != numpy.inf].max().max() + 1
+    if test_type == Test_Type.BINOMIAL_NORMAL_APPROXIMATION_LOG2:
+
+        amino_acid_ratios = amino_acid_counts_by_position_output /\
+                            num_trials_output
+        amino_acid_biases[amino_acid_biases == 0] = \
+            amino_acid_biases[amino_acid_biases != 0].min().min() / 2
+        amino_acid_ratios[amino_acid_ratios == 0] = \
+            amino_acid_ratios[amino_acid_ratios != 0].min().min() / 2
+        magnitude_scores = amino_acid_ratios / amino_acid_biases
+        magnitude_scores = numpy.log2(magnitude_scores)
 
     if multiple_comparison_correction:
+
+        p_values_array =  \
+            p_values.values.reshape((p_values.shape[0] * p_values.shape[1],))
+
+        p_values_array_not_nan = p_values_array[~numpy.isnan(p_values_array)]
         _, corrected_p_values, _, _ = multitest.multipletests(
-            p_values.values.reshape((p_values.shape[0] * p_values.shape[1],)),
-            alpha=0.05, method='b', is_sorted=False, returnsorted=False)
-        corrected_p_values = pandas.DataFrame(corrected_p_values.reshape(p_values.shape),
+            p_values_array_not_nan, alpha=0.05, method='b', is_sorted=False,
+            returnsorted=False)
+
+        p_values_array[~numpy.isnan(p_values_array)] = corrected_p_values
+
+        corrected_p_values = pandas.DataFrame(
+            p_values_array.reshape(p_values.shape),
             index=amino_acid_biases.index,
             columns=amino_acid_biases.columns)
         p_values = corrected_p_values
 
-    return p_values, z_scores
+    return p_values, magnitude_scores
