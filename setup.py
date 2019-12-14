@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name="pepars",
-    version="0.4",
+    version="0.4.1",
     packages=[
         "pepars",
         "pepars.analysis",
