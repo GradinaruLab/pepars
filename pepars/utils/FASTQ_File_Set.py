@@ -148,6 +148,69 @@ class FASTQ_Set_Sequence_Quality_Iterator:
         return sequences, quality_scores
 
 
+class Illumina_FASTQ_Set_Sequence_Iterator:
+
+    def __init__(self, Illumina_FASTQ_file_set):
+
+        self._file_set = Illumina_FASTQ_file_set
+        self._sequence_iterators = None
+
+    def __iter__(self):
+
+        self._initiate_lane_file_number(0)
+
+        self._is_open = True
+
+        return self
+
+    def __next__(self):
+
+        sequences = []
+
+        is_at_least_one_sequence_valid = False
+
+        for iterator in self._sequence_iterators:
+
+            try:
+                sequence = next(iterator)
+                is_at_least_one_sequence_valid = True
+            except StopIteration:
+                sequence = None
+
+            sequences.append(sequence)
+
+        if not is_at_least_one_sequence_valid:
+
+            for file in self._file_set.files_by_lane_file_number[
+                    self._lane_file_number]:
+                file.close()
+
+            next_lane_file_index = self._lane_file_index + 1
+
+            if next_lane_file_index >= len(self._file_set.lane_file_numbers):
+                raise StopIteration
+
+            self._initiate_lane_file_number(next_lane_file_index)
+
+            return self.__next__()
+
+        return sequences
+
+    def _initiate_lane_file_number(self, lane_file_index):
+
+        self._lane_file_index = lane_file_index
+        self._lane_file_number = self._file_set.lane_file_numbers[
+            self._lane_file_index]
+
+        self._sequence_iterators = []
+
+        for file in self._file_set.files_by_lane_file_number[
+                self._lane_file_number]:
+            iterator = file.get_sequence_iterator()
+            self._sequence_iterators.append(iterator)
+            iter(iterator)
+
+
 class Illumina_FASTQ_File_Set(FASTQ_File_Set):
 
     def __init__(self, FASTQ_directory_path, sample_name):
@@ -155,7 +218,9 @@ class Illumina_FASTQ_File_Set(FASTQ_File_Set):
 
         directory_entries = os.listdir(FASTQ_directory_path)
 
-        illumina_files = []
+        # Files by unique sample/lane numbers, in case this sample is split
+        # over multiple lanes
+        self._files_by_lane_file_number = {}
 
         for entry in directory_entries:
 
@@ -164,39 +229,66 @@ class Illumina_FASTQ_File_Set(FASTQ_File_Set):
                 file_path = os.path.join(FASTQ_directory_path, entry)
                 FASTQ_file = Illumina_FASTQ_File(file_path)
 
-                if FASTQ_file.sample_name == sample_name:
-                    illumina_files.append(FASTQ_file)
+                if FASTQ_file.sample_name != sample_name:
+                    continue
 
-        # Now we add the Illumina files in the following order: indexes,
-        # followed by reads
+                sample_lane_file_number = \
+                    (FASTQ_file.sample_number,
+                     FASTQ_file.lane_number,
+                     FASTQ_file.file_number)
 
-        latest_read_number = 0
+                if sample_lane_file_number not in self._files_by_lane_file_number:
+                    self._files_by_lane_file_number[sample_lane_file_number] = []
 
-        added_file = True
+                self._files_by_lane_file_number[sample_lane_file_number].\
+                    append(FASTQ_file)
 
-        while added_file:
-            added_file = False
-            for file in illumina_files:
-                if file.is_index_read and \
-                        file.read_number == latest_read_number + 1:
-                    self._files.append(file)
-                    latest_read_number += 1
-                    added_file = True
-                    break
+        for sample_lane_file_number, illumina_files in \
+                self._files_by_lane_file_number.items():
 
-        latest_read_number = 0
+            # Now we add the Illumina files in the following order: indexes,
+            # followed by reads
 
-        added_file = True
+            latest_read_number = 0
 
-        while added_file:
-            added_file = False
-            for file in illumina_files:
-                if not file.is_index_read and \
-                        file.read_number == latest_read_number + 1:
-                    self._files.append(file)
-                    latest_read_number += 1
-                    added_file = True
-                    break
+            self._files_by_lane_file_number[sample_lane_file_number] = []
+
+            added_file = True
+
+            while added_file:
+                added_file = False
+                for file in illumina_files:
+                    if file.is_index_read and \
+                            file.sample_number == sample_lane_file_number[0] and \
+                            file.lane_number == sample_lane_file_number[1] and \
+                            file.read_number == latest_read_number + 1:
+                        self._files.append(file)
+                        self._files_by_lane_file_number[sample_lane_file_number].\
+                            append(file)
+                        latest_read_number += 1
+                        added_file = True
+                        break
+
+            latest_read_number = 0
+
+            added_file = True
+
+            while added_file:
+                added_file = False
+                for file in illumina_files:
+                    if not file.is_index_read and \
+                            file.sample_number == sample_lane_file_number[0] and \
+                            file.lane_number == sample_lane_file_number[1] and \
+                            file.read_number == latest_read_number + 1:
+                        self._files.append(file)
+                        self._files_by_lane_file_number[sample_lane_file_number].\
+                            append(file)
+                        latest_read_number += 1
+                        added_file = True
+                        break
+
+        self._lane_file_numbers = \
+            sorted(list(self._files_by_lane_file_number.keys()))
 
     def get_index_file(self, index_number=1):
 
@@ -213,3 +305,19 @@ class Illumina_FASTQ_File_Set(FASTQ_File_Set):
                 return file
 
         return None
+
+    def get_sequence_iterator(self):
+
+        return Illumina_FASTQ_Set_Sequence_Iterator(self)
+
+    def get_sequence_quality_iterator(self):
+
+        return FASTQ_Set_Sequence_Quality_Iterator(self)
+
+    @property
+    def lane_file_numbers(self):
+        return self._lane_file_numbers
+
+    @property
+    def files_by_lane_file_number(self):
+        return self._files_by_lane_file_number
