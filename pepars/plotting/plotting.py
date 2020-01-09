@@ -180,7 +180,10 @@ def plot_scatter(x_values,
                  x_axis_title=None,
                  y_axis_title=None,
                  x_axis_log_scale=False,
-                 y_axis_log_scale=False):
+                 y_axis_log_scale=False,
+                 x_intersect=None,
+                 y_intersect=None,
+                 mode="markers"):
 
     figure_traces = []
 
@@ -199,14 +202,14 @@ def plot_scatter(x_values,
                 scatter = graph_objs.Scatter(
                     x=list(x_values[series_index]),
                     y=list(y_values[series_index]),
-                    mode="markers",
+                    mode=mode,
                     name=trace_name
                 )
             else:
                 scatter = graph_objs.Scatter(
                     x=list(x_values[series_index]),
                     y=list(y_values[series_index]),
-                    mode="markers",
+                    mode=mode,
                     hoverinfo="text",
                     text=text_labels,
                     name=trace_name
@@ -219,13 +222,13 @@ def plot_scatter(x_values,
             scatter = graph_objs.Scatter(
                 x=list(x_values),
                 y=list(y_values),
-                mode="markers"
+                mode=mode
             )
         else:
             scatter = graph_objs.Scatter(
                 x=list(x_values),
                 y=list(y_values),
-                mode="markers",
+                mode=mode,
                 hoverinfo="text",
                 text=text_labels
             )
@@ -259,6 +262,24 @@ def plot_scatter(x_values,
 
     if y_axis_log_scale:
         layout["yaxis"]["type"] = "log"
+
+    if y_intersect:
+        extra_trace = graph_objs.Scatter(
+            x=[0, max(x_values)],
+            y=[y_intersect, y_intersect],
+            mode="markers+lines"
+        )
+
+        figure_traces.append(extra_trace)
+
+    if x_intersect:
+        extra_trace = graph_objs.Scatter(
+            x=[x_intersect, x_intersect],
+            y=[0, max(y_values)],
+            mode="markers+lines"
+        )
+
+        figure_traces.append(extra_trace)
 
     figure = graph_objs.Figure(data=figure_traces, layout=layout)
 
