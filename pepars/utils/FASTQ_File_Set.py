@@ -213,7 +213,7 @@ class Illumina_FASTQ_Set_Sequence_Iterator:
 
 class Illumina_FASTQ_File_Set(FASTQ_File_Set):
 
-    def __init__(self, FASTQ_directory_path, sample_name):
+    def __init__(self, FASTQ_directory_path, sample_name, file_number=None):
         super().__init__([])
 
         directory_entries = os.listdir(FASTQ_directory_path)
@@ -221,6 +221,7 @@ class Illumina_FASTQ_File_Set(FASTQ_File_Set):
         # Files by unique sample/lane numbers, in case this sample is split
         # over multiple lanes
         self._files_by_lane_file_number = {}
+        self._file_number = file_number
 
         for entry in directory_entries:
 
@@ -236,6 +237,10 @@ class Illumina_FASTQ_File_Set(FASTQ_File_Set):
                     (FASTQ_file.sample_number,
                      FASTQ_file.lane_number,
                      FASTQ_file.file_number)
+
+                if self._file_number is not None and \
+                        self._file_number != FASTQ_file.file_number:
+                    continue
 
                 if sample_lane_file_number not in self._files_by_lane_file_number:
                     self._files_by_lane_file_number[sample_lane_file_number] = []
